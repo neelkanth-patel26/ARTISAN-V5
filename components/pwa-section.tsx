@@ -11,8 +11,11 @@ export function PWASection() {
   const [deferredPrompt, setDeferredPrompt] = useState<any>(null)
   const [showInstallButton, setShowInstallButton] = useState(false)
   const [isLoading, setIsLoading] = useState(true)
+  const [isMounted, setIsMounted] = useState(false)
 
   useEffect(() => {
+    setIsMounted(true)
+    
     const loadPWA = async () => {
       try {
         let url = ''
@@ -75,6 +78,18 @@ export function PWASection() {
     const { outcome } = await deferredPrompt.userChoice
     setDeferredPrompt(null)
     setShowInstallButton(false)
+  }
+
+  if (!isMounted) {
+    return (
+      <div className="relative hidden lg:flex h-screen w-full items-center justify-center bg-gradient-to-b from-neutral-950 via-neutral-900 to-neutral-950 overflow-hidden">
+        <div className="animate-pulse">
+          <div className="h-8 bg-neutral-800 rounded w-64 mb-4"></div>
+          <div className="h-4 bg-neutral-800 rounded w-96 mb-8"></div>
+          <div className="h-32 bg-neutral-800 rounded w-32"></div>
+        </div>
+      </div>
+    )
   }
 
   return (
