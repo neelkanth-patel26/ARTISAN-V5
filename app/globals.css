@@ -1,0 +1,209 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@font-face {
+  font-family: 'ForestSmooth';
+  src: url('/fonts/Forest Smooth DCU/Forest Smooth DCU/ForestSmooth-Regular.ttf') format('truetype');
+  font-weight: 400;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Oughter';
+  src: url('/fonts/oughter/Oughter.otf') format('opentype');
+  font-weight: 400;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'CaviarDreams';
+  src: url('/fonts/caviar_dreams/CaviarDreams.ttf') format('truetype');
+  font-weight: 400;
+  font-style: normal;
+}
+
+@layer base {
+  :root {
+    --primary-color: #ffffff;
+    --secondary-color: #1e90ff;
+    --bg-color: #050505;
+    --accent-white: #ffffff;
+    --accent-blue: #3b82f6;
+  }
+
+  html {
+    background-color: #050505;
+    color: #ffffff;
+    overscroll-behavior: none;
+    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none; /* IE/Edge */
+  }
+
+  html::-webkit-scrollbar {
+    display: none; /* Chrome/Safari/Opera */
+  }
+
+  body {
+    background-color: #050505;
+    color: #ffffff;
+    line-height: 1.5;
+    overscroll-behavior: none;
+    font-family: 'CaviarDreams', sans-serif;
+    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none; /* IE/Edge */
+  }
+
+  body::-webkit-scrollbar {
+    display: none; /* Chrome/Safari/Opera */
+  }
+
+  /* Hide browser link preview tooltip */
+  a[href] {
+    -webkit-touch-callout: none;
+  }
+
+  /* Image protection */
+  img {
+    user-select: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    -webkit-user-drag: none;
+    -khtml-user-drag: none;
+    -moz-user-drag: none;
+    -o-user-drag: none;
+  }
+
+  /* Disable text selection for sensitive content */
+  .no-select {
+    user-select: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+  }
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+  
+  /* Hide scrollbar utility class */
+  .scrollbar-hide {
+    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none; /* IE/Edge */
+  }
+  
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none; /* Chrome/Safari/Opera */
+  }
+  
+  /* Prevent link preview in status bar */
+  .no-status-preview {
+    pointer-events: auto !important;
+  }
+  
+  .neon-ring {
+    box-shadow: 0 0 30px 2px rgba(255, 255, 255, 0.3),
+                0 0 60px 4px rgba(100, 200, 255, 0.2);
+  }
+  
+  .grid-divider {
+    background-image: 
+      repeating-linear-gradient(
+        90deg,
+        transparent,
+        transparent calc(100% / 7 - 1px),
+        rgba(255, 255, 255, 0.05) calc(100% / 7 - 1px),
+        rgba(255, 255, 255, 0.05) 100% / 7
+      );
+  }
+
+  @keyframes shimmer {
+    100% {
+      transform: translateX(100%);
+    }
+  }
+}
+
+@layer base {
+  :root {
+    --background: 0 0% 100%;
+    --foreground: 0 0% 3.9%;
+    --card: 0 0% 100%;
+    --card-foreground: 0 0% 3.9%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 0 0% 3.9%;
+    --primary: 0 0% 9%;
+    --primary-foreground: 0 0% 98%;
+    --secondary: 0 0% 96.1%;
+    --secondary-foreground: 0 0% 9%;
+    --muted: 0 0% 96.1%;
+    --muted-foreground: 0 0% 45.1%;
+    --accent: 0 0% 96.1%;
+    --accent-foreground: 0 0% 9%;
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 0 0% 89.8%;
+    --input: 0 0% 89.8%;
+    --ring: 0 0% 3.9%;
+    --chart-1: 12 76% 61%;
+    --chart-2: 173 58% 39%;
+    --chart-3: 197 37% 24%;
+    --chart-4: 43 74% 66%;
+    --chart-5: 27 87% 67%;
+    --radius: 0.5rem;
+    --sidebar-background: 0 0% 98%;
+    --sidebar-foreground: 240 5.3% 26.1%;
+    --sidebar-primary: 240 5.9% 10%;
+    --sidebar-primary-foreground: 0 0% 98%;
+    --sidebar-accent: 240 4.8% 95.9%;
+    --sidebar-accent-foreground: 240 5.9% 10%;
+    --sidebar-border: 220 13% 91%;
+    --sidebar-ring: 217.2 91.2% 59.8%;
+  }
+  .dark {
+    --background: 0 0% 3.9%;
+    --foreground: 0 0% 98%;
+    --card: 0 0% 3.9%;
+    --card-foreground: 0 0% 98%;
+    --popover: 0 0% 3.9%;
+    --popover-foreground: 0 0% 98%;
+    --primary: 0 0% 98%;
+    --primary-foreground: 0 0% 9%;
+    --secondary: 0 0% 14.9%;
+    --secondary-foreground: 0 0% 98%;
+    --muted: 0 0% 14.9%;
+    --muted-foreground: 0 0% 63.9%;
+    --accent: 0 0% 14.9%;
+    --accent-foreground: 0 0% 98%;
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 0 0% 14.9%;
+    --input: 0 0% 14.9%;
+    --ring: 0 0% 83.1%;
+    --chart-1: 220 70% 50%;
+    --chart-2: 160 60% 45%;
+    --chart-3: 30 80% 55%;
+    --chart-4: 280 65% 60%;
+    --chart-5: 340 75% 55%;
+    --sidebar-background: 240 5.9% 10%;
+    --sidebar-foreground: 240 4.8% 95.9%;
+    --sidebar-primary: 224.3 76.3% 48%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 240 3.7% 15.9%;
+    --sidebar-accent-foreground: 240 4.8% 95.9%;
+    --sidebar-border: 240 3.7% 15.9%;
+    --sidebar-ring: 217.2 91.2% 59.8%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+}
