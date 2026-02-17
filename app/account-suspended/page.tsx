@@ -1,11 +1,12 @@
 'use client'
 
-import { useSearchParams } from 'next/navigation'
+import { Suspense } from 'react'
 import { motion } from 'framer-motion'
 import { ShieldAlert, Mail } from 'lucide-react'
 import Link from 'next/link'
+import { useSearchParams } from 'next/navigation'
 
-export default function AccountSuspended() {
+function AccountSuspendedContent() {
   const searchParams = useSearchParams()
   const status = searchParams.get('status') || 'suspended'
 
@@ -65,5 +66,13 @@ export default function AccountSuspended() {
         </div>
       </motion.div>
     </main>
+  )
+}
+
+export default function AccountSuspended() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <AccountSuspendedContent />
+    </Suspense>
   )
 }
