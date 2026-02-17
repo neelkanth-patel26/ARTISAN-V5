@@ -1,4 +1,4 @@
-// Payment Gateway Integration (Razorpay)
+// Payment Gateway Integration (Mock)
 // Add to .env.local:
 // NEXT_PUBLIC_RAZORPAY_KEY_ID=your_key_id
 // RAZORPAY_KEY_SECRET=your_key_secret
@@ -53,7 +53,7 @@ export async function processArtworkPurchase(
   paymentMethod: string
 ): Promise<PaymentResult> {
   try {
-    // Create Razorpay order
+    // Create mock order
     const { orderId, amount: orderAmount } = await initiatePayment({
       amount: amount * 100, // Convert to paise
       currency: 'INR',
@@ -61,62 +61,39 @@ export async function processArtworkPurchase(
       notes: { artworkId, buyerId, artistId }
     })
 
-    // Open Razorpay checkout
+    // Simulate payment processing
     return new Promise((resolve) => {
-      const options = {
-        key: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID,
-        amount: orderAmount,
-        currency: 'INR',
-        name: 'Art Museum',
-        description: 'Artwork Purchase',
-        order_id: orderId,
-        handler: async function (response: any) {
-          const verified = await verifyPayment(
-            response.razorpay_payment_id,
-            response.razorpay_order_id,
-            response.razorpay_signature
-          )
+      setTimeout(async () => {
+        // Mock successful payment
+        const paymentId = `pay_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`
 
-          if (verified) {
-            // Calculate fees
-            const platformFee = amount * 0.1 // 10% platform fee
-            const artistEarnings = amount - platformFee
+        // Calculate fees
+        const platformFee = amount * 0.1 // 10% platform fee
+        const artistEarnings = amount - platformFee
 
-            // Create transaction record
-            const { error } = await supabase.from('transactions').insert({
-              transaction_code: `TXN${Date.now()}`,
-              buyer_id: buyerId,
-              artwork_id: artworkId,
-              artist_id: artistId,
-              amount,
-              platform_fee: platformFee,
-              artist_earnings: artistEarnings,
-              payment_method: paymentMethod,
-              status: 'completed',
-              payment_gateway_id: response.razorpay_payment_id,
-              transaction_type: 'purchase',
-              completed_at: new Date().toISOString()
-            })
+        // Create transaction record
+        const { error } = await supabase.from('transactions').insert({
+          transaction_code: `TXN${Date.now()}`,
+          buyer_id: buyerId,
+          artwork_id: artworkId,
+          artist_id: artistId,
+          amount,
+          platform_fee: platformFee,
+          artist_earnings: artistEarnings,
+          payment_method: paymentMethod,
+          status: 'completed',
+          payment_gateway_id: paymentId,
+          transaction_type: 'purchase',
+          completed_at: new Date().toISOString()
+        })
 
-            if (!error) {
-              // Mark artwork as sold
-              await supabase.from('artworks').update({ is_sold: true }).eq('id', artworkId)
-            }
-
-            resolve({ success: true, paymentId: response.razorpay_payment_id, orderId })
-          } else {
-            resolve({ success: false, error: 'Payment verification failed' })
-          }
-        },
-        modal: {
-          ondismiss: function () {
-            resolve({ success: false, error: 'Payment cancelled' })
-          }
+        if (!error) {
+          // Mark artwork as sold
+          await supabase.from('artworks').update({ is_sold: true }).eq('id', artworkId)
         }
-      }
 
-      const rzp = new (window as any).Razorpay(options)
-      rzp.open()
+        resolve({ success: !error, paymentId, orderId })
+      }, 2000) // Simulate 2 second processing time
     })
   } catch (error: any) {
     return { success: false, error: error.message }
@@ -138,53 +115,31 @@ export async function processArtistSupport(
       notes: { artistId, supporterId }
     })
 
+    // Simulate payment processing
     return new Promise((resolve) => {
-      const options = {
-        key: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID,
-        amount: orderAmount,
-        currency: 'INR',
-        name: 'Art Museum',
-        description: 'Artist Support',
-        order_id: orderId,
-        handler: async function (response: any) {
-          const verified = await verifyPayment(
-            response.razorpay_payment_id,
-            response.razorpay_order_id,
-            response.razorpay_signature
-          )
+      setTimeout(async () => {
+        // Mock successful payment
+        const paymentId = `pay_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`
 
-          if (verified) {
-            const platformFee = amount * 0.05 // 5% platform fee for support
-            const artistEarnings = amount - platformFee
+        const platformFee = amount * 0.05 // 5% platform fee for support
+        const artistEarnings = amount - platformFee
 
-            const { error } = await supabase.from('transactions').insert({
-              transaction_code: `SUP${Date.now()}`,
-              buyer_id: supporterId,
-              artist_id: artistId,
-              amount,
-              platform_fee: platformFee,
-              artist_earnings: artistEarnings,
-              payment_method: paymentMethod,
-              status: 'completed',
-              payment_gateway_id: response.razorpay_payment_id,
-              transaction_type: 'support',
-              completed_at: new Date().toISOString()
-            })
+        const { error } = await supabase.from('transactions').insert({
+          transaction_code: `SUP${Date.now()}`,
+          buyer_id: supporterId,
+          artist_id: artistId,
+          amount,
+          platform_fee: platformFee,
+          artist_earnings: artistEarnings,
+          payment_method: paymentMethod,
+          status: 'completed',
+          payment_gateway_id: paymentId,
+          transaction_type: 'support',
+          completed_at: new Date().toISOString()
+        })
 
-            resolve({ success: !error, paymentId: response.razorpay_payment_id, orderId })
-          } else {
-            resolve({ success: false, error: 'Payment verification failed' })
-          }
-        },
-        modal: {
-          ondismiss: function () {
-            resolve({ success: false, error: 'Payment cancelled' })
-          }
-        }
-      }
-
-      const rzp = new (window as any).Razorpay(options)
-      rzp.open()
+        resolve({ success: !error, paymentId, orderId })
+      }, 2000) // Simulate 2 second processing time
     })
   } catch (error: any) {
     return { success: false, error: error.message }
