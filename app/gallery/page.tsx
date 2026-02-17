@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect, useCallback, Suspense } from 'react'
 import { useSearchParams } from 'next/navigation'
 import { motion } from 'framer-motion'
 import { Navigation } from '@/components/navigation'
@@ -29,7 +29,7 @@ export type RealArtwork = {
   year_created?: number
 }
 
-export default function GalleryPage() {
+function GalleryContent() {
   const searchParams = useSearchParams()
   const artworkParam = searchParams.get('artwork')
   
@@ -289,5 +289,13 @@ export default function GalleryPage() {
 
       <Footer />
     </main>
+  )
+}
+
+export default function GalleryPage() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <GalleryContent />
+    </Suspense>
   )
 }
