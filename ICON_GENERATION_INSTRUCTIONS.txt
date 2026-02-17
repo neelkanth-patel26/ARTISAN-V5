@@ -1,0 +1,12 @@
+
+To generate proper PNG icons:
+
+1. Go to https://favicon.io/favicon-generator/
+2. Enter text: "A"
+3. Choose background color: #d97706
+4. Choose text color: #ffffff
+5. Font: Arial Bold
+6. Generate icons for sizes: 192x192, 512x512
+7. Download and replace the PNG files in /public/
+
+Current icon.svg has been updated with the simple "A" design.
