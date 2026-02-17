@@ -78,10 +78,10 @@ export function MobileQRCode() {
             </button>
 
             <h2 className="text-2xl font-light text-white/90 mb-2 text-center" style={{ fontFamily: 'serif' }}>
-              Scan to Open on Mobile
+              Mobile Access QR Code
             </h2>
             <p className="text-neutral-400 text-sm text-center mb-6">
-              Scan this QR code with your mobile device to access the app
+              <strong>Note:</strong> This opens in your browser. For <strong>true fullscreen PWA</strong>, install the app first!
             </p>
 
             {qrCode ? (

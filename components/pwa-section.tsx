@@ -104,7 +104,8 @@ export function PWASection() {
               </h2>
               
               <p className="text-neutral-400 text-base font-light leading-relaxed mb-8">
-                Experience Artisan on the go. Scan the QR code to install our progressive web app on your mobile device and access it anytime.
+                <strong>QR Code = Browser View</strong><br />
+                Scan for quick access, but install the PWA for <strong>true fullscreen native app experience</strong> with orange status bar.
               </p>
             </motion.div>
 

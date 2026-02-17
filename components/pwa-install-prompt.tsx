@@ -84,9 +84,9 @@ export function PWAInstallPrompt() {
           </div>
 
           <div className="flex-1">
-            <h3 className="text-white font-medium mb-1">Install Artisan App</h3>
+            <h3 className="text-white font-medium mb-1">⚠️ Install Required for Fullscreen</h3>
             <p className="text-neutral-400 text-sm mb-3">
-              Get fullscreen experience without browser UI
+              <strong>QR codes open in browser.</strong> Install the PWA first, then open from home screen for true fullscreen experience!
             </p>
 
             {/* Debug info for development */}
