@@ -5,6 +5,7 @@ import { ServerStatus } from '@/components/server-status'
 import { DevToolsBlocker } from '@/components/dev-tools-blocker'
 import { Toaster } from 'sonner'
 import { ServiceWorkerRegistration } from '@/components/service-worker-registration'
+import { PWAFullscreenManager } from '@/components/pwa-fullscreen-manager'
 
 import './globals.css'
 
@@ -22,7 +23,7 @@ export const metadata: Metadata = {
   },
   appleWebApp: {
     capable: true,
-    statusBarStyle: 'black-translucent',
+    statusBarStyle: 'default',
     title: 'Artisan',
     startupImage: [
       {
@@ -34,11 +35,12 @@ export const metadata: Metadata = {
   other: {
     'mobile-web-app-capable': 'yes',
     'apple-mobile-web-app-capable': 'yes',
-    'apple-mobile-web-app-status-bar-style': 'black-translucent',
+    'apple-mobile-web-app-status-bar-style': 'default',
     'apple-mobile-web-app-title': 'Artisan',
     'application-name': 'Artisan',
     'msapplication-TileColor': '#d97706',
     'msapplication-config': '/browserconfig.xml',
+    'theme-color': '#d97706',
   },
 }
 
@@ -121,6 +123,7 @@ export default function RootLayout({
         <ServerStatus />
         <DevToolsBlocker />
         <ServiceWorkerRegistration />
+        <PWAFullscreenManager />
         <Toaster position="top-right" richColors />
         {children}
       </body>

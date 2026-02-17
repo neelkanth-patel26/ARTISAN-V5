@@ -140,6 +140,36 @@
     -ms-user-select: text;
     user-select: text;
   }
+
+  /* Force fullscreen for PWA */
+  @media all and (display-mode: fullscreen) {
+    html, body {
+      height: 100vh !important;
+      height: 100dvh !important; /* Dynamic viewport height */
+      overflow: hidden;
+    }
+
+    /* Hide any browser UI that might still show */
+    ::-webkit-scrollbar {
+      display: none;
+    }
+  }
+
+  /* Status bar theming for different platforms */
+  @supports (padding: max(0px)) {
+    /* iOS Safari and PWA status bar */
+    body {
+      padding-top: env(safe-area-inset-top);
+      padding-bottom: env(safe-area-inset-bottom);
+      padding-left: env(safe-area-inset-left);
+      padding-right: env(safe-area-inset-right);
+    }
+
+    /* Custom status bar color for PWA */
+    meta[name="theme-color"] {
+      content: "#d97706";
+    }
+  }
 }
 
 @layer utilities {
