@@ -155,6 +155,34 @@
     }
   }
 
+  /* Android Chrome PWA specific styles */
+  @media all and (display-mode: standalone) {
+    html, body {
+      height: 100vh !important;
+      height: 100dvh !important;
+      overflow: hidden;
+      /* Prevent overscroll on Android */
+      overscroll-behavior: none;
+      /* Prevent pull-to-refresh */
+      overscroll-behavior-y: none;
+    }
+
+    /* Android Chrome specific viewport handling */
+    @supports (-webkit-touch-callout: none) {
+      html, body {
+        /* Use CSS custom property for dynamic viewport height */
+        height: calc(var(--vh, 1vh) * 100);
+      }
+    }
+
+    /* Hide Chrome's pull-to-refresh indicator */
+    body {
+      /* Prevent the bounce effect on iOS and pull-to-refresh on Android */
+      -webkit-overflow-scrolling: touch;
+      overscroll-behavior: contain;
+    }
+  }
+
   /* Status bar theming for different platforms */
   @supports (padding: max(0px)) {
     /* iOS Safari and PWA status bar */

@@ -35,12 +35,15 @@ export const metadata: Metadata = {
   other: {
     'mobile-web-app-capable': 'yes',
     'apple-mobile-web-app-capable': 'yes',
-    'apple-mobile-web-app-status-bar-style': 'default',
+    'apple-mobile-web-app-status-bar-style': 'black-translucent',
     'apple-mobile-web-app-title': 'Artisan',
     'application-name': 'Artisan',
     'msapplication-TileColor': '#d97706',
     'msapplication-config': '/browserconfig.xml',
     'theme-color': '#d97706',
+    // Android Chrome specific
+    'color': '#d97706',
+    'mobile-web-app-status-bar-style': 'black-translucent',
   },
 }
 
@@ -111,6 +114,9 @@ export default function RootLayout({
         <meta name="apple-mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
         <meta name="mobile-web-app-capable" content="yes" />
+        <meta name="mobile-web-app-status-bar-style" content="black-translucent" />
+        <meta name="theme-color" content="#d97706" />
+        <meta name="color" content="#d97706" />
         <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover" />
         <meta name="robots" content="noarchive, noimageindex" />
         <style dangerouslySetInnerHTML={{
