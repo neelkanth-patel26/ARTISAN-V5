@@ -23,14 +23,31 @@ export const metadata: Metadata = {
     capable: true,
     statusBarStyle: 'black-translucent',
     title: 'Artisan',
+    startupImage: [
+      {
+        url: '/icon-512.png',
+        media: '(device-width: 768px) and (device-height: 1024px) and (-webkit-device-pixel-ratio: 2)',
+      },
+    ],
   },
   other: {
     'mobile-web-app-capable': 'yes',
+    'apple-mobile-web-app-capable': 'yes',
+    'apple-mobile-web-app-status-bar-style': 'black-translucent',
+    'apple-mobile-web-app-title': 'Artisan',
+    'application-name': 'Artisan',
+    'msapplication-TileColor': '#d97706',
+    'msapplication-config': '/browserconfig.xml',
   },
 }
 
 export const viewport: Viewport = {
   themeColor: '#d97706',
+  width: 'device-width',
+  initialScale: 1,
+  maximumScale: 1,
+  userScalable: false,
+  viewportFit: 'cover',
 }
 
 export default function RootLayout({

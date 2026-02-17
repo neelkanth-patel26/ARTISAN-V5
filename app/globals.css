@@ -82,6 +82,64 @@
     -moz-user-select: none;
     -ms-user-select: none;
   }
+
+  /* PWA Fullscreen and Safe Area Support */
+  @supports (padding: max(0px)) {
+    body {
+      /* Safe area for notched devices */
+      padding-top: env(safe-area-inset-top);
+      padding-bottom: env(safe-area-inset-bottom);
+      padding-left: env(safe-area-inset-left);
+      padding-right: env(safe-area-inset-right);
+    }
+  }
+
+  /* Hide browser UI when in standalone mode */
+  @media all and (display-mode: standalone) {
+    body {
+      /* Additional fullscreen styles can go here */
+    }
+  }
+
+  /* Prevent zoom on input focus in iOS */
+  input[type="text"],
+  input[type="email"],
+  input[type="password"],
+  input[type="search"],
+  textarea,
+  select {
+    font-size: 16px !important;
+  }
+
+  /* PWA Mode Specific Styles */
+  body.pwa-mode {
+    /* Additional PWA-specific styles */
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+  }
+
+  body.pwa-mode * {
+    /* Re-enable selection for specific elements */
+    -webkit-user-select: text;
+    -khtml-user-select: text;
+    -moz-user-select: text;
+    -ms-user-select: text;
+    user-select: text;
+  }
+
+  body.pwa-mode input,
+  body.pwa-mode textarea,
+  body.pwa-mode select {
+    -webkit-user-select: text;
+    -khtml-user-select: text;
+    -moz-user-select: text;
+    -ms-user-select: text;
+    user-select: text;
+  }
 }
 
 @layer utilities {

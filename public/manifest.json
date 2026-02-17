@@ -5,11 +5,22 @@
   "start_url": "/?source=pwa",
   "scope": "/",
   "display": "standalone",
-  "display_override": ["standalone", "fullscreen"],
+  "display_override": ["window-controls-overlay", "standalone", "fullscreen", "minimal-ui"],
   "background_color": "#000000",
   "theme_color": "#d97706",
   "orientation": "portrait-primary",
   "prefer_related_applications": false,
+  "categories": ["lifestyle", "shopping", "entertainment"],
+  "lang": "en-US",
+  "dir": "ltr",
+  "screenshots": [
+    {
+      "src": "/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "form_factor": "wide"
+    }
+  ],
   "icons": [
     {
       "src": "/icon-192.png",
@@ -22,6 +33,28 @@
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "any maskable"
+    },
+    {
+      "src": "/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Gallery",
+      "short_name": "Gallery",
+      "description": "Browse artworks",
+      "url": "/gallery?source=shortcut",
+      "icons": [{ "src": "/icon-192.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "Collection",
+      "short_name": "Collection",
+      "description": "Explore art categories",
+      "url": "/collection?source=shortcut",
+      "icons": [{ "src": "/icon-192.png", "sizes": "192x192" }]
     }
   ]
 }
