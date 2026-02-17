@@ -8,10 +8,12 @@ export function MobileQRCode() {
   const [showQR, setShowQR] = useState(false)
   const [qrCode, setQrCode] = useState('')
   const [localUrl, setLocalUrl] = useState('')
+  const [isLoading, setIsLoading] = useState(false)
 
   useEffect(() => {
     if (showQR) {
       const generateQR = async () => {
+        setIsLoading(true)
         try {
           let url = ''
           
@@ -19,18 +21,35 @@ export function MobileQRCode() {
           if (typeof window !== 'undefined' && window.location.hostname !== 'localhost' && window.location.hostname !== '127.0.0.1') {
             // Production: Use the current origin (Vercel URL)
             url = window.location.origin
+            console.log('Mobile QR: Using production URL:', url)
           } else {
             // Development: Use local IP
             const res = await fetch('/api/local-ip')
             const data = await res.json()
             url = `http://${data.ip}:${data.port}`
+            console.log('Mobile QR: Local URL:', url)
           }
           
           setLocalUrl(url)
           const qr = await QRCode.toDataURL(url, { width: 300, margin: 2 })
           setQrCode(qr)
+          console.log('Mobile QR: QR code generated successfully')
         } catch (err) {
-          console.error('QR generation error:', err)
+          console.error('Mobile QR generation error:', err)
+          // Fallback
+          if (typeof window !== 'undefined') {
+            try {
+              const fallbackUrl = window.location.origin
+              setLocalUrl(fallbackUrl)
+              const qr = await QRCode.toDataURL(fallbackUrl, { width: 300, margin: 2 })
+              setQrCode(qr)
+              console.log('Mobile QR: Fallback generated for:', fallbackUrl)
+            } catch (fallbackErr) {
+              console.error('Mobile QR fallback error:', fallbackErr)
+            }
+          }
+        } finally {
+          setIsLoading(false)
         }
       }
       
@@ -65,9 +84,17 @@ export function MobileQRCode() {
               Scan this QR code with your mobile device to access the app
             </p>
 
-            {qrCode && (
+            {qrCode ? (
               <div className="bg-white p-4 rounded-lg mb-4">
                 <img src={qrCode} alt="QR Code" className="w-full" />
+              </div>
+            ) : isLoading ? (
+              <div className="bg-neutral-700 p-8 rounded-lg mb-4 flex items-center justify-center">
+                <div className="text-amber-600/70 text-sm">Generating QR Code...</div>
+              </div>
+            ) : (
+              <div className="bg-neutral-700 p-8 rounded-lg mb-4 flex items-center justify-center">
+                <div className="text-red-400/70 text-sm">Failed to load QR Code</div>
               </div>
             )}
 

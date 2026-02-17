@@ -10,6 +10,7 @@ export function PWASection() {
   const [localUrl, setLocalUrl] = useState('')
   const [deferredPrompt, setDeferredPrompt] = useState<any>(null)
   const [showInstallButton, setShowInstallButton] = useState(false)
+  const [isLoading, setIsLoading] = useState(true)
 
   useEffect(() => {
     const loadPWA = async () => {
@@ -20,18 +21,39 @@ export function PWASection() {
         if (typeof window !== 'undefined' && window.location.hostname !== 'localhost' && window.location.hostname !== '127.0.0.1') {
           // Production: Use the current origin (Vercel URL)
           url = window.location.origin
+          console.log('PWA: Using production URL:', url)
         } else {
           // Development: Use local IP
+          console.log('PWA: Using development mode')
           const res = await fetch('/api/local-ip')
           const data = await res.json()
           url = `http://${data.ip}:${data.port}`
+          console.log('PWA: Local URL:', url)
         }
         
         setLocalUrl(url)
         const qr = await QRCodeLib.toDataURL(url, { width: 300, margin: 2 })
         setQrCode(qr)
+        console.log('PWA: QR code generated successfully')
+        setIsLoading(false)
       } catch (err) {
         console.error('PWA load error:', err)
+        // Fallback: try to use current origin
+        if (typeof window !== 'undefined') {
+          try {
+            const fallbackUrl = window.location.origin
+            setLocalUrl(fallbackUrl)
+            const qr = await QRCodeLib.toDataURL(fallbackUrl, { width: 300, margin: 2 })
+            setQrCode(qr)
+            console.log('PWA: Fallback QR generated for:', fallbackUrl)
+          } catch (fallbackErr) {
+            console.error('PWA fallback error:', fallbackErr)
+          } finally {
+            setIsLoading(false)
+          }
+        }
+      } finally {
+        setIsLoading(false)
       }
     }
     
@@ -152,7 +174,7 @@ export function PWASection() {
             viewport={{ once: true }}
             transition={{ delay: 0.3 }}
           >
-            {qrCode && (
+            {qrCode ? (
               <div className="relative group">
                 <div className="absolute inset-0 bg-gradient-to-br from-amber-600/20 to-transparent blur-3xl opacity-50" />
                 <div className="relative bg-white p-8 rounded-2xl shadow-2xl border border-neutral-800/30 group-hover:border-amber-600/30 transition-all duration-300" style={{ transform: 'translateZ(0)' }}>
@@ -166,6 +188,14 @@ export function PWASection() {
                 <div className="absolute -bottom-4 left-1/2 -translate-x-1/2 bg-neutral-900 border border-neutral-800/50 rounded-lg px-4 py-2">
                   <p className="text-amber-600/70 text-xs font-light tracking-wider whitespace-nowrap">SCAN TO INSTALL</p>
                 </div>
+              </div>
+            ) : isLoading ? (
+              <div className="flex items-center justify-center w-64 h-64 bg-neutral-800/50 rounded-2xl">
+                <div className="text-amber-600/70 text-sm">Generating QR Code...</div>
+              </div>
+            ) : (
+              <div className="flex items-center justify-center w-64 h-64 bg-neutral-800/50 rounded-2xl">
+                <div className="text-red-400/70 text-sm">Failed to load QR Code</div>
               </div>
             )}
           </motion.div>
