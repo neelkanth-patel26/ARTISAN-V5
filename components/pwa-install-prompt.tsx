@@ -6,17 +6,51 @@ import { Download, X } from 'lucide-react'
 export function PWAInstallPrompt() {
   const [showPrompt, setShowPrompt] = useState(false)
   const [deferredPrompt, setDeferredPrompt] = useState<any>(null)
+  const [isStandalone, setIsStandalone] = useState(false)
+  const [debugInfo, setDebugInfo] = useState<string>('')
 
   useEffect(() => {
+    // Check if already in standalone mode
+    const checkStandalone = () => {
+      const standalone = window.matchMedia('(display-mode: standalone)').matches
+      const iosStandalone = (window.navigator as any).standalone === true
+      const isInStandalone = standalone || iosStandalone
+
+      setIsStandalone(isInStandalone)
+      setDebugInfo(`Standalone: ${isInStandalone}, Display mode: ${window.matchMedia('(display-mode: standalone)').matches}, iOS standalone: ${(window.navigator as any).standalone}`)
+
+      console.log('PWA Debug:', {
+        standalone,
+        iosStandalone,
+        userAgent: navigator.userAgent,
+        displayMode: window.matchMedia('(display-mode: standalone)').matches
+      })
+    }
+
+    checkStandalone()
+
     const handler = (e: any) => {
+      console.log('PWA: beforeinstallprompt event fired')
       e.preventDefault()
       setDeferredPrompt(e)
-      setTimeout(() => setShowPrompt(true), 5000)
+      setTimeout(() => {
+        if (!isStandalone) {
+          setShowPrompt(true)
+        }
+      }, 3000) // Reduced delay for testing
     }
 
     window.addEventListener('beforeinstallprompt', handler, { passive: true })
-    return () => window.removeEventListener('beforeinstallprompt', handler)
-  }, [])
+
+    // Listen for display mode changes
+    const mediaQuery = window.matchMedia('(display-mode: standalone)')
+    mediaQuery.addEventListener('change', checkStandalone)
+
+    return () => {
+      window.removeEventListener('beforeinstallprompt', handler)
+      mediaQuery.removeEventListener('change', checkStandalone)
+    }
+  }, [isStandalone])
 
   const handleInstall = async () => {
     if (!deferredPrompt) return
@@ -43,18 +77,25 @@ export function PWAInstallPrompt() {
         >
           <X size={16} />
         </button>
-        
+
         <div className="flex items-start gap-3">
           <div className="bg-amber-600/20 p-2 rounded-lg">
             <Download className="text-amber-600" size={24} />
           </div>
-          
+
           <div className="flex-1">
             <h3 className="text-white font-medium mb-1">Install Artisan App</h3>
             <p className="text-neutral-400 text-sm mb-3">
-              Get quick access to art collections on your device
+              Get fullscreen experience without browser UI
             </p>
-            
+
+            {/* Debug info for development */}
+            {process.env.NODE_ENV === 'development' && (
+              <div className="text-xs text-amber-400/70 mb-2 p-2 bg-amber-900/20 rounded">
+                Debug: {debugInfo}
+              </div>
+            )}
+
             <div className="flex gap-2">
               <button
                 onClick={handleInstall}

@@ -4,6 +4,7 @@ import { Playfair_Display, Lora } from 'next/font/google'
 import { ServerStatus } from '@/components/server-status'
 import { DevToolsBlocker } from '@/components/dev-tools-blocker'
 import { Toaster } from 'sonner'
+import { ServiceWorkerRegistration } from '@/components/service-worker-registration'
 
 import './globals.css'
 
@@ -118,17 +119,10 @@ export default function RootLayout({
         {/* ⚠️ STOP - You are viewing protected source code ⚠️ */}
         <DevToolsBlocker />
         <ServerStatus />
+        <DevToolsBlocker />
+        <ServiceWorkerRegistration />
         <Toaster position="top-right" richColors />
         {children}
-        <script dangerouslySetInnerHTML={{
-          __html: `
-            if ('serviceWorker' in navigator) {
-              window.addEventListener('load', () => {
-                navigator.serviceWorker.register('/sw.js')
-              })
-            }
-          `
-        }} />
       </body>
     </html>
   )
