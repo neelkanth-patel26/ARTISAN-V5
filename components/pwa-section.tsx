@@ -14,9 +14,19 @@ export function PWASection() {
   useEffect(() => {
     const loadPWA = async () => {
       try {
-        const res = await fetch('/api/local-ip')
-        const data = await res.json()
-        const url = `http://${data.ip}:${data.port}`
+        let url = ''
+        
+        // Check if we're in production (Vercel) or development
+        if (typeof window !== 'undefined' && window.location.hostname !== 'localhost' && window.location.hostname !== '127.0.0.1') {
+          // Production: Use the current origin (Vercel URL)
+          url = window.location.origin
+        } else {
+          // Development: Use local IP
+          const res = await fetch('/api/local-ip')
+          const data = await res.json()
+          url = `http://${data.ip}:${data.port}`
+        }
+        
         setLocalUrl(url)
         const qr = await QRCodeLib.toDataURL(url, { width: 300, margin: 2 })
         setQrCode(qr)
@@ -72,7 +82,7 @@ export function PWASection() {
               </h2>
               
               <p className="text-neutral-400 text-base font-light leading-relaxed mb-8">
-                Experience Artisan on the go. Scan the QR code to install our progressive web app on your mobile device.
+                Experience Artisan on the go. Scan the QR code to install our progressive web app on your mobile device and access it anytime.
               </p>
             </motion.div>
 

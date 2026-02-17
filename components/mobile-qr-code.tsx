@@ -11,14 +11,30 @@ export function MobileQRCode() {
 
   useEffect(() => {
     if (showQR) {
-      fetch('/api/local-ip')
-        .then(res => res.json())
-        .then(data => {
-          const url = `http://${data.ip}:${data.port}`
+      const generateQR = async () => {
+        try {
+          let url = ''
+          
+          // Check if we're in production (Vercel) or development
+          if (typeof window !== 'undefined' && window.location.hostname !== 'localhost' && window.location.hostname !== '127.0.0.1') {
+            // Production: Use the current origin (Vercel URL)
+            url = window.location.origin
+          } else {
+            // Development: Use local IP
+            const res = await fetch('/api/local-ip')
+            const data = await res.json()
+            url = `http://${data.ip}:${data.port}`
+          }
+          
           setLocalUrl(url)
-          QRCode.toDataURL(url, { width: 300, margin: 2 })
-            .then(setQrCode)
-        })
+          const qr = await QRCode.toDataURL(url, { width: 300, margin: 2 })
+          setQrCode(qr)
+        } catch (err) {
+          console.error('QR generation error:', err)
+        }
+      }
+      
+      generateQR()
     }
   }, [showQR])
 
@@ -46,7 +62,7 @@ export function MobileQRCode() {
               Scan to Open on Mobile
             </h2>
             <p className="text-neutral-400 text-sm text-center mb-6">
-              Scan this QR code with your mobile device
+              Scan this QR code with your mobile device to access the app
             </p>
 
             {qrCode && (
