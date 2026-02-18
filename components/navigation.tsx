@@ -82,14 +82,20 @@ export function Navigation() {
           )}
           <button
             type="button"
+            onTouchEnd={(e) => {
+              e.preventDefault()
+              e.stopPropagation()
+              setIsMenuOpen(!isMenuOpen)
+            }}
             onClick={(e) => {
               e.preventDefault()
               e.stopPropagation()
               setIsMenuOpen(!isMenuOpen)
             }}
-            className="rounded-lg p-2 text-neutral-400 transition-all duration-300 hover:bg-neutral-800/30 hover:text-white"
+            className="rounded-lg p-2 text-neutral-400 transition-all duration-300 hover:bg-neutral-800/30 hover:text-white touch-manipulation"
+            style={{ WebkitTapHighlightColor: 'transparent' }}
           >
-            <Menu size={18} strokeWidth={1} className="md:h-5 md:w-5" />
+            <Menu size={18} strokeWidth={1} className="md:h-5 md:w-5 pointer-events-none" />
           </button>
         </div>
       </div>
@@ -121,14 +127,20 @@ export function Navigation() {
                   </div>
                   <button
                     type="button"
+                    onTouchEnd={(e) => {
+                      e.preventDefault()
+                      e.stopPropagation()
+                      setIsMenuOpen(false)
+                    }}
                     onClick={(e) => {
                       e.preventDefault()
                       e.stopPropagation()
                       setIsMenuOpen(false)
                     }}
-                    className="text-neutral-500 hover:text-white transition-colors p-2 hover:bg-neutral-800/50 rounded-lg"
+                    className="text-neutral-500 hover:text-white transition-colors p-2 hover:bg-neutral-800/50 rounded-lg touch-manipulation"
+                    style={{ WebkitTapHighlightColor: 'transparent' }}
                   >
-                    <X size={22} strokeWidth={1.5} />
+                    <X size={22} strokeWidth={1.5} className="pointer-events-none" />
                   </button>
                 </div>
 

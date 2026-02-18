@@ -20,26 +20,33 @@ export function PWAFullscreenManager() {
         a, button, input, select, textarea, [role="button"] { 
           touch-action: manipulation !important; 
           cursor: pointer !important;
+          -webkit-user-select: none !important;
         }
-        a:active, button:active, [role="button"]:active {
-          opacity: 0.7 !important;
+        button, a, [role="button"] {
+          pointer-events: auto !important;
+        }
+        button *, a *, [role="button"] * {
+          pointer-events: none !important;
         }
       `
       document.head.appendChild(style)
 
-      // Add click event listener to ensure single-click navigation
-      const handleClick = (e: MouseEvent) => {
+      // Force immediate click response
+      const handleTouchEnd = (e: TouchEvent) => {
         const target = e.target as HTMLElement
-        const link = target.closest('a')
         const button = target.closest('button')
+        const link = target.closest('a')
         
-        if (link || button) {
-          // Prevent any potential double-click issues
-          e.stopPropagation()
+        if (button && !button.disabled) {
+          e.preventDefault()
+          button.click()
+        } else if (link) {
+          e.preventDefault()
+          link.click()
         }
       }
       
-      document.addEventListener('click', handleClick, { capture: true })
+      document.addEventListener('touchend', handleTouchEnd, { passive: false })
       
       const isAndroidChrome = /Android.*Chrome/.test(navigator.userAgent) && !/Edg/.test(navigator.userAgent)
 
@@ -73,14 +80,14 @@ export function PWAFullscreenManager() {
         document.addEventListener('touchmove', handleTouchMove, { passive: false })
 
         return () => {
-          document.removeEventListener('click', handleClick)
+          document.removeEventListener('touchend', handleTouchEnd)
           document.removeEventListener('touchstart', handleTouchStart)
           document.removeEventListener('touchmove', handleTouchMove)
         }
       }
 
       return () => {
-        document.removeEventListener('click', handleClick)
+        document.removeEventListener('touchend', handleTouchEnd)
       }
     }
   }, [])
