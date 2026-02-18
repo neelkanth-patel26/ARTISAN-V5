@@ -250,7 +250,7 @@ export function DashboardLayout({ children, navItems, role }: DashboardLayoutPro
             const Icon = item.icon
             const isActive = pathname === item.href
             return (
-              <Link
+              <a
                 key={item.href}
                 href={item.href}
                 className={`flex flex-1 flex-col items-center justify-center gap-0.5 py-2 transition-colors ${
@@ -259,7 +259,7 @@ export function DashboardLayout({ children, navItems, role }: DashboardLayoutPro
               >
                 <Icon size={22} strokeWidth={1.5} />
                 <span className="text-[10px] font-light tracking-wider" style={{ fontFamily: 'Oughter, serif' }}>{item.label}</span>
-              </Link>
+              </a>
             )
           })}
         </div>
