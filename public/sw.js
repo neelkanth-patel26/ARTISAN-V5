@@ -143,17 +143,21 @@ async function doBackgroundSync() {
   console.log('Service Worker: Performing background sync')
 }
 
-// Handle push notifications (if implemented later)
+// Handle push notifications
 self.addEventListener('push', (event) => {
-  console.log('Service Worker: Push notification received')
   if (event.data) {
     const data = event.data.json()
     const options = {
       body: data.body,
-      icon: '/icon-192.png',
-      badge: '/icon-192.png',
+      icon: data.icon || '/icon-192.png',
+      badge: data.badge || '/icon-192.png',
+      image: data.image,
       vibrate: [100, 50, 100],
-      data: data.data
+      data: data.data,
+      actions: [
+        { action: 'open', title: 'Open' },
+        { action: 'close', title: 'Close' }
+      ]
     }
 
     event.waitUntil(
@@ -164,10 +168,24 @@ self.addEventListener('push', (event) => {
 
 // Handle notification clicks
 self.addEventListener('notificationclick', (event) => {
-  console.log('Service Worker: Notification clicked')
   event.notification.close()
 
+  if (event.action === 'close') {
+    return
+  }
+
+  const urlToOpen = event.notification.data?.url || '/'
+
   event.waitUntil(
-    clients.openWindow(event.notification.data?.url || '/')
+    clients.matchAll({ type: 'window', includeUncontrolled: true }).then((clientList) => {
+      for (const client of clientList) {
+        if (client.url === urlToOpen && 'focus' in client) {
+          return client.focus()
+        }
+      }
+      if (clients.openWindow) {
+        return clients.openWindow(urlToOpen)
+      }
+    })
   )
 })

@@ -2,7 +2,7 @@
   "name": "Artisan Museum",
   "short_name": "Artisan",
   "description": "Discover exceptional art and connect with artists worldwide",
-  "version": "V5.57.1",
+  "version": "V5.57.1Q",
   "author": "Gaming Network Studio Media Group",
   "start_url": "/?source=pwa",
   "scope": "/",
@@ -15,6 +15,7 @@
   "categories": ["lifestyle", "shopping", "entertainment"],
   "lang": "en-US",
   "dir": "ltr",
+  "permissions": ["notifications", "geolocation"],
   "screenshots": [
     {
       "src": "/icon-512.png",

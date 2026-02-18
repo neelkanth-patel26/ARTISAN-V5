@@ -97,6 +97,9 @@ export function ArtistModal({ artist, onClose }: ArtistModalProps) {
       .eq('status', 'approved')
     setArtworkCount(count || 0)
     setArtworks(data || [])
+    if ((data || []).length > 0) {
+      setShowPortfolio(true)
+    }
   }
 
   const toggleFollow = async () => {

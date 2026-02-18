@@ -3,14 +3,13 @@
 import { DashboardLayout } from '@/components/dashboard-layout'
 import { StatCard, PageHeader, EmptyState, LoadingSpinner } from '@/components/dashboard'
 import { DASHBOARD_NAV } from '@/lib/dashboard-config'
-import { ShoppingBag, Heart, MessageSquare, DollarSign, FolderOpen, FileText, Sparkles } from 'lucide-react'
+import { ShoppingBag, Heart, MessageSquare, DollarSign, FileText, Sparkles } from 'lucide-react'
 import Link from 'next/link'
 import { useState, useEffect } from 'react'
 import { supabase } from '@/lib/supabase'
 import { getCurrentUser } from '@/lib/auth'
 import { toast } from 'sonner'
 import { motion } from 'framer-motion'
-import { CollectionModal } from '@/components/collection-modal'
 import { ExportTransactions } from '@/components/export-transactions'
 import { ArtworkRecommendations } from '@/components/artwork-recommendations'
 
@@ -20,12 +19,10 @@ export default function CollectorDashboard() {
     likes: 0,
     comments: 0,
     spent: 0,
-    collections: 0,
   })
   const [purchases, setPurchases] = useState<any[]>([])
   const [loading, setLoading] = useState(true)
-  const [activeTab, setActiveTab] = useState<'overview' | 'collections' | 'recommendations' | 'export'>('overview')
-  const [showCollectionModal, setShowCollectionModal] = useState(false)
+  const [activeTab, setActiveTab] = useState<'overview' | 'recommendations' | 'export'>('overview')
   const user = getCurrentUser()
 
   useEffect(() => {
@@ -59,7 +56,7 @@ export default function CollectorDashboard() {
       const user = await getCurrentUser()
       if (!user?.user_id) return
 
-      const [transactionsRes, likesRes, reviewsRes, collectionsRes] = await Promise.all([
+      const [transactionsRes, likesRes, reviewsRes] = await Promise.all([
         supabase
           .from('transactions')
           .select('*, artworks(image_url, title)')
@@ -68,13 +65,11 @@ export default function CollectorDashboard() {
           .order('created_at', { ascending: false }),
         supabase.from('likes').select('id').eq('user_id', user.user_id),
         supabase.from('reviews').select('id').eq('reviewer_id', user.user_id),
-        supabase.from('collections').select('id').eq('user_id', user.user_id),
       ])
 
       const transactions = transactionsRes.data ?? []
       const likesCount = likesRes.data?.length ?? 0
       const reviewsCount = reviewsRes.data?.length ?? 0
-      const collectionsCount = collectionsRes.data?.length ?? 0
       const spent = transactions.reduce((sum, t) => sum + Number(t.amount ?? 0), 0)
       const purchaseCount = transactions.filter(t => t.transaction_type === 'purchase').length
 
@@ -97,7 +92,6 @@ export default function CollectorDashboard() {
         likes: likesCount,
         comments: reviewsCount,
         spent,
-        collections: collectionsCount,
       })
     } catch (error) {
       console.error('Dashboard error:', error)
@@ -123,17 +117,6 @@ export default function CollectorDashboard() {
             }`}
           >
             Overview
-          </button>
-          <button
-            onClick={() => setActiveTab('collections')}
-            className={`px-4 py-2 rounded-lg text-sm font-medium transition-all whitespace-nowrap flex items-center gap-2 ${
-              activeTab === 'collections'
-                ? 'bg-amber-600 text-white'
-                : 'bg-neutral-900 text-neutral-400 hover:text-white border border-neutral-800'
-            }`}
-          >
-            <FolderOpen size={16} />
-            Collections
           </button>
           <button
             onClick={() => setActiveTab('recommendations')}
@@ -165,12 +148,11 @@ export default function CollectorDashboard() {
           <>
             {activeTab === 'overview' && (
               <>
-                <div className="grid grid-cols-2 lg:grid-cols-5 gap-3 lg:gap-4">
+                <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 lg:gap-4">
                   {[
                     { label: 'Purchases', value: stats.purchases, icon: ShoppingBag, link: '/dashboard/collector/purchases' },
                     { label: 'Favorites', value: stats.likes, icon: Heart, link: '/dashboard/collector/favorites' },
                     { label: 'Comments', value: stats.comments, icon: MessageSquare, link: '/dashboard/collector/comments' },
-                    { label: 'Collections', value: stats.collections, icon: FolderOpen, link: null },
                     { label: 'Total Spent', value: `₹${stats.spent.toLocaleString()}`, icon: DollarSign, link: null },
                   ].map((stat, i) => (
                     <motion.div
@@ -289,19 +271,6 @@ export default function CollectorDashboard() {
               </>
             )}
 
-            {activeTab === 'collections' && user && (
-              <div className="space-y-4">
-                <button
-                  onClick={() => setShowCollectionModal(true)}
-                  className="px-6 py-3 bg-amber-600 hover:bg-amber-500 text-white rounded-lg transition-all flex items-center gap-2"
-                >
-                  <FolderOpen size={18} />
-                  Manage Collections
-                </button>
-                <p className="text-neutral-400 text-sm">Create and organize your artwork collections</p>
-              </div>
-            )}
-
             {activeTab === 'recommendations' && user && (
               <ArtworkRecommendations userId={user.user_id} />
             )}
@@ -312,10 +281,6 @@ export default function CollectorDashboard() {
           </>
         )}
       </div>
-
-      {showCollectionModal && (
-        <CollectionModal onClose={() => setShowCollectionModal(false)} />
-      )}
     </DashboardLayout>
   )
 }
