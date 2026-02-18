@@ -172,4 +172,4 @@ This project is licensed under the MIT License.
 
 ---
 
-Made with ❤️ for art enthusiasts
+Made By Gaming Network Studio Media Group (with Group 1 LJ)
