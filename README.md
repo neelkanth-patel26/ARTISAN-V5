@@ -149,6 +149,41 @@ VAPID_PRIVATE_KEY=your_vapid_private_key
 - `/dashboard` - Admin panel
 - `/checkout` - Purchase flow
 
+## 👥 About
+
+This is a college project developed by **Group-1** students from **LJ University** as part of their academic curriculum. The project showcases modern web development practices and technologies in creating a comprehensive museum management system.
+
+### 🎓 Project Details
+
+- **Institution:** LJ University
+- **Team:** Group-1
+- **Project Lead:** Neelkanth Patel
+- **Organization:** Gaming Network Studio Media Group
+- **Type:** Academic College Project
+
+### 🎯 Project Goals
+
+This project was created to:
+- Demonstrate proficiency in modern web technologies
+- Build a real-world application with practical features
+- Implement best practices in full-stack development
+- Create an interactive and user-friendly museum experience
+
+### 👨‍💻 Team
+
+**Group-1 Members:**
+- Neelkanth Patel - Project Lead & Developer
+
+
+- Dhruv Nayak       : 23012250210200
+- Neelkanth Patel   : 23012250210201
+- Dhruv Nirmal      : 23012250210202
+- Dhyey Nirmal      : 23012250210203
+- Nirmit Sheth      : 23012250210204
+- Darshil Panchal   : 23012250210208
+
+Developed under the guidance of **Gaming Network Studio Media Group**.
+
 ## 🤝 Contributing
 
 Contributions are welcome! Please follow these steps:
@@ -165,6 +200,8 @@ This project is licensed under the MIT License.
 
 ## 🙏 Acknowledgments
 
+- **LJ University** - For providing the opportunity and resources
+- **Gaming Network Studio Media Group** - For guidance and support
 - Built with [Next.js](https://nextjs.org/)
 - UI components from [Radix UI](https://www.radix-ui.com/)
 - Styled with [Tailwind CSS](https://tailwindcss.com/)
@@ -172,4 +209,12 @@ This project is licensed under the MIT License.
 
 ---
 
-Made By Gaming Network Studio Media Group (with Group 1 LJ)
+Made with ❤️ by LJ University Students | Group-1
+
+Special Thanks to:
+Urmi Thakkar    : https://www.instagram.com/urmi_thakkar_26
+Reese Whiteman  : https://www.instagram.com/reese.whiteman28
+Jay Shah        : No public Account 
+Adity Panchal   : No public Account 
+
+Gaming Network Studio : https://gnstudioxrage.wixstudio.com/gamingnetworkstudio
