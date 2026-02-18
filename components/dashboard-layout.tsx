@@ -178,16 +178,7 @@ export function DashboardLayout({ children, navItems, role }: DashboardLayoutPro
         </Link>
         <button
           type="button"
-          onTouchEnd={(e) => {
-            e.preventDefault()
-            e.stopPropagation()
-            setSidebarOpen(!sidebarOpen)
-          }}
-          onClick={(e) => {
-            e.preventDefault()
-            e.stopPropagation()
-            setSidebarOpen(!sidebarOpen)
-          }}
+          onClick={() => setSidebarOpen(!sidebarOpen)}
           className="rounded-lg p-2 text-amber-600 transition-colors hover:bg-amber-600/10 touch-manipulation"
           style={{ WebkitTapHighlightColor: 'transparent' }}
         >
@@ -200,9 +191,7 @@ export function DashboardLayout({ children, navItems, role }: DashboardLayoutPro
         {sidebarOpen && (
           <div
             className="fixed inset-0 z-40 mt-16 bg-black/60 backdrop-blur-sm lg:hidden"
-            onTouchEnd={() => setSidebarOpen(false)}
             onClick={() => setSidebarOpen(false)}
-            style={{ touchAction: 'auto' }}
           >
             <motion.div
               initial={{ x: '100%' }}
@@ -210,11 +199,9 @@ export function DashboardLayout({ children, navItems, role }: DashboardLayoutPro
               exit={{ x: '100%' }}
               transition={{ duration: 0.3, ease: 'easeInOut' }}
               className="absolute right-0 top-0 flex h-full w-64 flex-col border-l border-amber-600/20 bg-gradient-to-b from-neutral-950 to-neutral-900 py-4"
-              onTouchEnd={(e) => e.stopPropagation()}
               onClick={(e) => e.stopPropagation()}
-              style={{ touchAction: 'auto' }}
             >
-              <nav className="flex-1 space-y-1 overflow-y-auto scrollbar-hide px-3" style={{ touchAction: 'pan-y' }}>
+              <nav className="flex-1 space-y-1 overflow-y-auto scrollbar-hide px-3">
                 {navItems.map((item) => (
                   <Link
                     key={item.href}
@@ -223,7 +210,6 @@ export function DashboardLayout({ children, navItems, role }: DashboardLayoutPro
                     className={`flex items-center gap-3 rounded-lg px-3 py-3 transition-all ${
                       pathname === item.href ? navAccent.active : 'text-neutral-400 hover:bg-amber-600/10 hover:text-amber-600'
                     }`}
-                    style={{ touchAction: 'manipulation' }}
                   >
                     <item.icon size={20} strokeWidth={1.5} />
                     <span className="text-sm font-light tracking-wider" style={{ fontFamily: 'Oughter, serif' }}>{item.label}</span>
@@ -235,7 +221,6 @@ export function DashboardLayout({ children, navItems, role }: DashboardLayoutPro
                   href="/"
                   onClick={() => setSidebarOpen(false)}
                   className="mb-3 flex w-full items-center gap-3 rounded-lg px-3 py-3 text-neutral-400 transition-all hover:bg-amber-600/10 hover:text-amber-600"
-                  style={{ touchAction: 'manipulation' }}
                 >
                   <Home size={20} strokeWidth={1.5} />
                   <span className="text-sm font-light tracking-wider" style={{ fontFamily: 'Oughter, serif' }}>Go to home</span>
@@ -248,7 +233,6 @@ export function DashboardLayout({ children, navItems, role }: DashboardLayoutPro
                 <button
                   onClick={handleLogout}
                   className="flex w-full items-center gap-3 rounded-lg px-3 py-3 text-neutral-400 transition-all hover:bg-amber-600/10 hover:text-amber-600"
-                  style={{ touchAction: 'manipulation' }}
                 >
                   <LogOut size={20} strokeWidth={1.5} />
                   <span className="text-sm font-light tracking-wider" style={{ fontFamily: 'Oughter, serif' }}>Logout</span>
