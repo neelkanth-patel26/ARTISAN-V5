@@ -1,4 +1,4 @@
-# 🎨 Museum Landing Page
+# 🎨 Artisan Landing Page
 
 A modern, feature-rich museum web application built with Next.js 16, featuring artist galleries, exhibitions, collections, and a comprehensive dashboard system.
 
