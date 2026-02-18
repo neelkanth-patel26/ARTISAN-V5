@@ -5,9 +5,10 @@ import { motion } from 'framer-motion'
 interface PaginationSidebarProps {
   currentSection: number
   onSectionChange: (section: number) => void
+  totalSections?: number
 }
 
-export function PaginationSidebar({ currentSection, onSectionChange }: PaginationSidebarProps) {
+export function PaginationSidebar({ currentSection, onSectionChange, totalSections }: PaginationSidebarProps) {
   const pages = [
     { label: '01', title: 'Home' },
     { label: '02', title: 'Collection' },
@@ -17,9 +18,11 @@ export function PaginationSidebar({ currentSection, onSectionChange }: Paginatio
     { label: '06', title: 'App' },
   ]
 
+  const displayPages = totalSections ? pages.slice(0, totalSections) : pages
+
   return (
     <div className="hidden lg:flex fixed left-4 md:left-12 top-1/2 transform -translate-y-1/2 z-50 flex-col gap-6 md:gap-8">
-      {pages.map((page, index) => (
+      {displayPages.map((page, index) => (
         <motion.button
           key={index}
           onClick={() => onSectionChange(index)}

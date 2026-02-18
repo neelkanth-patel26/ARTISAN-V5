@@ -9,6 +9,9 @@ import ArtistPreloader from '@/components/artist-preloader'
 export default function ArtistLanding() {
   const [loading, setLoading] = useState(true)
   const [activeFeature, setActiveFeature] = useState(0)
+  const [currentSection, setCurrentSection] = useState(0)
+  const [isScrolling, setIsScrolling] = useState(false)
+  const [deviceType, setDeviceType] = useState<'desktop' | 'mobile' | 'pwa-desktop' | 'pwa-mobile'>('desktop')
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -17,6 +20,55 @@ export default function ArtistLanding() {
     return () => clearInterval(interval)
   }, [])
 
+  useEffect(() => {
+    const checkDevice = () => {
+      const isMobile = window.innerWidth < 1024
+      const isPWA = window.matchMedia('(display-mode: standalone)').matches || (window.navigator as any).standalone === true
+      
+      if (isPWA && isMobile) {
+        setDeviceType('pwa-mobile')
+      } else if (isPWA && !isMobile) {
+        setDeviceType('pwa-desktop')
+      } else if (isMobile) {
+        setDeviceType('mobile')
+      } else {
+        setDeviceType('desktop')
+      }
+    }
+
+    checkDevice()
+    window.addEventListener('resize', checkDevice)
+
+    const handleWheel = (e: WheelEvent) => {
+      if (deviceType !== 'desktop' && deviceType !== 'pwa-desktop') return
+      if (isScrolling || loading) return
+      
+      e.preventDefault()
+      e.stopPropagation()
+      setIsScrolling(true)
+      
+      if (e.deltaY > 0 && currentSection < 3) {
+        setCurrentSection(prev => prev + 1)
+      } else if (e.deltaY < 0 && currentSection > 0) {
+        setCurrentSection(prev => prev - 1)
+      }
+      
+      setTimeout(() => setIsScrolling(false), 1000)
+    }
+
+    if (deviceType === 'desktop' || deviceType === 'pwa-desktop') {
+      document.body.style.overflow = 'hidden'
+      window.addEventListener('wheel', handleWheel, { passive: false })
+    } else {
+      document.body.style.overflow = 'auto'
+    }
+
+    return () => {
+      window.removeEventListener('resize', checkDevice)
+      window.removeEventListener('wheel', handleWheel as any)
+    }
+  }, [isScrolling, loading, deviceType, currentSection])
+
   return (
     <>
       <AnimatePresence>
@@ -24,7 +76,7 @@ export default function ArtistLanding() {
       </AnimatePresence>
       
       {!loading && (
-        <div className="min-h-screen bg-gradient-to-b from-neutral-950 via-neutral-900 to-neutral-950 overflow-x-hidden">
+        <div className={`min-h-screen bg-gradient-to-b from-neutral-950 via-neutral-900 to-neutral-950 overflow-x-hidden ${deviceType === 'desktop' || deviceType === 'pwa-desktop' ? 'overflow-y-hidden h-screen' : 'overflow-y-auto scrollbar-hide'}`} style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
           {/* Navigation */}
           <motion.nav 
             initial={{ y: -100 }}
@@ -48,8 +100,14 @@ export default function ArtistLanding() {
             </div>
           </motion.nav>
 
+          <div
+            className="transition-transform duration-1000 ease-in-out"
+            style={{
+              transform: deviceType === 'desktop' || deviceType === 'pwa-desktop' ? `translateY(-${currentSection * 100}vh)` : 'none'
+            }}
+          >
           {/* Hero Section */}
-          <section className="relative min-h-screen flex items-center justify-center px-6 pt-32 pb-20 overflow-hidden">
+          <section className="relative min-h-screen h-screen flex items-center justify-center px-6 pt-32 pb-20 overflow-hidden">
             <div className="absolute inset-0 opacity-5" style={{ backgroundImage: 'url("data:image/svg+xml,%3Csvg width="60" height="60" viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg"%3E%3Cg fill="none" fill-rule="evenodd"%3E%3Cg fill="%23ffffff" fill-opacity="1"%3E%3Cpath d="M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z"/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")' }} />
             <motion.div
               className="absolute top-20 left-10 w-72 h-72 bg-amber-600/10 rounded-full blur-3xl"
@@ -193,7 +251,7 @@ export default function ArtistLanding() {
           </section>
 
           {/* Features Section */}
-          <section className="py-32 px-6 bg-gradient-to-b from-transparent via-neutral-950/50 to-transparent relative">
+          <section className="min-h-screen h-screen flex items-center py-32 px-6 bg-gradient-to-b from-transparent via-neutral-950/50 to-transparent relative">
             <div className="absolute inset-0 opacity-5" style={{ backgroundImage: 'url("data:image/svg+xml,%3Csvg width="60" height="60" viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg"%3E%3Cg fill="none" fill-rule="evenodd"%3E%3Cg fill="%23ffffff" fill-opacity="1"%3E%3Cpath d="M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z"/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")' }} />
             <div className="max-w-7xl mx-auto">
               <motion.div
@@ -241,7 +299,7 @@ export default function ArtistLanding() {
           </section>
 
           {/* CTA Section */}
-          <section className="py-32 px-6 relative overflow-hidden">
+          <section className="min-h-screen h-screen flex items-center py-32 px-6 relative overflow-hidden">
             <div className="absolute inset-0 opacity-5" style={{ backgroundImage: 'url("data:image/svg+xml,%3Csvg width="60" height="60" viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg"%3E%3Cg fill="none" fill-rule="evenodd"%3E%3Cg fill="%23ffffff" fill-opacity="1"%3E%3Cpath d="M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z"/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")' }} />
             <div className="absolute inset-0 bg-gradient-to-b from-transparent via-amber-600/5 to-transparent" />
             <motion.div
@@ -285,7 +343,7 @@ export default function ArtistLanding() {
           </section>
 
           {/* Footer */}
-          <footer className="py-16 px-6 border-t border-neutral-800/50 bg-neutral-950/50">
+          <footer className="min-h-screen h-screen flex items-center py-16 px-6 border-t border-neutral-800/50 bg-neutral-950/50">
             <div className="max-w-7xl mx-auto">
               <div className="grid grid-cols-1 md:grid-cols-4 gap-12 mb-12">
                 <div>
@@ -326,6 +384,7 @@ export default function ArtistLanding() {
               </div>
             </div>
           </footer>
+          </div>
         </div>
       )}
     </>

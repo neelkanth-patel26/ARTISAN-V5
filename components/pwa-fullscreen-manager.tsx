@@ -25,13 +25,13 @@ export function PWAFullscreenManager() {
           // Create new theme-color meta tag specifically for Android
           const themeColorMeta = document.createElement('meta')
           themeColorMeta.name = 'theme-color'
-          themeColorMeta.content = '#d97706'
+          themeColorMeta.content = '#000000'
           document.head.appendChild(themeColorMeta)
 
           // Also set color for Android status bar
           const androidStatusBarMeta = document.createElement('meta')
           androidStatusBarMeta.name = 'color'
-          androidStatusBarMeta.content = '#d97706'
+          androidStatusBarMeta.content = '#000000'
           document.head.appendChild(androidStatusBarMeta)
 
           // Force repaint to apply theme
@@ -65,7 +65,7 @@ export function PWAFullscreenManager() {
         // Add back button listener
         window.addEventListener('popstate', handleBackButton)
 
-        // Prevent pull-to-refresh on Android Chrome
+        // Prevent pull-to-refresh on Android Chrome (only prevent when actually pulling down from top)
         let startY = 0
         const handleTouchStart = (e: TouchEvent) => {
           startY = e.touches[0].clientY
@@ -75,8 +75,8 @@ export function PWAFullscreenManager() {
           const currentY = e.touches[0].clientY
           const diffY = startY - currentY
 
-          // If scrolling up and at top, prevent pull-to-refresh
-          if (diffY > 0 && window.scrollY === 0) {
+          // Only prevent pull-to-refresh if actually pulling down from very top and scrolling up
+          if (diffY > 0 && window.scrollY <= 5 && startY < 50) {
             e.preventDefault()
           }
         }
@@ -124,14 +124,8 @@ export function PWAFullscreenManager() {
         appleStatusBar.setAttribute('content', 'default')
       }
 
-      // Set the orange/amber theme color
-      setThemeColor('#d97706')
-
-      // Force body to take full height
-      document.body.style.height = '100vh'
-      document.body.style.height = '100dvh' // Dynamic viewport height
-      document.documentElement.style.height = '100vh'
-      document.documentElement.style.height = '100dvh'
+      // Set the black theme color
+      setThemeColor('#000000')
 
       console.log('PWA: Fullscreen manager initialized', { isAndroidChrome })
     }

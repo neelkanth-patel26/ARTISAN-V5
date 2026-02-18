@@ -1,7 +1,0 @@
-[
-  {
-    "name": "process-emails",
-    "schedule": "* * * * *",
-    "function": "process-emails"
-  }
-]

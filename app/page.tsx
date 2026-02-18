@@ -19,12 +19,10 @@ import { ServerStatus } from '@/components/server-status'
 export default function Home() {
   const [currentSection, setCurrentSection] = useState(0)
   const [isScrolling, setIsScrolling] = useState(false)
-  const [isMobile, setIsMobile] = useState(false)
-  const [scrollQueue, setScrollQueue] = useState<number[]>([])
-  const [touchStart, setTouchStart] = useState(0)
-  const [touchEnd, setTouchEnd] = useState(0)
   const [preloaderComplete, setPreloaderComplete] = useState(false)
   const [isLandscape, setIsLandscape] = useState(false)
+  const [mounted, setMounted] = useState(false)
+  const [deviceType, setDeviceType] = useState<'desktop' | 'mobile' | 'pwa-desktop' | 'pwa-mobile'>('desktop')
 
   const sections = [
     <HeroSection key="hero" />,
@@ -44,10 +42,18 @@ export default function Home() {
     <PWASection key="pwa" />,
   ]
 
-  const displaySections = isMobile ? sections : desktopSections
+  const pwaSections = [
+    <HeroSection key="hero" />,
+    <CollectionSection key="collection" />,
+    <FeaturedArtistsSection key="artists" />,
+    <HistorySection key="history" />,
+    <VisitSection key="visit" />,
+  ]
+
+  const displaySections = deviceType === 'mobile' || deviceType === 'pwa-mobile' ? sections : deviceType === 'pwa-desktop' ? pwaSections : desktopSections
 
   const navigateSection = (direction: 'up' | 'down') => {
-    if (isScrolling || !preloaderComplete) return
+    if (isScrolling || !preloaderComplete || (deviceType !== 'desktop' && deviceType !== 'pwa-desktop')) return
     setIsScrolling(true)
 
     if (direction === 'down' && currentSection < displaySections.length - 1) {
@@ -60,116 +66,90 @@ export default function Home() {
   }
 
   useEffect(() => {
-    const checkMobile = () => window.innerWidth < 1024
+    setMounted(true)
+    
+    const checkDevice = () => {
+      const isMobile = window.innerWidth < 1024
+      const isPWA = window.matchMedia('(display-mode: standalone)').matches || (window.navigator as any).standalone === true
+      
+      if (isPWA && isMobile) {
+        setDeviceType('pwa-mobile')
+      } else if (isPWA && !isMobile) {
+        setDeviceType('pwa-desktop')
+      } else if (isMobile) {
+        setDeviceType('mobile')
+      } else {
+        setDeviceType('desktop')
+      }
+    }
+    
     const checkOrientation = () => {
       const isTablet = window.innerWidth >= 768 && window.innerWidth < 1024
       const isLandscapeMode = window.innerHeight < window.innerWidth
       setIsLandscape(isTablet && isLandscapeMode)
     }
-    
-    setIsMobile(checkMobile())
+
+    checkDevice()
     checkOrientation()
-    
-    window.addEventListener('resize', checkOrientation)
+
+    window.addEventListener('resize', () => {
+      checkDevice()
+      checkOrientation()
+    })
     window.addEventListener('orientationchange', checkOrientation)
-    
-    if (checkMobile()) return () => {
-      window.removeEventListener('resize', checkOrientation)
+
+    const container = document.querySelector('main')
+    if (!container) return () => {
+      window.removeEventListener('resize', checkDevice)
       window.removeEventListener('orientationchange', checkOrientation)
     }
-
-    let scrollAccumulator = 0
-    let scrollTimeout: NodeJS.Timeout
 
     const handleWheel = (e: WheelEvent) => {
-      if (!preloaderComplete) return
+      if (deviceType !== 'desktop' && deviceType !== 'pwa-desktop') return
       e.preventDefault()
-      
-      scrollAccumulator += e.deltaY
-      
-      clearTimeout(scrollTimeout)
-      scrollTimeout = setTimeout(() => {
-        scrollAccumulator = 0
-      }, 150)
-
-      if (Math.abs(scrollAccumulator) > 100 && !isScrolling) {
-        setIsScrolling(true)
-        scrollAccumulator = 0
-
-        if (e.deltaY > 0 && currentSection < displaySections.length - 1) {
-          setCurrentSection(prev => prev + 1)
-        } else if (e.deltaY < 0 && currentSection > 0) {
-          setCurrentSection(prev => prev - 1)
-        }
-
-        setTimeout(() => setIsScrolling(false), 800)
-      }
-    }
-
-    const handleTouchStart = (e: TouchEvent) => {
-      if (!preloaderComplete) return
-      setTouchStart(e.touches[0].clientY)
-    }
-
-    const handleTouchMove = (e: TouchEvent) => {
-      if (!preloaderComplete) return
-      setTouchEnd(e.touches[0].clientY)
-    }
-
-    const handleTouchEnd = () => {
-      if (!touchStart || !touchEnd || isScrolling || !preloaderComplete) return
-      
-      const distance = touchStart - touchEnd
-      const minSwipeDistance = 50
-
-      if (Math.abs(distance) > minSwipeDistance) {
-        setIsScrolling(true)
-        
-        if (distance > 0 && currentSection < displaySections.length - 1) {
-          setCurrentSection(prev => prev + 1)
-        } else if (distance < 0 && currentSection > 0) {
-          setCurrentSection(prev => prev - 1)
-        }
-
-        setTimeout(() => setIsScrolling(false), 800)
-      }
-      
-      setTouchStart(0)
-      setTouchEnd(0)
-    }
-
-    const handleKeyDown = (e: KeyboardEvent) => {
       if (isScrolling || !preloaderComplete) return
-
-      if (e.key === 'ArrowDown' && currentSection < displaySections.length - 1) {
-        e.preventDefault()
-        setIsScrolling(true)
-        setCurrentSection(prev => prev + 1)
-        setTimeout(() => setIsScrolling(false), 800)
-      } else if (e.key === 'ArrowUp' && currentSection > 0) {
-        e.preventDefault()
-        setIsScrolling(true)
-        setCurrentSection(prev => prev - 1)
-        setTimeout(() => setIsScrolling(false), 800)
+      
+      if (e.deltaY > 0) {
+        navigateSection('down')
+      } else if (e.deltaY < 0) {
+        navigateSection('up')
       }
     }
 
-    window.addEventListener('wheel', handleWheel, { passive: false })
-    window.addEventListener('touchstart', handleTouchStart, { passive: true })
-    window.addEventListener('touchmove', handleTouchMove, { passive: true })
-    window.addEventListener('touchend', handleTouchEnd, { passive: true })
-    window.addEventListener('keydown', handleKeyDown)
-    
-    return () => {
-      window.removeEventListener('wheel', handleWheel)
-      window.removeEventListener('touchstart', handleTouchStart)
-      window.removeEventListener('touchmove', handleTouchMove)
-      window.removeEventListener('touchend', handleTouchEnd)
-      window.removeEventListener('keydown', handleKeyDown)
-      window.removeEventListener('resize', checkOrientation)
-      window.removeEventListener('orientationchange', checkOrientation)
+    if (deviceType === 'desktop' || deviceType === 'pwa-desktop') {
+      container.addEventListener('wheel', handleWheel, { passive: false })
     }
-  }, [currentSection, isScrolling, displaySections.length, touchStart, touchEnd, isMobile, preloaderComplete])
+
+    return () => {
+      window.removeEventListener('resize', checkDevice)
+      window.removeEventListener('orientationchange', checkOrientation)
+      container.removeEventListener('wheel', handleWheel as any)
+    }
+  }, [isScrolling, preloaderComplete, deviceType])
+
+  if (!mounted) {
+    return (
+      <>
+        <Preloader onComplete={() => setPreloaderComplete(true)} />
+        <main className="bg-black h-screen overflow-y-auto overscroll-none relative">
+          <Navigation />
+          <div className="transition-transform duration-1000 ease-in-out" style={{ transform: 'none' }}>
+            {desktopSections.map((section, index) => (
+              <div key={index} className="h-screen">
+                {section}
+              </div>
+            ))}
+          </div>
+          <PaginationSidebar 
+            currentSection={currentSection} 
+            onSectionChange={setCurrentSection}
+            totalSections={displaySections.length}
+          />
+          <Footer />
+        </main>
+      </>
+    )
+  }
 
   return (
     <>
@@ -186,25 +166,27 @@ export default function Home() {
         </div>
       )}
       
-      <main className="bg-black h-screen lg:overflow-hidden overflow-y-auto overscroll-none relative">
-      <Navigation />
-      <div
-        className="transition-transform duration-1000 ease-in-out"
-        style={{ 
-          transform: !isMobile ? `translateY(-${currentSection * 100}vh)` : 'none',
-          willChange: !isMobile ? 'transform' : 'auto'
-        }}
-      >
-        {displaySections.map((section, index) => (
-          <div key={index} className="h-screen">
-            {section}
-          </div>
-        ))}
-      </div>
-      <PaginationSidebar currentSection={currentSection} onSectionChange={setCurrentSection} />
-      
-      <Footer />
-    </main>
+      <main className={`bg-black h-screen ${deviceType === 'desktop' || deviceType === 'pwa-desktop' ? 'overflow-hidden' : 'overflow-y-auto'} overscroll-none relative`}>
+        <Navigation />
+        <div
+          className="transition-transform duration-1000 ease-in-out"
+          style={{ 
+            transform: deviceType === 'desktop' || deviceType === 'pwa-desktop' ? `translateY(-${currentSection * 100}vh)` : 'none'
+          }}
+        >
+          {displaySections.map((section, index) => (
+            <div key={index} className="h-screen">
+              {section}
+            </div>
+          ))}
+        </div>
+        <PaginationSidebar 
+          currentSection={currentSection} 
+          onSectionChange={setCurrentSection}
+          totalSections={displaySections.length}
+        />
+        <Footer />
+      </main>
     </>
   )
 }

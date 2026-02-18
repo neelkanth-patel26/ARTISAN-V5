@@ -120,7 +120,7 @@ export function PWASection() {
               
               <p className="text-neutral-400 text-base font-light leading-relaxed mb-8">
                 <strong>QR Code = Browser View</strong><br />
-                Scan for quick access, but install the PWA for <strong>true fullscreen native app experience</strong> with orange status bar.
+                Scan for quick access, but install the PWA for <strong>true fullscreen native app experience</strong> with black status bar.
               </p>
             </motion.div>
 
@@ -192,17 +192,18 @@ export function PWASection() {
           >
             {qrCode ? (
               <div className="relative group">
-                <div className="absolute inset-0 bg-gradient-to-br from-amber-600/20 to-transparent blur-3xl opacity-50" />
-                <div className="relative bg-white p-8 rounded-2xl shadow-2xl border border-neutral-800/30 group-hover:border-amber-600/30 transition-all duration-300" style={{ transform: 'translateZ(0)' }}>
+                <div className="absolute inset-0 bg-gradient-to-br from-neutral-900/50 to-transparent blur-3xl opacity-60" />
+                <div className="relative bg-white p-8 rounded-2xl shadow-2xl border border-neutral-800/50 group-hover:border-neutral-600/70 transition-all duration-500 group-hover:shadow-neutral-900/50" style={{ transform: 'translateZ(0)' }}>
                   <img 
                     src={qrCode}
                     alt="Scan to install PWA"
-                    className="w-64 h-64"
+                    className="w-64 h-64 rounded-lg"
                     loading="lazy"
                   />
+                  <div className="absolute inset-4 border-2 border-neutral-200/30 rounded-lg pointer-events-none" />
                 </div>
-                <div className="absolute -bottom-4 left-1/2 -translate-x-1/2 bg-neutral-900 border border-neutral-800/50 rounded-lg px-4 py-2">
-                  <p className="text-amber-600/70 text-xs font-light tracking-wider whitespace-nowrap">SCAN TO INSTALL</p>
+                <div className="absolute -bottom-4 left-1/2 -translate-x-1/2 bg-neutral-900/90 backdrop-blur-sm border border-neutral-700/50 rounded-lg px-4 py-2 shadow-lg">
+                  <p className="text-neutral-300 text-xs font-light tracking-wider whitespace-nowrap">SCAN TO INSTALL</p>
                 </div>
               </div>
             ) : isLoading ? (
@@ -220,3 +221,5 @@ export function PWASection() {
     </div>
   )
 }
+
+export default PWASection

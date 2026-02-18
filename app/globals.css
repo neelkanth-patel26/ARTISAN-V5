@@ -146,7 +146,7 @@
     html, body {
       height: 100vh !important;
       height: 100dvh !important; /* Dynamic viewport height */
-      overflow: hidden;
+      overflow: auto;
     }
 
     /* Hide any browser UI that might still show */
@@ -160,7 +160,7 @@
     html, body {
       height: 100vh !important;
       height: 100dvh !important;
-      overflow: hidden;
+      overflow: auto;
       /* Prevent overscroll on Android */
       overscroll-behavior: none;
       /* Prevent pull-to-refresh */

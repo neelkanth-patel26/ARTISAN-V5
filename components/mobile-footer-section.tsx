@@ -10,7 +10,9 @@ export function MobileFooterSection() {
           Made By Group 1
         </p>
         
-        <ThemeToggleButton variant="circle" start="center" />
+        <div suppressHydrationWarning>
+          <ThemeToggleButton variant="circle" start="center" />
+        </div>
         
         <p className="text-xs text-neutral-500 tracking-[0.2em] font-light uppercase text-center" style={{ fontFamily: 'serif' }}>
           © 2026 Gaming Network Studio Media Group
