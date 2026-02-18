@@ -107,8 +107,10 @@ export function Navigation() {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
+              onTouchEnd={() => setIsMenuOpen(false)}
               onClick={() => setIsMenuOpen(false)}
               className="fixed inset-0 bg-black/40 z-[59]"
+              style={{ touchAction: 'auto' }}
             />
             <motion.div
               initial={{ x: '100%' }}
@@ -116,6 +118,7 @@ export function Navigation() {
               exit={{ x: '100%' }}
               transition={{ duration: 0.3, ease: 'easeInOut' }}
               className="fixed top-0 right-0 h-screen w-full md:w-[420px] bg-gradient-to-br from-neutral-950 via-neutral-900 to-neutral-950 border-l border-amber-600/20 shadow-2xl z-[60] overflow-hidden"
+              style={{ touchAction: 'auto' }}
             >
               <div className="h-full flex flex-col">
                 <div className="flex items-center justify-between p-6 md:p-8 border-b border-neutral-800/50 bg-neutral-900/30 backdrop-blur-sm">
@@ -144,7 +147,7 @@ export function Navigation() {
                   </button>
                 </div>
 
-                <div className="flex-1 overflow-y-auto">
+                <div className="flex-1 overflow-y-auto" style={{ touchAction: 'pan-y' }}>
                   <div className="p-6 md:p-8 space-y-1">
                     {navItems.map((item, index) => (
                       <motion.div
@@ -155,11 +158,13 @@ export function Navigation() {
                       >
                         <Link
                           href={item.path}
+                          onClick={() => setIsMenuOpen(false)}
                           className={`block py-4 px-4 text-base transition-all font-light tracking-wider rounded-lg group ${
                             pathname === item.path
                               ? 'text-amber-600 bg-amber-600/10 border border-amber-600/30'
                               : 'text-neutral-400 hover:text-white hover:bg-neutral-800/30'
                           }`}
+                          style={{ touchAction: 'manipulation' }}
                         >
                           <span className="flex items-center justify-between">
                             {item.name}

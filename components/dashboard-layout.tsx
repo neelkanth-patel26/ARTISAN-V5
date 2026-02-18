@@ -7,7 +7,7 @@ import { Home, LogOut, Menu, X, ChevronLeft, ChevronRight } from 'lucide-react'
 import { signOut, getCurrentUser, getProfile } from '@/lib/auth'
 import { Profile } from '@/lib/types'
 import { toast } from 'sonner'
-import { motion } from 'framer-motion'
+import { motion, AnimatePresence } from 'framer-motion'
 
 interface DashboardLayoutProps {
   children: ReactNode
@@ -196,55 +196,68 @@ export function DashboardLayout({ children, navItems, role }: DashboardLayoutPro
       </header>
 
       {/* Mobile Sidebar Overlay */}
-      {sidebarOpen && (
-        <div
-          className="fixed inset-0 z-40 mt-16 bg-black/60 backdrop-blur-sm lg:hidden"
-          onClick={() => setSidebarOpen(false)}
-        >
+      <AnimatePresence>
+        {sidebarOpen && (
           <div
-            className="absolute right-0 top-0 flex h-full w-64 flex-col border-l border-amber-600/20 bg-gradient-to-b from-neutral-950 to-neutral-900 py-4"
-            onClick={(e) => e.stopPropagation()}
+            className="fixed inset-0 z-40 mt-16 bg-black/60 backdrop-blur-sm lg:hidden"
+            onTouchEnd={() => setSidebarOpen(false)}
+            onClick={() => setSidebarOpen(false)}
+            style={{ touchAction: 'auto' }}
           >
-            <nav className="flex-1 space-y-1 overflow-y-auto scrollbar-hide px-3">
-              {navItems.map((item) => (
+            <motion.div
+              initial={{ x: '100%' }}
+              animate={{ x: 0 }}
+              exit={{ x: '100%' }}
+              transition={{ duration: 0.3, ease: 'easeInOut' }}
+              className="absolute right-0 top-0 flex h-full w-64 flex-col border-l border-amber-600/20 bg-gradient-to-b from-neutral-950 to-neutral-900 py-4"
+              onTouchEnd={(e) => e.stopPropagation()}
+              onClick={(e) => e.stopPropagation()}
+              style={{ touchAction: 'auto' }}
+            >
+              <nav className="flex-1 space-y-1 overflow-y-auto scrollbar-hide px-3" style={{ touchAction: 'pan-y' }}>
+                {navItems.map((item) => (
+                  <Link
+                    key={item.href}
+                    href={item.href}
+                    onClick={() => setSidebarOpen(false)}
+                    className={`flex items-center gap-3 rounded-lg px-3 py-3 transition-all ${
+                      pathname === item.href ? navAccent.active : 'text-neutral-400 hover:bg-amber-600/10 hover:text-amber-600'
+                    }`}
+                    style={{ touchAction: 'manipulation' }}
+                  >
+                    <item.icon size={20} strokeWidth={1.5} />
+                    <span className="text-sm font-light tracking-wider" style={{ fontFamily: 'Oughter, serif' }}>{item.label}</span>
+                  </Link>
+                ))}
+              </nav>
+              <div className="border-t border-amber-600/20 px-3 pt-4">
                 <Link
-                  key={item.href}
-                  href={item.href}
+                  href="/"
                   onClick={() => setSidebarOpen(false)}
-                  className={`flex items-center gap-3 rounded-lg px-3 py-3 transition-all ${
-                    pathname === item.href ? navAccent.active : 'text-neutral-400 hover:bg-amber-600/10 hover:text-amber-600'
-                  }`}
+                  className="mb-3 flex w-full items-center gap-3 rounded-lg px-3 py-3 text-neutral-400 transition-all hover:bg-amber-600/10 hover:text-amber-600"
+                  style={{ touchAction: 'manipulation' }}
                 >
-                  <item.icon size={20} strokeWidth={1.5} />
-                  <span className="text-sm font-light tracking-wider" style={{ fontFamily: 'Oughter, serif' }}>{item.label}</span>
+                  <Home size={20} strokeWidth={1.5} />
+                  <span className="text-sm font-light tracking-wider" style={{ fontFamily: 'Oughter, serif' }}>Go to home</span>
                 </Link>
-              ))}
-            </nav>
-            <div className="border-t border-amber-600/20 px-3 pt-4">
-              <Link
-                href="/"
-                onClick={() => setSidebarOpen(false)}
-                className="mb-3 flex w-full items-center gap-3 rounded-lg px-3 py-3 text-neutral-400 transition-all hover:bg-amber-600/10 hover:text-amber-600"
-              >
-                <Home size={20} strokeWidth={1.5} />
-                <span className="text-sm font-light tracking-wider" style={{ fontFamily: 'Oughter, serif' }}>Go to home</span>
-              </Link>
-              <div className="mb-2 rounded-lg border border-amber-600/20 bg-black/30 px-3 py-2">
-                <p className="mb-0.5 text-xs font-light uppercase tracking-wider text-amber-600/70" style={{ fontFamily: 'Oughter, serif' }}>Account</p>
-                <p className="truncate text-sm font-light text-white" style={{ fontFamily: 'ForestSmooth, serif' }}>{profile?.full_name || '...'}</p>
-                <p className="truncate text-xs text-neutral-400">{profile?.email || '...'}</p>
+                <div className="mb-2 rounded-lg border border-amber-600/20 bg-black/30 px-3 py-2">
+                  <p className="mb-0.5 text-xs font-light uppercase tracking-wider text-amber-600/70" style={{ fontFamily: 'Oughter, serif' }}>Account</p>
+                  <p className="truncate text-sm font-light text-white" style={{ fontFamily: 'ForestSmooth, serif' }}>{profile?.full_name || '...'}</p>
+                  <p className="truncate text-xs text-neutral-400">{profile?.email || '...'}</p>
+                </div>
+                <button
+                  onClick={handleLogout}
+                  className="flex w-full items-center gap-3 rounded-lg px-3 py-3 text-neutral-400 transition-all hover:bg-amber-600/10 hover:text-amber-600"
+                  style={{ touchAction: 'manipulation' }}
+                >
+                  <LogOut size={20} strokeWidth={1.5} />
+                  <span className="text-sm font-light tracking-wider" style={{ fontFamily: 'Oughter, serif' }}>Logout</span>
+                </button>
               </div>
-              <button
-                onClick={handleLogout}
-                className="flex w-full items-center gap-3 rounded-lg px-3 py-3 text-neutral-400 transition-all hover:bg-amber-600/10 hover:text-amber-600"
-              >
-                <LogOut size={20} strokeWidth={1.5} />
-                <span className="text-sm font-light tracking-wider" style={{ fontFamily: 'Oughter, serif' }}>Logout</span>
-              </button>
-            </div>
+            </motion.div>
           </div>
-        </div>
-      )}
+        )}
+      </AnimatePresence>
 
       {/* Mobile Bottom Navigation */}
       <nav className="fixed bottom-0 left-0 right-0 z-30 border-t border-amber-600/20 bg-gradient-to-r from-neutral-950 to-neutral-900 backdrop-blur-xl lg:hidden">
