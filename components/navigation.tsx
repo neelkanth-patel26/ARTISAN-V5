@@ -137,7 +137,9 @@ export function Navigation() {
                       >
                         <Link
                           href={item.path}
-                          onClick={() => setIsMenuOpen(false)}
+                          onClick={(e) => {
+                            setIsMenuOpen(false)
+                          }}
                           className={`block py-4 px-4 text-base transition-all font-light tracking-wider rounded-lg group ${
                             pathname === item.path
                               ? 'text-amber-600 bg-amber-600/10 border border-amber-600/30'
@@ -176,7 +178,9 @@ export function Navigation() {
                           </div>
                           <Link
                             href="/dashboard"
-                            onClick={() => setIsMenuOpen(false)}
+                            onClick={(e) => {
+                              setIsMenuOpen(false)
+                            }}
                             className="flex w-full items-center justify-center gap-2 py-3 px-4 bg-amber-600 text-white font-medium rounded-lg transition-colors hover:bg-amber-500"
                           >
                             <LayoutDashboard size={18} />
