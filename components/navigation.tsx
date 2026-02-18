@@ -82,13 +82,11 @@ export function Navigation() {
           )}
           <button
             type="button"
-            onTouchEnd={(e) => {
-              e.preventDefault()
+            onTouchStart={(e) => {
               e.stopPropagation()
               setIsMenuOpen(!isMenuOpen)
             }}
             onClick={(e) => {
-              e.preventDefault()
               e.stopPropagation()
               setIsMenuOpen(!isMenuOpen)
             }}
@@ -107,7 +105,7 @@ export function Navigation() {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              onTouchEnd={() => setIsMenuOpen(false)}
+              onTouchStart={() => setIsMenuOpen(false)}
               onClick={() => setIsMenuOpen(false)}
               className="fixed inset-0 bg-black/40 z-[59]"
               style={{ touchAction: 'auto' }}
@@ -130,13 +128,11 @@ export function Navigation() {
                   </div>
                   <button
                     type="button"
-                    onTouchEnd={(e) => {
-                      e.preventDefault()
+                    onTouchStart={(e) => {
                       e.stopPropagation()
                       setIsMenuOpen(false)
                     }}
                     onClick={(e) => {
-                      e.preventDefault()
                       e.stopPropagation()
                       setIsMenuOpen(false)
                     }}
