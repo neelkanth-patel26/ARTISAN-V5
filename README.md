@@ -172,9 +172,6 @@ This project was created to:
 ### 👨‍💻 Team
 
 **Group-1 Members:**
-- Neelkanth Patel - Project Lead & Developer
-
-
 - Dhruv Nayak       : 23012250210200
 - Neelkanth Patel   : 23012250210201
 - Dhruv Nirmal      : 23012250210202
