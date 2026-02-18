@@ -10,6 +10,11 @@ export function PWAFullscreenManager() {
     const isAndroidChrome = /Android.*Chrome/.test(navigator.userAgent) && !/Edg/.test(navigator.userAgent)
 
     if (isPWA) {
+      document.body.classList.add('pwa-mode')
+      
+      // Disable 300ms tap delay
+      document.addEventListener('touchstart', function() {}, { passive: true })
+      
       if (isAndroidChrome) {
         const setAndroidThemeColor = () => {
           const existingThemeColors = document.querySelectorAll('meta[name="theme-color"]')
@@ -46,24 +51,21 @@ export function PWAFullscreenManager() {
         window.addEventListener('popstate', handleBackButton)
 
         let startY = 0
-        let isScrolling = false
         const handleTouchStart = (e: TouchEvent) => {
           const target = e.target as HTMLElement
-          if (target.closest('button, a, input, textarea, select')) {
+          if (target.closest('button, a, input, textarea, select, [role="button"]')) {
             return
           }
           startY = e.touches[0].clientY
-          isScrolling = false
         }
 
         const handleTouchMove = (e: TouchEvent) => {
           const target = e.target as HTMLElement
-          if (target.closest('button, a, input, textarea, select')) {
+          if (target.closest('button, a, input, textarea, select, [role="button"]')) {
             return
           }
           const currentY = e.touches[0].clientY
           const diffY = currentY - startY
-          isScrolling = true
           if (diffY > 0 && window.scrollY === 0) {
             e.preventDefault()
           }

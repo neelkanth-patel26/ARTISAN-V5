@@ -74,19 +74,30 @@ export default function AdminNotificationsPage() {
     try {
       const user = getCurrentUser()
       
+      const notificationData: any = {
+        title,
+        body,
+        message: body,
+        type: 'admin_broadcast',
+        url: url || null,
+        icon: '/icon-192.png',
+        target_type: targetType,
+        sent_by: user?.user_id,
+        status: 'pending'
+      }
+
+      if (targetType === 'specific') {
+        notificationData.target_user_id = targetUserId
+        notificationData.user_id = targetUserId
+      }
+      
+      if (targetType === 'artist' || targetType === 'collector') {
+        notificationData.target_role = targetType
+      }
+
       const { data: notification, error } = await supabase
         .from('notifications')
-        .insert({
-          title,
-          body,
-          url: url || null,
-          icon: '/icon-192.png',
-          target_type: targetType,
-          target_user_id: targetType === 'specific' ? targetUserId : null,
-          target_role: targetType === 'artist' || targetType === 'collector' ? targetType : null,
-          sent_by: user?.user_id,
-          status: 'pending'
-        })
+        .insert(notificationData)
         .select()
         .single()
 

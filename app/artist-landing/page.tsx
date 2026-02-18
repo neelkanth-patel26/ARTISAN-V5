@@ -107,7 +107,7 @@ export default function ArtistLanding() {
             }}
           >
           {/* Hero Section */}
-          <section className="relative min-h-screen h-screen flex items-center justify-center px-4 sm:px-6 pt-24 sm:pt-32 pb-12 sm:pb-20 overflow-hidden">
+          <section className="relative min-h-screen flex items-center justify-center px-4 py-20 overflow-hidden">
             <div className="absolute inset-0 opacity-5" style={{ backgroundImage: 'url("data:image/svg+xml,%3Csvg width="60" height="60" viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg"%3E%3Cg fill="none" fill-rule="evenodd"%3E%3Cg fill="%23ffffff" fill-opacity="1"%3E%3Cpath d="M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z"/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")' }} />
             <motion.div
               className="absolute top-20 left-10 w-72 h-72 bg-amber-600/10 rounded-full blur-3xl"
@@ -120,24 +120,24 @@ export default function ArtistLanding() {
               transition={{ duration: 12, repeat: Infinity, ease: "easeInOut" }}
             />
 
-            <div className="max-w-7xl mx-auto grid lg:grid-cols-2 gap-8 lg:gap-16 items-center relative z-10 w-full">
+            <div className="max-w-7xl mx-auto w-full">
               <motion.div
                 initial={{ opacity: 0, x: -50 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ duration: 1, ease: [0.16, 1, 0.3, 1] }}
-                className="text-center lg:text-left"
+                className="text-center lg:text-left max-w-4xl mx-auto lg:mx-0"
               >
                 <motion.div
                   initial={{ opacity: 0, scale: 0.9 }}
                   animate={{ opacity: 1, scale: 1 }}
                   transition={{ delay: 0.2 }}
-                  className="inline-flex items-center gap-2 px-3 sm:px-4 py-1.5 sm:py-2 mb-4 sm:mb-8 bg-amber-600/10 border border-amber-600/30 rounded-full backdrop-blur-sm"
+                  className="inline-flex items-center gap-2 px-3 py-1.5 mb-6 bg-amber-600/10 border border-amber-600/30 rounded-full backdrop-blur-sm"
                 >
-                  <Sparkles size={14} className="text-amber-500 sm:w-4 sm:h-4" />
-                  <span className="text-xs sm:text-sm tracking-wider text-amber-500 font-medium">FOR CREATORS</span>
+                  <Sparkles size={14} className="text-amber-500" />
+                  <span className="text-xs tracking-wider text-amber-500 font-medium">FOR CREATORS</span>
                 </motion.div>
 
-                <h1 className="text-4xl sm:text-6xl md:text-7xl lg:text-8xl font-light text-white mb-4 sm:mb-6 leading-[0.95]" style={{ fontFamily: 'ForestSmooth, serif' }}>
+                <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-light text-white mb-4 leading-tight" style={{ fontFamily: 'ForestSmooth, serif' }}>
                   <motion.span
                     initial={{ opacity: 0, y: 30 }}
                     animate={{ opacity: 1, y: 0 }}
@@ -160,7 +160,7 @@ export default function ArtistLanding() {
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.7 }}
-                  className="text-base sm:text-xl text-neutral-400 mb-6 sm:mb-10 leading-relaxed max-w-xl mx-auto lg:mx-0"
+                  className="text-base sm:text-lg md:text-xl text-neutral-400 mb-8 leading-relaxed"
                 >
                   Join 5,000+ artists earning from their passion. Upload, showcase, and sell your artwork to a global audience.
                 </motion.p>
@@ -169,23 +169,23 @@ export default function ArtistLanding() {
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.9 }}
-                  className="flex flex-col sm:flex-row gap-3 sm:gap-4 mb-8 sm:mb-12 justify-center lg:justify-start"
+                  className="flex flex-col sm:flex-row gap-3 mb-8 justify-center lg:justify-start"
                 >
                   <Link href="/artist">
                     <motion.button
                       whileHover={{ scale: 1.05, boxShadow: '0 20px 40px rgba(217, 119, 6, 0.4)' }}
                       whileTap={{ scale: 0.95 }}
-                      className="group w-full sm:w-auto px-6 sm:px-8 py-3 sm:py-4 bg-gradient-to-r from-amber-600 to-amber-500 text-white text-xs sm:text-sm tracking-wider rounded-xl font-medium flex items-center justify-center gap-2 shadow-xl shadow-amber-600/30"
+                      className="group w-full sm:w-auto px-6 py-3 bg-gradient-to-r from-amber-600 to-amber-500 text-white text-sm tracking-wider rounded-xl font-medium flex items-center justify-center gap-2 shadow-xl shadow-amber-600/30"
                     >
                       START SELLING
-                      <ArrowRight size={16} className="sm:w-[18px] sm:h-[18px] group-hover:translate-x-1 transition-transform" />
+                      <ArrowRight size={16} className="group-hover:translate-x-1 transition-transform" />
                     </motion.button>
                   </Link>
                   <Link href="/gallery">
                     <motion.button
                       whileHover={{ scale: 1.05 }}
                       whileTap={{ scale: 0.95 }}
-                      className="w-full sm:w-auto px-6 sm:px-8 py-3 sm:py-4 border-2 border-neutral-700 text-neutral-300 text-xs sm:text-sm tracking-wider rounded-xl font-medium hover:border-amber-600/50 hover:bg-amber-600/5 transition-all"
+                      className="w-full sm:w-auto px-6 py-3 border-2 border-neutral-700 text-neutral-300 text-sm tracking-wider rounded-xl font-medium hover:border-amber-600/50 hover:bg-amber-600/5 transition-all"
                     >
                       VIEW GALLERY
                     </motion.button>
@@ -196,7 +196,7 @@ export default function ArtistLanding() {
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                   transition={{ delay: 1.1 }}
-                  className="flex items-center justify-center lg:justify-start gap-4 sm:gap-8"
+                  className="flex items-center justify-center lg:justify-start gap-6"
                 >
                   {[
                     { value: '₹2M+', label: 'Paid Out' },
@@ -208,45 +208,11 @@ export default function ArtistLanding() {
                       whileHover={{ scale: 1.1, y: -5 }}
                       className="text-center"
                     >
-                      <p className="text-xl sm:text-3xl font-light text-amber-500 mb-1" style={{ fontFamily: 'ForestSmooth, serif' }}>{stat.value}</p>
-                      <p className="text-[10px] sm:text-xs text-neutral-500 tracking-wider">{stat.label}</p>
+                      <p className="text-2xl sm:text-3xl font-light text-amber-500 mb-1" style={{ fontFamily: 'ForestSmooth, serif' }}>{stat.value}</p>
+                      <p className="text-xs text-neutral-500 tracking-wider">{stat.label}</p>
                     </motion.div>
                   ))}
                 </motion.div>
-              </motion.div>
-
-              <motion.div
-                initial={{ opacity: 0, scale: 0.9 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ delay: 0.5, duration: 1 }}
-                className="relative hidden lg:block"
-              >
-                <div className="relative aspect-square">
-                  <motion.div
-                    animate={{ rotate: 360 }}
-                    transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
-                    className="absolute inset-0 bg-gradient-to-br from-amber-600/20 to-transparent rounded-full blur-3xl"
-                  />
-                  <div className="relative grid grid-cols-2 gap-4">
-                    {[
-                      'https://images.unsplash.com/photo-1579783902614-a3fb3927b6a5?w=400',
-                      'https://images.unsplash.com/photo-1547891654-e66ed7ebb968?w=400',
-                      'https://images.unsplash.com/photo-1561214115-f2f134cc4912?w=400',
-                      'https://images.unsplash.com/photo-1460661419201-fd4cecdf8a8b?w=400'
-                    ].map((img, i) => (
-                      <motion.div
-                        key={i}
-                        initial={{ opacity: 0, scale: 0.8 }}
-                        animate={{ opacity: 1, scale: 1 }}
-                        transition={{ delay: 0.7 + i * 0.1 }}
-                        whileHover={{ scale: 1.05, zIndex: 10 }}
-                        className="aspect-square rounded-2xl overflow-hidden border border-amber-600/20 shadow-2xl"
-                      >
-                        <img src={img} alt="" className="w-full h-full object-cover" />
-                      </motion.div>
-                    ))}
-                  </div>
-                </div>
               </motion.div>
             </div>
           </section>
