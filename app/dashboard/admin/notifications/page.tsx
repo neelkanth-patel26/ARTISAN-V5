@@ -30,7 +30,8 @@ export default function AdminNotificationsPage() {
   const loadUsers = async () => {
     const { data } = await supabase
       .from('users')
-      .select('id, full_name, email, user_role')
+      .select('id, full_name, email, role')
+      .eq('status', 'active')
       .order('full_name')
     setUsers(data || [])
   }
@@ -135,45 +136,57 @@ export default function AdminNotificationsPage() {
         />
 
         {/* Stats */}
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 lg:gap-4">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="bg-neutral-900 border border-neutral-800 rounded-xl p-6"
+            className="bg-gradient-to-br from-neutral-900 to-neutral-950 border border-amber-600/20 rounded-xl p-4 lg:p-6 hover:border-amber-600/40 transition-all"
           >
-            <Bell className="text-amber-600 mb-3" size={24} />
-            <p className="text-3xl font-light text-white mb-1">{stats.total}</p>
-            <p className="text-sm text-neutral-400">Total Subscriptions</p>
+            <div className="flex items-center justify-between mb-3">
+              <Bell className="text-amber-600" size={20} />
+              <div className="w-2 h-2 bg-amber-600 rounded-full animate-pulse" />
+            </div>
+            <p className="text-2xl lg:text-3xl font-light text-white mb-1">{stats.total}</p>
+            <p className="text-xs lg:text-sm text-neutral-400">Active Subscriptions</p>
+          </motion.div>
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.05 }}
+            className="bg-gradient-to-br from-neutral-900 to-neutral-950 border border-green-600/20 rounded-xl p-4 lg:p-6 hover:border-green-600/40 transition-all"
+          >
+            <div className="flex items-center justify-between mb-3">
+              <div className="text-green-500 text-sm lg:text-base font-semibold">Android</div>
+              <div className="w-2 h-2 bg-green-500 rounded-full" />
+            </div>
+            <p className="text-2xl lg:text-3xl font-light text-white mb-1">{stats.android}</p>
+            <p className="text-xs lg:text-sm text-neutral-400">Devices</p>
           </motion.div>
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.1 }}
-            className="bg-neutral-900 border border-neutral-800 rounded-xl p-6"
+            className="bg-gradient-to-br from-neutral-900 to-neutral-950 border border-blue-600/20 rounded-xl p-4 lg:p-6 hover:border-blue-600/40 transition-all"
           >
-            <div className="text-green-500 mb-3 text-xl font-semibold">Android</div>
-            <p className="text-3xl font-light text-white mb-1">{stats.android}</p>
-            <p className="text-sm text-neutral-400">Devices</p>
+            <div className="flex items-center justify-between mb-3">
+              <div className="text-blue-500 text-sm lg:text-base font-semibold">iOS</div>
+              <div className="w-2 h-2 bg-blue-500 rounded-full" />
+            </div>
+            <p className="text-2xl lg:text-3xl font-light text-white mb-1">{stats.ios}</p>
+            <p className="text-xs lg:text-sm text-neutral-400">Devices</p>
           </motion.div>
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.2 }}
-            className="bg-neutral-900 border border-neutral-800 rounded-xl p-6"
+            transition={{ delay: 0.15 }}
+            className="bg-gradient-to-br from-neutral-900 to-neutral-950 border border-purple-600/20 rounded-xl p-4 lg:p-6 hover:border-purple-600/40 transition-all"
           >
-            <div className="text-blue-500 mb-3 text-xl font-semibold">iOS</div>
-            <p className="text-3xl font-light text-white mb-1">{stats.ios}</p>
-            <p className="text-sm text-neutral-400">Devices</p>
-          </motion.div>
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.3 }}
-            className="bg-neutral-900 border border-neutral-800 rounded-xl p-6"
-          >
-            <div className="text-purple-500 mb-3 text-xl font-semibold">Desktop</div>
-            <p className="text-3xl font-light text-white mb-1">{stats.desktop}</p>
-            <p className="text-sm text-neutral-400">Devices</p>
+            <div className="flex items-center justify-between mb-3">
+              <div className="text-purple-500 text-sm lg:text-base font-semibold">Desktop</div>
+              <div className="w-2 h-2 bg-purple-500 rounded-full" />
+            </div>
+            <p className="text-2xl lg:text-3xl font-light text-white mb-1">{stats.desktop}</p>
+            <p className="text-xs lg:text-sm text-neutral-400">Devices</p>
           </motion.div>
         </div>
 
@@ -181,10 +194,18 @@ export default function AdminNotificationsPage() {
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.4 }}
-          className="bg-neutral-900 border border-neutral-800 rounded-xl p-6 lg:p-8"
+          transition={{ delay: 0.2 }}
+          className="bg-gradient-to-br from-neutral-900 to-neutral-950 border border-amber-600/30 rounded-2xl p-6 lg:p-8 shadow-xl"
         >
-          <h2 className="text-2xl font-light text-white mb-6">Send New Notification</h2>
+          <div className="flex items-center gap-3 mb-6">
+            <div className="w-10 h-10 rounded-lg bg-amber-600/20 flex items-center justify-center">
+              <Send className="text-amber-600" size={20} />
+            </div>
+            <div>
+              <h2 className="text-xl lg:text-2xl font-light text-white">Send New Notification</h2>
+              <p className="text-xs text-neutral-500">Broadcast to your audience</p>
+            </div>
+          </div>
           
           <div className="space-y-6">
             <div>
@@ -283,7 +304,7 @@ export default function AdminNotificationsPage() {
                   <option value="">Choose a user...</option>
                   {users.map(user => (
                     <option key={user.id} value={user.id}>
-                      {user.full_name} ({user.email}) - {user.user_role}
+                      {user.full_name} ({user.email}) - {user.role}
                     </option>
                   ))}
                 </select>
@@ -293,7 +314,7 @@ export default function AdminNotificationsPage() {
             <button
               onClick={sendNotification}
               disabled={sending}
-              className="w-full flex items-center justify-center gap-2 bg-amber-600 hover:bg-amber-500 text-white py-4 rounded-lg font-medium transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+              className="w-full flex items-center justify-center gap-2 bg-gradient-to-r from-amber-600 to-amber-500 hover:from-amber-500 hover:to-amber-400 text-white py-4 rounded-xl font-medium transition-all disabled:opacity-50 disabled:cursor-not-allowed shadow-lg shadow-amber-600/20 hover:shadow-xl hover:shadow-amber-600/30"
             >
               <Send size={20} />
               {sending ? 'Sending...' : 'Send Notification'}
@@ -305,10 +326,16 @@ export default function AdminNotificationsPage() {
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.5 }}
-          className="bg-neutral-900 border border-neutral-800 rounded-xl p-6 lg:p-8"
+          transition={{ delay: 0.25 }}
+          className="bg-gradient-to-br from-neutral-900 to-neutral-950 border border-neutral-800 rounded-2xl p-6 lg:p-8 shadow-xl"
         >
-          <h2 className="text-2xl font-light text-white mb-6">Recent Notifications</h2>
+          <div className="flex items-center justify-between mb-6">
+            <div>
+              <h2 className="text-xl lg:text-2xl font-light text-white">Recent Notifications</h2>
+              <p className="text-xs text-neutral-500">Last 10 notifications sent</p>
+            </div>
+            <div className="text-xs text-neutral-600">{notifications.length} / 10</div>
+          </div>
           
           <div className="space-y-3">
             {notifications.length === 0 ? (

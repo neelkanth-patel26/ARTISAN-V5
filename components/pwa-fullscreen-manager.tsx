@@ -10,13 +10,36 @@ export function PWAFullscreenManager() {
     if (isPWA) {
       document.body.classList.add('pwa-mode')
       
-      // Remove 300ms delay completely
+      // Remove 300ms delay and improve click responsiveness
       const style = document.createElement('style')
       style.textContent = `
-        * { -webkit-tap-highlight-color: rgba(0,0,0,0) !important; }
-        a, button, input, select, textarea { touch-action: manipulation !important; }
+        * { 
+          -webkit-tap-highlight-color: rgba(0,0,0,0) !important; 
+          -webkit-touch-callout: none !important;
+        }
+        a, button, input, select, textarea, [role="button"] { 
+          touch-action: manipulation !important; 
+          cursor: pointer !important;
+        }
+        a:active, button:active, [role="button"]:active {
+          opacity: 0.7 !important;
+        }
       `
       document.head.appendChild(style)
+
+      // Add click event listener to ensure single-click navigation
+      const handleClick = (e: MouseEvent) => {
+        const target = e.target as HTMLElement
+        const link = target.closest('a')
+        const button = target.closest('button')
+        
+        if (link || button) {
+          // Prevent any potential double-click issues
+          e.stopPropagation()
+        }
+      }
+      
+      document.addEventListener('click', handleClick, { capture: true })
       
       const isAndroidChrome = /Android.*Chrome/.test(navigator.userAgent) && !/Edg/.test(navigator.userAgent)
 
@@ -50,9 +73,14 @@ export function PWAFullscreenManager() {
         document.addEventListener('touchmove', handleTouchMove, { passive: false })
 
         return () => {
+          document.removeEventListener('click', handleClick)
           document.removeEventListener('touchstart', handleTouchStart)
           document.removeEventListener('touchmove', handleTouchMove)
         }
+      }
+
+      return () => {
+        document.removeEventListener('click', handleClick)
       }
     }
   }, [])

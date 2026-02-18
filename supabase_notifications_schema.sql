@@ -96,10 +96,10 @@ BEGIN
   FROM push_subscriptions ps
   INNER JOIN users u ON ps.user_id = u.id
   WHERE ps.is_active = true
+    AND u.status = 'active'
     AND (
       (p_target_type = 'all') OR
       (p_target_type = 'specific' AND ps.user_id = p_target_user_id) OR
-      (p_target_type = 'role' AND u.role = p_target_role) OR
       (p_target_type = 'artist' AND u.role = 'artist') OR
       (p_target_type = 'collector' AND u.role = 'collector')
     );

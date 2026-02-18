@@ -38,6 +38,7 @@ export function ArtistModal({ artist, onClose }: ArtistModalProps) {
   const [artworks, setArtworks] = useState<any[]>([])
   const [showArtworks, setShowArtworks] = useState(false)
   const [showPortfolio, setShowPortfolio] = useState(false)
+  const [isPortfolioExpanded, setIsPortfolioExpanded] = useState(false)
   const [viewportHeight, setViewportHeight] = useState(0)
   const router = useRouter()
   const user = getCurrentUser()
@@ -97,9 +98,6 @@ export function ArtistModal({ artist, onClose }: ArtistModalProps) {
       .eq('status', 'approved')
     setArtworkCount(count || 0)
     setArtworks(data || [])
-    if ((data || []).length > 0) {
-      setShowPortfolio(true)
-    }
   }
 
   const toggleFollow = async () => {
@@ -310,7 +308,7 @@ export function ArtistModal({ artist, onClose }: ArtistModalProps) {
               <div className="p-4 sm:p-6 lg:p-8 space-y-6 sm:space-y-8">
 
                 {/* Featured Artworks Section */}
-                {showPortfolio && (
+                {isPortfolioExpanded && (
                   <div>
                     <div className="flex items-center justify-between mb-6">
                       <div>
@@ -322,7 +320,7 @@ export function ArtistModal({ artist, onClose }: ArtistModalProps) {
                           onClick={() => setShowArtworks(!showArtworks)}
                           className="px-5 py-2.5 rounded-lg bg-neutral-800 hover:bg-neutral-700 text-white text-sm transition-all border border-neutral-700 hover:border-amber-600/50"
                         >
-                          {showArtworks ? 'Collapse' : 'View All'}
+                          {showArtworks ? 'Hide' : 'Expand'}
                         </button>
                       )}
                     </div>
@@ -389,13 +387,18 @@ export function ArtistModal({ artist, onClose }: ArtistModalProps) {
                 )}
 
                 {/* Portfolio Toggle Button */}
-                <button
-                  onClick={() => setShowPortfolio(!showPortfolio)}
-                  className="w-full flex items-center justify-center gap-2 py-3 rounded-lg bg-neutral-800 hover:bg-neutral-700 text-white transition-all border border-neutral-700 hover:border-amber-600/50"
-                >
-                  <Palette size={18} />
-                  {showPortfolio ? 'Hide Portfolio' : `View Portfolio (${artworkCount})`}
-                </button>
+                {artworkCount > 0 && (
+                  <button
+                    onClick={() => {
+                      setIsPortfolioExpanded(!isPortfolioExpanded)
+                      if (!isPortfolioExpanded) setShowArtworks(false)
+                    }}
+                    className="w-full flex items-center justify-center gap-2 py-3 rounded-lg bg-neutral-800 hover:bg-neutral-700 text-white transition-all border border-neutral-700 hover:border-amber-600/50"
+                  >
+                    <Palette size={18} />
+                    {isPortfolioExpanded ? 'Hide Portfolio' : `View Portfolio (${artworkCount})`}
+                  </button>
+                )}
 
                 {/* Support Section */}
                 <div className="bg-gradient-to-br from-neutral-900 to-neutral-950 rounded-2xl p-4 sm:p-6 border border-amber-600/30">

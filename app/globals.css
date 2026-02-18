@@ -129,11 +129,14 @@
     -webkit-tap-highlight-color: rgba(0,0,0,0);
     cursor: pointer;
     pointer-events: auto;
+    -webkit-touch-callout: none;
   }
 
   body.pwa-mode button:active,
-  body.pwa-mode a:active {
+  body.pwa-mode a:active,
+  body.pwa-mode [role="button"]:active {
     opacity: 0.7;
+    transition: opacity 0.1s;
   }
 
   body.pwa-mode * {
@@ -153,6 +156,7 @@
     -ms-user-select: text;
     user-select: text;
     pointer-events: auto;
+    touch-action: manipulation;
   }
 
   /* Force fullscreen for PWA */

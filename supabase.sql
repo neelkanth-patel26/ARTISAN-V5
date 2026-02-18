@@ -142,17 +142,61 @@ CREATE TABLE public.likes (
   CONSTRAINT likes_user_id_fkey FOREIGN KEY (user_id) REFERENCES public.users(id),
   CONSTRAINT likes_artwork_id_fkey FOREIGN KEY (artwork_id) REFERENCES public.artworks(id)
 );
-CREATE TABLE public.notifications (
-  id uuid NOT NULL DEFAULT uuid_generate_v4(),
+CREATE TABLE public.notification_receipts (
+  id uuid NOT NULL DEFAULT gen_random_uuid(),
+  notification_id uuid NOT NULL,
   user_id uuid NOT NULL,
-  type text NOT NULL,
+  subscription_id uuid,
+  status text DEFAULT 'sent'::text CHECK (status = ANY (ARRAY['sent'::text, 'delivered'::text, 'failed'::text, 'clicked'::text])),
+  error_message text,
+  delivered_at timestamp with time zone,
+  clicked_at timestamp with time zone,
+  created_at timestamp with time zone DEFAULT now(),
+  CONSTRAINT notification_receipts_pkey PRIMARY KEY (id),
+  CONSTRAINT notification_receipts_notification_id_fkey FOREIGN KEY (notification_id) REFERENCES public.notifications(id),
+  CONSTRAINT notification_receipts_user_id_fkey FOREIGN KEY (user_id) REFERENCES public.users(id),
+  CONSTRAINT notification_receipts_subscription_id_fkey FOREIGN KEY (subscription_id) REFERENCES public.push_subscriptions(id)
+);
+CREATE TABLE public.notifications (
+  id uuid NOT NULL DEFAULT gen_random_uuid(),
+  user_id uuid,
+  type text,
   title text NOT NULL,
-  message text NOT NULL,
+  message text,
+  body text,
+  icon text,
+  image text,
+  url text,
   link text,
+  target_type text CHECK (target_type = ANY (ARRAY['all'::text, 'specific'::text, 'role'::text, 'artist'::text, 'collector'::text])),
+  target_user_id uuid,
+  target_role text,
+  sent_by uuid,
+  sent_count integer DEFAULT 0,
+  success_count integer DEFAULT 0,
+  failure_count integer DEFAULT 0,
+  status text DEFAULT 'pending'::text CHECK (status = ANY (ARRAY['pending'::text, 'sending'::text, 'sent'::text, 'failed'::text])),
   is_read boolean DEFAULT false,
   created_at timestamp with time zone DEFAULT now(),
+  sent_at timestamp with time zone,
   CONSTRAINT notifications_pkey PRIMARY KEY (id),
-  CONSTRAINT notifications_user_id_fkey FOREIGN KEY (user_id) REFERENCES public.users(id)
+  CONSTRAINT notifications_user_id_fkey FOREIGN KEY (user_id) REFERENCES public.users(id),
+  CONSTRAINT notifications_target_user_id_fkey FOREIGN KEY (target_user_id) REFERENCES public.users(id),
+  CONSTRAINT notifications_sent_by_fkey FOREIGN KEY (sent_by) REFERENCES public.users(id)
+);
+CREATE TABLE public.push_subscriptions (
+  id uuid NOT NULL DEFAULT gen_random_uuid(),
+  user_id uuid NOT NULL,
+  endpoint text NOT NULL,
+  p256dh text NOT NULL,
+  auth text NOT NULL,
+  device_type text CHECK (device_type = ANY (ARRAY['android'::text, 'ios'::text, 'desktop'::text, 'other'::text])),
+  user_agent text,
+  is_active boolean DEFAULT true,
+  created_at timestamp with time zone DEFAULT now(),
+  updated_at timestamp with time zone DEFAULT now(),
+  CONSTRAINT push_subscriptions_pkey PRIMARY KEY (id),
+  CONSTRAINT push_subscriptions_user_id_fkey FOREIGN KEY (user_id) REFERENCES public.users(id)
 );
 CREATE TABLE public.reviews (
   id uuid NOT NULL DEFAULT uuid_generate_v4(),
@@ -220,6 +264,10 @@ CREATE TABLE public.users (
   last_active_at timestamp with time zone DEFAULT now(),
   is_verified boolean DEFAULT false,
   verification_date timestamp without time zone,
+  latitude numeric,
+  longitude numeric,
+  location_updated_at timestamp with time zone,
+  location_permission_granted boolean DEFAULT false,
   CONSTRAINT users_pkey PRIMARY KEY (id)
 );
 CREATE TABLE public.visit_bookings (
