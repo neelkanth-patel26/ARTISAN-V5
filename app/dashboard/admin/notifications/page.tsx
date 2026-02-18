@@ -247,7 +247,12 @@ export default function AdminNotificationsPage() {
               <label className="block text-sm text-neutral-400 mb-2">Target Audience *</label>
               <div className="grid grid-cols-2 lg:grid-cols-4 gap-2 lg:gap-3">
                 <button
-                  onClick={() => setTargetType('all')}
+                  type="button"
+                  onClick={(e) => {
+                    e.preventDefault()
+                    e.stopPropagation()
+                    setTargetType('all')
+                  }}
                   className={`flex items-center justify-center gap-2 px-4 py-3 rounded-lg border transition-all ${
                     targetType === 'all'
                       ? 'bg-amber-600 border-amber-600 text-white'
@@ -258,7 +263,12 @@ export default function AdminNotificationsPage() {
                   All Users
                 </button>
                 <button
-                  onClick={() => setTargetType('artist')}
+                  type="button"
+                  onClick={(e) => {
+                    e.preventDefault()
+                    e.stopPropagation()
+                    setTargetType('artist')
+                  }}
                   className={`flex items-center justify-center gap-2 px-4 py-3 rounded-lg border transition-all ${
                     targetType === 'artist'
                       ? 'bg-amber-600 border-amber-600 text-white'
@@ -269,7 +279,12 @@ export default function AdminNotificationsPage() {
                   Artists
                 </button>
                 <button
-                  onClick={() => setTargetType('collector')}
+                  type="button"
+                  onClick={(e) => {
+                    e.preventDefault()
+                    e.stopPropagation()
+                    setTargetType('collector')
+                  }}
                   className={`flex items-center justify-center gap-2 px-4 py-3 rounded-lg border transition-all ${
                     targetType === 'collector'
                       ? 'bg-amber-600 border-amber-600 text-white'
@@ -280,7 +295,12 @@ export default function AdminNotificationsPage() {
                   Collectors
                 </button>
                 <button
-                  onClick={() => setTargetType('specific')}
+                  type="button"
+                  onClick={(e) => {
+                    e.preventDefault()
+                    e.stopPropagation()
+                    setTargetType('specific')
+                  }}
                   className={`flex items-center justify-center gap-2 px-4 py-3 rounded-lg border transition-all ${
                     targetType === 'specific'
                       ? 'bg-amber-600 border-amber-600 text-white'
@@ -312,7 +332,12 @@ export default function AdminNotificationsPage() {
             )}
 
             <button
-              onClick={sendNotification}
+              type="button"
+              onClick={(e) => {
+                e.preventDefault()
+                e.stopPropagation()
+                sendNotification()
+              }}
               disabled={sending}
               className="w-full flex items-center justify-center gap-2 bg-amber-600 hover:bg-amber-500 text-white py-3.5 rounded-lg font-medium transition-all disabled:opacity-50 disabled:cursor-not-allowed"
             >
