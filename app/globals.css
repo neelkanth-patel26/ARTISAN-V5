@@ -144,9 +144,9 @@
   /* Force fullscreen for PWA */
   @media all and (display-mode: fullscreen) {
     html, body {
-      height: 100vh !important;
-      height: 100dvh !important; /* Dynamic viewport height */
-      overflow: auto;
+      height: auto !important;
+      min-height: 100vh;
+      overflow: visible;
     }
 
     /* Hide any browser UI that might still show */
@@ -158,21 +158,13 @@
   /* Android Chrome PWA specific styles */
   @media all and (display-mode: standalone) {
     html, body {
-      height: 100vh !important;
-      height: 100dvh !important;
-      overflow: auto;
+      height: auto !important;
+      min-height: 100vh;
+      overflow: visible;
       /* Prevent overscroll on Android */
       overscroll-behavior: none;
       /* Prevent pull-to-refresh */
       overscroll-behavior-y: none;
-    }
-
-    /* Android Chrome specific viewport handling */
-    @supports (-webkit-touch-callout: none) {
-      html, body {
-        /* Use CSS custom property for dynamic viewport height */
-        height: calc(var(--vh, 1vh) * 100);
-      }
     }
 
     /* Hide Chrome's pull-to-refresh indicator */
