@@ -212,9 +212,9 @@ This project is licensed under the MIT License.
 Made with ❤️ by LJ University Students | Group-1
 
 Special Thanks to:
-Urmi Thakkar    : https://www.instagram.com/urmi_thakkar_26
-Reese Whiteman  : https://www.instagram.com/reese.whiteman28
-Jay Shah        : No public Account 
-Adity Panchal   : No public Account 
+- Urmi Thakkar    : https://www.instagram.com/urmi_thakkar_26
+- Reese Whiteman  : https://www.instagram.com/reese.whiteman28
+- Jay Shah        : No public Account 
+- Adity Panchal   : No public Account 
 
-Gaming Network Studio : https://gnstudioxrage.wixstudio.com/gamingnetworkstudio
+- Gaming Network Studio : https://gnstudioxrage.wixstudio.com/gamingnetworkstudio
