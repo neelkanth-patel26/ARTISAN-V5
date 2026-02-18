@@ -81,7 +81,12 @@ export function Navigation() {
             </div>
           )}
           <button
-            onClick={() => setIsMenuOpen(!isMenuOpen)}
+            type="button"
+            onClick={(e) => {
+              e.preventDefault()
+              e.stopPropagation()
+              setIsMenuOpen(!isMenuOpen)
+            }}
             className="rounded-lg p-2 text-neutral-400 transition-all duration-300 hover:bg-neutral-800/30 hover:text-white"
           >
             <Menu size={18} strokeWidth={1} className="md:h-5 md:w-5" />
@@ -114,8 +119,13 @@ export function Navigation() {
                     </div>
                     <h3 className="text-xl font-light text-white/90 tracking-[0.2em]" style={{ fontFamily: 'Oughter, serif' }}>ARTISAN</h3>
                   </div>
-                  <button 
-                    onClick={() => setIsMenuOpen(false)}
+                  <button
+                    type="button"
+                    onClick={(e) => {
+                      e.preventDefault()
+                      e.stopPropagation()
+                      setIsMenuOpen(false)
+                    }}
                     className="text-neutral-500 hover:text-white transition-colors p-2 hover:bg-neutral-800/50 rounded-lg"
                   >
                     <X size={22} strokeWidth={1.5} />

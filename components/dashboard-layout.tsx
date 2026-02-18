@@ -177,7 +177,12 @@ export function DashboardLayout({ children, navItems, role }: DashboardLayoutPro
           </span>
         </Link>
         <button
-          onClick={() => setSidebarOpen(!sidebarOpen)}
+          type="button"
+          onClick={(e) => {
+            e.preventDefault()
+            e.stopPropagation()
+            setSidebarOpen(!sidebarOpen)
+          }}
           className="rounded-lg p-2 text-amber-600 transition-colors hover:bg-amber-600/10"
         >
           {sidebarOpen ? <X size={24} /> : <Menu size={24} />}
