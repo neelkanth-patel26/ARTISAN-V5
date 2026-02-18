@@ -215,14 +215,22 @@ export function Navigation() {
                         <>
                           <Link
                             href="/login"
-                            onClick={() => setIsMenuOpen(false)}
+                            onClick={(e) => {
+                              e.preventDefault()
+                              setIsMenuOpen(false)
+                              window.location.href = '/login'
+                            }}
                             className="block w-full py-3 px-4 bg-amber-600 text-white text-center font-medium rounded-lg transition-colors hover:bg-amber-500"
                           >
                             Sign In
                           </Link>
                           <Link
                             href="/signup"
-                            onClick={() => setIsMenuOpen(false)}
+                            onClick={(e) => {
+                              e.preventDefault()
+                              setIsMenuOpen(false)
+                              window.location.href = '/signup'
+                            }}
                             className="block w-full py-3 px-4 bg-neutral-800 text-white text-center font-medium rounded-lg transition-colors border border-neutral-700 hover:bg-neutral-700"
                           >
                             Sign Up
