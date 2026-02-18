@@ -113,7 +113,13 @@ export default function LoginPage() {
         transition={{ duration: 12, repeat: Infinity, ease: "easeInOut" }}
       />
 
-      <button onClick={() => router.back()} className="absolute top-8 left-8 z-50 group">
+      <button onClick={() => {
+        if (window.history.length > 1) {
+          router.back()
+        } else {
+          router.push('/')
+        }
+      }} className="absolute top-8 left-8 z-50 group">
         <motion.div 
           className="flex items-center gap-2 text-neutral-400 hover:text-amber-600 transition-colors"
           whileHover={!isMobile ? { x: -5 } : undefined}
