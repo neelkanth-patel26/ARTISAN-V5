@@ -14,7 +14,6 @@ A modern, feature-rich museum web application built with Next.js 16, featuring a
 - 📱 **Progressive Web App (PWA)** - Install and use offline
 - 🔔 **Push Notifications** - Stay updated with latest exhibitions
 - 🎨 **Interactive UI** - Smooth animations with Framer Motion & GSAP
-- 🌓 **Dark/Light Mode** - Theme switching support
 - 💳 **Checkout System** - Integrated payment processing
 - 📊 **Analytics Dashboard** - Comprehensive admin panel
 - 🔐 **Authentication** - Secure login with Supabase
