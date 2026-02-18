@@ -93,7 +93,7 @@ export function DashboardLayout({ children, navItems, role }: DashboardLayoutPro
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-neutral-950 via-neutral-900 to-neutral-950 text-white">
+    <div className="min-h-screen bg-gradient-to-b from-neutral-950 via-neutral-900 to-neutral-950 text-white overflow-x-hidden">
       {/* Desktop Sidebar */}
       <aside className="fixed inset-y-0 left-0 z-40 hidden w-64 flex-col border-r border-neutral-800 bg-neutral-950 backdrop-blur-xl lg:flex">
         <div className="flex min-h-0 flex-1 flex-col">
@@ -282,8 +282,8 @@ export function DashboardLayout({ children, navItems, role }: DashboardLayoutPro
       </nav>
 
       {/* Main Content */}
-      <main className="relative min-h-screen pb-20 pt-16 lg:pb-0 lg:pt-0 lg:pl-64">
-        <div className="min-h-screen">
+      <main className="relative min-h-screen pb-20 pt-16 lg:pb-0 lg:pt-0 lg:pl-64 overflow-x-hidden">
+        <div className="min-h-screen overflow-x-hidden">
           {loading ? (
             <div className="p-6 lg:p-10 space-y-6">
               <div className="h-8 bg-neutral-800 rounded w-1/3 animate-pulse" />
