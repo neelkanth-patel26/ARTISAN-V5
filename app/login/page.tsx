@@ -25,6 +25,8 @@ export default function LoginPage() {
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault()
+    if (loading) return
+    
     setLoading(true)
     try {
       const user = await signIn(email, password)
@@ -49,29 +51,28 @@ export default function LoginPage() {
         }
       )
       
-      // Check for stored redirect
+      // Immediate redirect
       const redirectUrl = typeof window !== 'undefined' ? localStorage.getItem('auth_redirect') : null
       if (redirectUrl) {
         localStorage.removeItem('auth_redirect')
-        router.push(redirectUrl)
+        window.location.href = redirectUrl
         return
       }
       
       // Default redirects based on role
-      if (user.user_role === 'admin') router.push('/dashboard/admin')
-      else if (user.user_role === 'artist') router.push('/dashboard/artist')
-      else if (user.user_role === 'collector') router.push('/dashboard/collector')
-      else router.push('/')
+      if (user.user_role === 'admin') window.location.href = '/dashboard/admin'
+      else if (user.user_role === 'artist') window.location.href = '/dashboard/artist'
+      else if (user.user_role === 'collector') window.location.href = '/dashboard/collector'
+      else window.location.href = '/'
     } catch (error: any) {
-      // Check if account is suspended or banned
+      setLoading(false)
+      
       if (error.message?.includes('ACCOUNT_SUSPENDED')) {
-        setLoading(false)
-        router.push('/account-suspended?status=suspended')
+        window.location.href = '/account-suspended?status=suspended'
         return
       }
       if (error.message?.includes('ACCOUNT_BANNED')) {
-        setLoading(false)
-        router.push('/account-suspended?status=banned')
+        window.location.href = '/account-suspended?status=banned'
         return
       }
       
@@ -95,8 +96,6 @@ export default function LoginPage() {
           }
         }
       )
-    } finally {
-      setLoading(false)
     }
   }
 
