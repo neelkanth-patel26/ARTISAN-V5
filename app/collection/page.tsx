@@ -19,7 +19,7 @@ export default function CollectionPage() {
   ]
 
   return (
-    <main className="min-h-screen bg-gradient-to-b from-neutral-950 via-neutral-900 to-neutral-950">
+    <main className="min-h-screen bg-gradient-to-b from-neutral-950 via-neutral-900 to-neutral-950 overflow-y-auto" style={{ height: '100vh' }}>
       <Navigation />
       
       <div className="relative pt-32 pb-16 text-center px-4">
