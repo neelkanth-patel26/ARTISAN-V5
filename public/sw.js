@@ -1,11 +1,10 @@
-const CACHE_NAME = 'artisan-v2'
+const CACHE_NAME = 'artisan-v3'
 const OFFLINE_URL = '/offline.html'
 
 // Cache all essential resources
 const STATIC_CACHE_URLS = [
   '/',
   '/about',
-  '/collection',
   '/exhibitions',
   '/visit',
   '/gallery',

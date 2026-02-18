@@ -113,17 +113,23 @@
 
   /* PWA Mode Specific Styles */
   body.pwa-mode {
-    /* Additional PWA-specific styles */
     -webkit-touch-callout: none;
     -webkit-user-select: none;
     -khtml-user-select: none;
     -moz-user-select: none;
     -ms-user-select: none;
     user-select: none;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  body.pwa-mode button,
+  body.pwa-mode a,
+  body.pwa-mode [role="button"] {
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
   }
 
   body.pwa-mode * {
-    /* Re-enable selection for specific elements */
     -webkit-user-select: text;
     -khtml-user-select: text;
     -moz-user-select: text;

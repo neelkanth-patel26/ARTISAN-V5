@@ -2,7 +2,7 @@
   "name": "Artisan Museum",
   "short_name": "Artisan",
   "description": "Discover exceptional art and connect with artists worldwide",
-  "version": "V5.57.1Q",
+  "version": "V5.57.1",
   "author": "Gaming Network Studio Media Group",
   "start_url": "/?source=pwa",
   "scope": "/",
@@ -73,13 +73,6 @@
       "short_name": "Gallery",
       "description": "Browse artworks",
       "url": "/gallery?source=shortcut",
-      "icons": [{ "src": "/icon-192.png", "sizes": "192x192" }]
-    },
-    {
-      "name": "Collection",
-      "short_name": "Collection",
-      "description": "Explore art categories",
-      "url": "/collection?source=shortcut",
       "icons": [{ "src": "/icon-192.png", "sizes": "192x192" }]
     }
   ]

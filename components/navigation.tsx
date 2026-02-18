@@ -39,7 +39,6 @@ export function Navigation() {
 
   const navItems = [
     { name: 'Home', path: '/' },
-    { name: 'Collection', path: '/collection' },
     { name: 'Gallery', path: '/gallery' },
     { name: 'Artists', path: '/artist' },
     { name: 'Exhibitions', path: '/exhibitions' },
