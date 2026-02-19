@@ -78,39 +78,36 @@ class PushNotificationService {
       throw new Error('Notification permission denied')
     }
 
-    // Wait for service worker to be ready
-    const registration = await navigator.serviceWorker.ready
-    
-    // Check for existing subscription
-    let subscription = await registration.pushManager.getSubscription()
-    
-    // Only create new subscription if none exists
-    if (!subscription) {
-      subscription = await registration.pushManager.subscribe({
-        userVisibleOnly: true,
-        applicationServerKey: this.urlBase64ToUint8Array(this.vapidPublicKey)
+    try {
+      const registration = await navigator.serviceWorker.ready
+      let subscription = await registration.pushManager.getSubscription()
+      
+      if (!subscription) {
+        subscription = await registration.pushManager.subscribe({
+          userVisibleOnly: true,
+          applicationServerKey: this.urlBase64ToUint8Array(this.vapidPublicKey)
+        })
+      }
+
+      const { data: { session } } = await supabase.auth.getSession()
+      if (!session) throw new Error('Not authenticated')
+
+      const response = await fetch('/api/notifications/subscribe', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${session.access_token}`
+        },
+        body: JSON.stringify(subscription.toJSON())
       })
+
+      if (!response.ok) throw new Error('Failed to save subscription')
+    } catch (error: any) {
+      if (error.message?.includes('Registration failed')) {
+        throw new Error('Push service unavailable. Please check your internet connection.')
+      }
+      throw error
     }
-
-    const subscriptionData = subscription.toJSON()
-    const deviceType = this.getDeviceType()
-
-    // Save to database
-    const { error } = await supabase.from('push_subscriptions').upsert({
-      user_id: userId,
-      endpoint: subscriptionData.endpoint!,
-      p256dh: subscriptionData.keys!.p256dh!,
-      auth: subscriptionData.keys!.auth!,
-      device_type: deviceType,
-      user_agent: navigator.userAgent,
-      is_active: true,
-      created_at: new Date().toISOString(),
-      updated_at: new Date().toISOString()
-    }, {
-      onConflict: 'user_id,endpoint'
-    })
-
-    if (error) throw error
   }
 
   async unsubscribe(userId: string): Promise<void> {
