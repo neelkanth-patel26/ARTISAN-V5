@@ -6,7 +6,7 @@ import Link from 'next/link'
 import { getCurrentUser } from '@/lib/auth'
 import { supabase } from '@/lib/supabase'
 import { toast } from 'sonner'
-import { CreditCard, Lock, Loader2, CheckCircle2, QrCode } from 'lucide-react'
+import { CreditCard, Lock, Loader2, CheckCircle2, QrCode, X } from 'lucide-react'
 import { motion } from 'framer-motion'
 import { sendPurchaseEmails, sendSupportEmails } from '@/lib/email/sender'
 import { triggerNotification } from '@/lib/notification-triggers'
@@ -31,6 +31,7 @@ function CheckoutContent() {
   const [name, setName] = useState('')
   const [paymentMethod, setPaymentMethod] = useState<'card' | 'upi'>('card')
   const [artistUpiId, setArtistUpiId] = useState('')
+  const [failed, setFailed] = useState(false)
 
   const isSupport = type === 'support'
   const baseAmount = isSupport ? parseFloat(amount || '0') : (artwork?.price || 0)
@@ -192,6 +193,7 @@ function CheckoutContent() {
       setSuccess(true)
     } catch (err: any) {
       toast.error(err.message || 'Payment failed')
+      setFailed(true)
       setPaying(false)
     }
   }
@@ -229,6 +231,43 @@ function CheckoutContent() {
               className="w-full py-3 rounded-lg text-gray-600 hover:text-gray-900 font-medium transition-colors"
             >
               Continue browsing
+            </button>
+          </div>
+        </motion.div>
+      </main>
+    )
+  }
+
+  if (failed) {
+    return (
+      <main className="min-h-screen bg-white flex items-center justify-center px-4">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="max-w-md w-full text-center"
+        >
+          <motion.div
+            initial={{ scale: 0 }}
+            animate={{ scale: 1 }}
+            transition={{ delay: 0.1, type: 'spring' }}
+            className="mx-auto mb-6 flex h-16 w-16 items-center justify-center rounded-full bg-red-100"
+          >
+            <X className="text-red-600" size={36} />
+          </motion.div>
+          <h1 className="text-2xl font-bold text-gray-900 mb-2">Payment failed</h1>
+          <p className="text-gray-600 mb-8">Transaction could not be completed. Please try again.</p>
+          <div className="space-y-3">
+            <button
+              onClick={() => { setFailed(false); setPaying(false) }}
+              className="w-full py-3 rounded-lg bg-purple-600 hover:bg-purple-700 text-white font-medium transition-colors"
+            >
+              Try again
+            </button>
+            <button
+              onClick={() => router.push('/gallery')}
+              className="w-full py-3 rounded-lg text-gray-600 hover:text-gray-900 font-medium transition-colors"
+            >
+              Back to gallery
             </button>
           </div>
         </motion.div>
