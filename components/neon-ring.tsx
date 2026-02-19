@@ -24,8 +24,8 @@ export function NeonRing() {
   const ringSize = isMobile ? (isPWA ? '310px' : '290px') : '700px'
   const borderWidth = isMobile ? (isPWA ? '3px' : '4px') : '6px'
   const glowIntensity = isPWA ? {
-    initial: '0 0 60px rgba(217, 119, 6, 0.8), 0 0 90px rgba(217, 119, 6, 0.6), inset 0 0 60px rgba(217, 119, 6, 0.4)',
-    peak: '0 0 120px rgba(217, 119, 6, 1), 0 0 180px rgba(217, 119, 6, 0.9), inset 0 0 100px rgba(217, 119, 6, 0.7)',
+    initial: '0 0 80px rgba(217, 119, 6, 1), 0 0 120px rgba(217, 119, 6, 0.9), inset 0 0 80px rgba(217, 119, 6, 0.7)',
+    peak: '0 0 140px rgba(217, 119, 6, 1), 0 0 200px rgba(217, 119, 6, 1), inset 0 0 120px rgba(217, 119, 6, 0.9)',
   } : isMobile ? {
     initial: '0 0 40px rgba(217, 119, 6, 0.5), 0 0 60px rgba(217, 119, 6, 0.3), inset 0 0 40px rgba(217, 119, 6, 0.2)',
     peak: '0 0 60px rgba(217, 119, 6, 0.7), 0 0 90px rgba(217, 119, 6, 0.5), inset 0 0 60px rgba(217, 119, 6, 0.3)',
@@ -43,7 +43,7 @@ export function NeonRing() {
           height: ringSize,
           borderWidth,
           borderStyle: 'solid',
-          borderColor: 'rgba(217, 119, 6, 0.8)',
+          borderColor: isPWA ? 'rgba(217, 119, 6, 1)' : 'rgba(217, 119, 6, 0.8)',
           boxShadow: isPWA || isMobile ? glowIntensity.initial : undefined
         }}
         animate={isPWA || isMobile ? {} : {
