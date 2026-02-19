@@ -84,16 +84,13 @@ class PushNotificationService {
     // Check for existing subscription
     let subscription = await registration.pushManager.getSubscription()
     
-    // Unsubscribe if exists to get fresh subscription
-    if (subscription) {
-      await subscription.unsubscribe()
+    // Only create new subscription if none exists
+    if (!subscription) {
+      subscription = await registration.pushManager.subscribe({
+        userVisibleOnly: true,
+        applicationServerKey: this.urlBase64ToUint8Array(this.vapidPublicKey)
+      })
     }
-    
-    // Create new subscription
-    subscription = await registration.pushManager.subscribe({
-      userVisibleOnly: true,
-      applicationServerKey: this.urlBase64ToUint8Array(this.vapidPublicKey)
-    })
 
     const subscriptionData = subscription.toJSON()
     const deviceType = this.getDeviceType()

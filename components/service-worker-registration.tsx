@@ -10,6 +10,9 @@ export function ServiceWorkerRegistration() {
         .then(async (registration) => {
           console.log('PWA: Service Worker registered')
 
+          // Wait for service worker to be active
+          await navigator.serviceWorker.ready
+
           // Request notification permission
           if ('Notification' in window && Notification.permission === 'default') {
             const permission = await Notification.requestPermission()
@@ -19,21 +22,26 @@ export function ServiceWorkerRegistration() {
           // Subscribe to push notifications
           if ('PushManager' in window && Notification.permission === 'granted') {
             try {
-              const vapidKey = 'BPaOdiaILDPWhKVh5aep1uB6oGi8I2WTdBj1VIaxxZicpLeWmHKUwaFmGNhsHfbW7baaOjfFJxXWZFHczhdndck'
+              // Check for existing subscription first
+              let subscription = await registration.pushManager.getSubscription()
               
-              const subscription = await registration.pushManager.subscribe({
-                userVisibleOnly: true,
-                applicationServerKey: vapidKey
-              })
+              if (!subscription) {
+                const vapidKey = 'BPaOdiaILDPWhKVh5aep1uB6oGi8I2WTdBj1VIaxxZicpLeWmHKUwaFmGNhsHfbW7baaOjfFJxXWZFHczhdndck'
+                
+                subscription = await registration.pushManager.subscribe({
+                  userVisibleOnly: true,
+                  applicationServerKey: vapidKey
+                })
 
-              // Send subscription to server
-              await fetch('/api/notifications/subscribe', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(subscription)
-              })
+                // Send subscription to server
+                await fetch('/api/notifications/subscribe', {
+                  method: 'POST',
+                  headers: { 'Content-Type': 'application/json' },
+                  body: JSON.stringify(subscription)
+                })
 
-              console.log('Push subscription successful')
+                console.log('Push subscription successful')
+              }
             } catch (error) {
               console.error('Push subscription failed:', error)
             }
