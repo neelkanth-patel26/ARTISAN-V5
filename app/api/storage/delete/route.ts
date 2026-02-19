@@ -11,15 +11,31 @@ export async function DELETE(req: NextRequest) {
     }
 
     const uploadsDir = path.join(process.cwd(), 'public', 'uploads')
-    const filePath = path.join(uploadsDir, filename)
+    
+    // Search for file in all subdirectories
+    const findAndDelete = (dir: string): boolean => {
+      const items = fs.readdirSync(dir, { withFileTypes: true })
+      
+      for (const item of items) {
+        const fullPath = path.join(dir, item.name)
+        
+        if (item.isDirectory()) {
+          if (findAndDelete(fullPath)) return true
+        } else if (item.name === filename) {
+          fs.unlinkSync(fullPath)
+          return true
+        }
+      }
+      return false
+    }
 
-    if (!fs.existsSync(filePath)) {
+    const deleted = findAndDelete(uploadsDir)
+    
+    if (!deleted) {
       return NextResponse.json({ error: 'File not found' }, { status: 404 })
     }
 
-    fs.unlinkSync(filePath)
-
-    return NextResponse.json({ message: 'File deleted' })
+    return NextResponse.json({ message: 'File deleted successfully' })
   } catch (error: any) {
     return NextResponse.json({ error: error.message }, { status: 500 })
   }

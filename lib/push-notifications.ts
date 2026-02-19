@@ -163,9 +163,8 @@ class PushNotificationService {
     new Notification(title, {
       body,
       icon: '/icon-192.png',
-      badge: '/icon-192.png',
-      vibrate: [200, 100, 200]
-    })
+      badge: '/icon-192.png'
+    } as NotificationOptions)
   }
 
   private getDeviceType(): 'android' | 'ios' | 'desktop' | 'other' {
@@ -178,7 +177,7 @@ class PushNotificationService {
     return 'other'
   }
 
-  private urlBase64ToUint8Array(base64String: string): Uint8Array {
+  private urlBase64ToUint8Array(base64String: string): BufferSource {
     const padding = '='.repeat((4 - base64String.length % 4) % 4)
     const base64 = (base64String + padding).replace(/-/g, '+').replace(/_/g, '/')
     const rawData = window.atob(base64)
@@ -186,7 +185,7 @@ class PushNotificationService {
     for (let i = 0; i < rawData.length; ++i) {
       outputArray[i] = rawData.charCodeAt(i)
     }
-    return outputArray
+    return outputArray.buffer
   }
 }
 

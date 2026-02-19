@@ -40,18 +40,41 @@ export default function StorageManagement() {
   }
 
   const deleteFile = async (filename: string) => {
-    if (!confirm(`Delete ${filename}?`)) return
+    const confirmed = await new Promise<boolean>((resolve) => {
+      const modal = document.createElement('div')
+      modal.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.8);display:flex;align-items:center;justify-content:center;z-index:9999'
+      modal.innerHTML = `
+        <div style="background:#171717;border:1px solid #404040;border-radius:16px;padding:24px;max-width:400px;width:90%">
+          <div style="width:48px;height:48px;border-radius:50%;background:rgba(239,68,68,0.1);display:flex;align-items:center;justify-content:center;margin:0 auto 16px">
+            <svg width="24" height="24" fill="none" stroke="#ef4444" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2M10 11v6M14 11v6"/></svg>
+          </div>
+          <h3 style="color:#fff;font-size:18px;font-weight:600;text-align:center;margin-bottom:8px">Delete File?</h3>
+          <p style="color:#a3a3a3;font-size:14px;text-align:center;margin-bottom:24px">This will permanently delete <strong style="color:#fff">${filename}</strong></p>
+          <div style="display:flex;gap:12px">
+            <button id="cancel" style="flex:1;padding:12px;background:#262626;color:#fff;border:none;border-radius:8px;font-weight:500;cursor:pointer">Cancel</button>
+            <button id="confirm" style="flex:1;padding:12px;background:#ef4444;color:#fff;border:none;border-radius:8px;font-weight:500;cursor:pointer">Delete</button>
+          </div>
+        </div>
+      `
+      document.body.appendChild(modal)
+      modal.querySelector('#cancel')?.addEventListener('click', () => { document.body.removeChild(modal); resolve(false) })
+      modal.querySelector('#confirm')?.addEventListener('click', () => { document.body.removeChild(modal); resolve(true) })
+    })
+    
+    if (!confirmed) return
+    
     try {
       const response = await fetch('/api/storage/delete', {
         method: 'DELETE',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ filename })
       })
-      if (!response.ok) throw new Error('Delete failed')
-      toast.success('File deleted')
+      const data = await response.json()
+      if (!response.ok) throw new Error(data.error)
+      toast.success('File deleted successfully')
       loadFiles()
-    } catch (error) {
-      toast.error('Failed to delete file')
+    } catch (error: any) {
+      toast.error(error.message || 'Failed to delete file')
     }
   }
 
