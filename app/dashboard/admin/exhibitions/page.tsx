@@ -53,6 +53,7 @@ export default function AdminExhibitions() {
     try {
       const formData = new FormData()
       formData.append('file', file)
+      formData.append('bucket', 'exhibitions')
 
       const response = await fetch('/api/upload', {
         method: 'POST',

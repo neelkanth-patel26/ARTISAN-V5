@@ -63,27 +63,39 @@ export default function ArtistSettings() {
 
   const handleAvatarUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]
-    if (file) {
-      const reader = new FileReader()
-      reader.onloadend = () => {
-        const result = reader.result as string
-        setAvatarPreview(result)
-        setAvatarUrl(result)
-      }
-      reader.readAsDataURL(file)
+    if (!file) return
+
+    try {
+      const formData = new FormData()
+      formData.append('file', file)
+      formData.append('bucket', 'profiles')
+      const response = await fetch('/api/upload', { method: 'POST', body: formData })
+      if (!response.ok) throw new Error('Upload failed')
+      const { url } = await response.json()
+      setAvatarPreview(url)
+      setAvatarUrl(url)
+      toast.success('Avatar uploaded')
+    } catch (error) {
+      toast.error('Failed to upload avatar')
     }
   }
 
   const handleQRUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]
-    if (file) {
-      const reader = new FileReader()
-      reader.onloadend = () => {
-        const result = reader.result as string
-        setQrPreview(result)
-        setQrCodeUrl(result)
-      }
-      reader.readAsDataURL(file)
+    if (!file) return
+
+    try {
+      const formData = new FormData()
+      formData.append('file', file)
+      formData.append('bucket', 'profiles')
+      const response = await fetch('/api/upload', { method: 'POST', body: formData })
+      if (!response.ok) throw new Error('Upload failed')
+      const { url } = await response.json()
+      setQrPreview(url)
+      setQrCodeUrl(url)
+      toast.success('QR code uploaded')
+    } catch (error) {
+      toast.error('Failed to upload QR code')
     }
   }
 

@@ -3,7 +3,7 @@
 import { DashboardLayout } from '@/components/dashboard-layout'
 import { PageHeader } from '@/components/dashboard'
 import { DASHBOARD_NAV } from '@/lib/dashboard-config'
-import { User, Lock, Save, Mail, Phone, MapPin, Calendar, Shield, Activity, Bell } from 'lucide-react'
+import { User, Lock, Save, Mail, Phone, MapPin, Calendar, Shield, Activity, Bell, Upload } from 'lucide-react'
 import { useState, useEffect } from 'react'
 import { supabase } from '@/lib/supabase'
 import { getCurrentUser } from '@/lib/auth'
@@ -13,6 +13,7 @@ import { motion } from 'framer-motion'
 export default function AdminSettings() {
   const [loading, setLoading] = useState(false)
   const [user, setUser] = useState<any>(null)
+  const [avatarUrl, setAvatarUrl] = useState<string | null>(null)
   const [profileForm, setProfileForm] = useState({
     full_name: '',
     email: '',
@@ -42,6 +43,7 @@ export default function AdminSettings() {
         
         if (profile) {
           setUser({ ...currentUser, profile })
+          setAvatarUrl(profile.avatar_url)
           setProfileForm({
             full_name: profile.full_name || '',
             email: profile.email || '',
@@ -53,6 +55,25 @@ export default function AdminSettings() {
       }
     } catch (error: any) {
       toast.error('Failed to load user data')
+    }
+  }
+
+  const handleAvatarUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0]
+    if (!file) return
+
+    try {
+      const formData = new FormData()
+      formData.append('file', file)
+      formData.append('bucket', 'profiles')
+      const response = await fetch('/api/upload', { method: 'POST', body: formData })
+      if (!response.ok) throw new Error('Upload failed')
+      const { url } = await response.json()
+      setAvatarUrl(url)
+      await supabase.from('users').update({ avatar_url: url }).eq('id', user.user_id)
+      toast.success('Avatar updated')
+    } catch (error) {
+      toast.error('Failed to upload avatar')
     }
   }
 
@@ -139,8 +160,20 @@ export default function AdminSettings() {
           >
             <div className="bg-neutral-900 border border-neutral-800 rounded-xl p-6">
               <div className="flex flex-col items-center text-center mb-6">
-                <div className="flex h-24 w-24 items-center justify-center rounded-full bg-neutral-700 text-3xl font-bold text-white mb-4">
-                  {(profileForm.full_name || 'A').charAt(0).toUpperCase()}
+                <div className="relative mb-4">
+                  {avatarUrl ? (
+                    <img src={avatarUrl} alt="Profile" className="h-24 w-24 rounded-full object-cover" />
+                  ) : (
+                    <div className="flex h-24 w-24 items-center justify-center rounded-full bg-neutral-700 text-3xl font-bold text-white">
+                      {(profileForm.full_name || 'A').charAt(0).toUpperCase()}
+                    </div>
+                  )}
+                  <label className="absolute bottom-0 right-0 cursor-pointer">
+                    <div className="p-2 bg-neutral-700 hover:bg-neutral-600 rounded-full transition-colors">
+                      <Upload size={14} className="text-white" />
+                    </div>
+                    <input type="file" accept="image/*" onChange={handleAvatarUpload} className="hidden" />
+                  </label>
                 </div>
                 <h3 className="text-xl font-semibold text-white mb-1">{profileForm.full_name || 'Admin User'}</h3>
                 <p className="text-sm text-neutral-400 mb-2">{profileForm.email}</p>
