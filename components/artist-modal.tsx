@@ -149,7 +149,13 @@ export function ArtistModal({ artist, onClose }: ArtistModalProps) {
     if (paymentMethod === 'gateway') {
       router.push(`/checkout?type=support&artistId=${artist?.id}&amount=${amount}`)
     } else {
-      setShowSupport(true)
+      if (artist?.upi_qr_code) {
+        setShowSupport(true)
+      } else if (artist?.upi_id) {
+        const upiUrl = `upi://pay?pa=${artist.upi_id}&pn=${encodeURIComponent(artist.full_name)}&am=${amount}&cu=INR`
+        window.location.href = upiUrl
+        toast.success('Opening UPI app...')
+      }
     }
   }
 
@@ -446,7 +452,7 @@ export function ArtistModal({ artist, onClose }: ArtistModalProps) {
                     {paymentMethod === 'upi' && artist.upi_id && !showSupport && (
                       <div className="bg-neutral-800/50 p-4 rounded-lg border border-neutral-700">
                         <p className="text-sm text-neutral-400 mb-2">UPI ID</p>
-                        <code className="text-amber-600 font-mono text-lg">{artist.upi_id}</code>
+                        <code className="text-amber-600 font-mono text-sm sm:text-base break-all">{artist.upi_id}</code>
                       </div>
                     )}
 
@@ -461,7 +467,10 @@ export function ArtistModal({ artist, onClose }: ArtistModalProps) {
                       onClick={handleSupport}
                       className="w-full bg-amber-600 hover:bg-amber-500 text-white py-3.5 rounded-lg font-medium transition-all shadow-lg shadow-amber-600/20"
                     >
-                      {paymentMethod === 'upi' ? 'Show QR Code' : 'Proceed to Payment'}
+                      {paymentMethod === 'upi' 
+                        ? (artist.upi_qr_code ? 'Show QR Code' : 'Pay via UPI')
+                        : 'Proceed to Payment'
+                      }
                     </button>
                   </div>
                 </div>
