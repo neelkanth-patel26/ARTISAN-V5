@@ -108,30 +108,20 @@ function CheckoutContent() {
         const artistReceives = (baseAmount - (baseAmount * platformFeeRate)).toFixed(2)
         const upiUrl = `upi://pay?pa=${artistUpiId}&pn=${encodeURIComponent(isSupport ? artist?.full_name || '' : artwork?.artist_name || '')}&am=${artistReceives}&cu=INR&tn=${isSupport ? 'Support' : 'Artwork'}%20Payment`
         
-        if (isSupport && artistId) {
-          await supabase.from('transactions').insert({
-            transaction_code: 'SUP-' + Date.now(),
-            buyer_id: user.user_id,
-            artist_id: artistId,
-            amount: totalAmount,
-            platform_fee: platformFee,
-            artist_earnings: artistEarnings,
-            payment_method: 'upi',
-            status: 'completed',
-            transaction_type: 'support'
-          })
-        } else if (artwork) {
-          await supabase.rpc('create_transaction', {
-            p_buyer_id: user.user_id,
-            p_artwork_id: artwork.id,
-            p_amount: totalAmount,
-            p_payment_method: 'upi',
-          })
-        }
-        
         window.location.href = upiUrl
         toast.success('Opening UPI app...')
-        setTimeout(() => setSuccess(true), 2000)
+        
+        // Wait for user to return and confirm payment
+        setTimeout(() => {
+          setPaying(false)
+          const confirmed = window.confirm('Have you completed the UPI payment?')
+          if (confirmed) {
+            completeUpiTransaction()
+          } else {
+            toast.error('Payment cancelled')
+            setFailed(true)
+          }
+        }, 3000)
         return
       }
       
@@ -194,6 +184,72 @@ function CheckoutContent() {
     } catch (err: any) {
       toast.error(err.message || 'Payment failed')
       setFailed(true)
+      setPaying(false)
+    }
+  }
+
+  const completeUpiTransaction = async () => {
+    const user = getCurrentUser()
+    if (!user?.user_id) return
+    
+    setPaying(true)
+    try {
+      if (isSupport && artistId) {
+        await supabase.from('transactions').insert({
+          transaction_code: 'SUP-' + Date.now(),
+          buyer_id: user.user_id,
+          artist_id: artistId,
+          amount: totalAmount,
+          platform_fee: platformFee,
+          artist_earnings: artistEarnings,
+          payment_method: 'upi',
+          status: 'completed',
+          transaction_type: 'support'
+        })
+        
+        triggerNotification('ARTIST_SUPPORT')
+        
+        if (artist) {
+          await sendSupportEmails({
+            collectorName: user.user_name || 'Collector',
+            collectorEmail: user.email || '',
+            artistName: artist.full_name,
+            artistEmail: '',
+            artistId: artistId,
+            amount: baseAmount,
+            platformFee: platformFee,
+            artistEarnings: artistEarnings,
+            transactionCode: 'SUP-' + Date.now()
+          })
+        }
+      } else if (artwork) {
+        const { data: txId } = await supabase.rpc('create_transaction', {
+          p_buyer_id: user.user_id,
+          p_artwork_id: artwork.id,
+          p_amount: totalAmount,
+          p_payment_method: 'upi',
+        })
+        
+        await sendPurchaseEmails({
+          buyerName: user.user_name || 'Buyer',
+          buyerEmail: user.email || '',
+          artistName: artwork.artist_name,
+          artistEmail: '',
+          artistId: artwork.artist_id,
+          artworkTitle: artwork.title,
+          artworkImage: artwork.image_url,
+          price: baseAmount,
+          platformFee: platformFee,
+          artistEarnings: artistEarnings,
+          transactionCode: txId || 'TXN-' + Date.now()
+        })
+      }
+      
+      setSuccess(true)
+    } catch (err: any) {
+      toast.error(err.message || 'Failed to record transaction')
+      setFailed(true)
+    } finally {
       setPaying(false)
     }
   }
