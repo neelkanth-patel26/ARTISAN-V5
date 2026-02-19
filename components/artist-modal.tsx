@@ -68,10 +68,13 @@ export function ArtistModal({ artist, onClose }: ArtistModalProps) {
       incrementView()
       fetchArtworkCount()
     }
+  }, [artist, user])
+
+  useEffect(() => {
     if (artist && (artist.upi_id || artist.upi_qr_code)) {
       setPaymentMethod('upi')
     }
-  }, [artist, user])
+  }, [artist?.id])
 
   const checkFollowStatus = async () => {
     if (!user || !artist) return
