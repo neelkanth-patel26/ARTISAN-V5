@@ -41,7 +41,7 @@ export default function AdminDashboard() {
   })
   const [pendingArtworks, setPendingArtworks] = useState<any[]>([])
   const [loading, setLoading] = useState(true)
-  const [activeTab, setActiveTab] = useState<'overview' | 'analytics' | 'chat'>('overview')
+  const [activeTab, setActiveTab] = useState<'overview'>('overview')
   const user = getCurrentUser()
 
   useEffect(() => {
@@ -50,26 +50,43 @@ export default function AdminDashboard() {
 
   const loadDashboard = async () => {
     try {
-      const [statsRes, pendingRes] = await Promise.all([
-        supabase.rpc('get_admin_stats'),
-        supabase.rpc('get_pending_artworks'),
+      // Fetch data directly from tables instead of RPC
+      const [usersRes, artworksRes, exhibitionsRes, transactionsRes] = await Promise.all([
+        supabase.from('users').select('id, role'),
+        supabase.from('artworks').select('id, status'),
+        supabase.from('exhibitions').select('id'),
+        supabase.from('transactions').select('amount, platform_fee').eq('status', 'completed')
       ])
 
-      if (statsRes.error) throw statsRes.error
+      const totalUsers = usersRes.data?.length || 0
+      const totalArtists = usersRes.data?.filter(u => u.role === 'artist').length || 0
+      const totalCollectors = usersRes.data?.filter(u => u.role === 'collector').length || 0
+      const totalArtworks = artworksRes.data?.length || 0
+      const pendingArtworks = artworksRes.data?.filter(a => a.status === 'pending').length || 0
+      const totalExhibitions = exhibitionsRes.data?.length || 0
+      const totalRevenue = transactionsRes.data?.reduce((sum, t) => sum + Number(t.platform_fee || 0), 0) || 0
 
-      if (statsRes.data) {
-        const s = statsRes.data
-        setStats({
-          totalUsers: s.totalusers ?? s.totalUsers ?? 0,
-          totalArtists: s.totalartists ?? s.totalArtists ?? 0,
-          totalCollectors: s.totalcollectors ?? s.totalCollectors ?? 0,
-          totalArtworks: s.totalartworks ?? s.totalArtworks ?? 0,
-          pendingArtworks: s.pendingartworks ?? s.pendingArtworks ?? 0,
-          totalExhibitions: s.totalexhibitions ?? s.totalExhibitions ?? 0,
-          totalRevenue: Number(s.totalrevenue ?? s.totalRevenue ?? 0),
-        })
-      }
-      setPendingArtworks((pendingRes.data ?? []).filter(Boolean))
+      setStats({
+        totalUsers,
+        totalArtists,
+        totalCollectors,
+        totalArtworks,
+        pendingArtworks,
+        totalExhibitions,
+        totalRevenue
+      })
+
+      // Get pending artworks with artist info
+      const { data: pending } = await supabase
+        .from('artworks')
+        .select('*, users!artworks_artist_id_fkey(full_name)')
+        .eq('status', 'pending')
+        .order('created_at', { ascending: false })
+
+      setPendingArtworks((pending || []).map(a => ({
+        ...a,
+        artist_name: a.users?.full_name || 'Unknown'
+      })))
     } catch (error: any) {
       console.error('Dashboard load error:', error)
       toast.error('Failed to load dashboard')
@@ -80,11 +97,10 @@ export default function AdminDashboard() {
 
   const handleApprove = async (artworkId: string) => {
     try {
-      const user = await getCurrentUser()
-      const { error } = await supabase.rpc('approve_artwork', {
-        artwork_id: artworkId,
-        admin_id: user?.user_id,
-      })
+      const { error } = await supabase
+        .from('artworks')
+        .update({ status: 'approved' })
+        .eq('id', artworkId)
       if (error) throw error
       toast.success('Artwork approved')
       loadDashboard()
@@ -95,7 +111,10 @@ export default function AdminDashboard() {
 
   const handleReject = async (artworkId: string) => {
     try {
-      const { error } = await supabase.rpc('reject_artwork', { artwork_id: artworkId })
+      const { error } = await supabase
+        .from('artworks')
+        .update({ status: 'rejected' })
+        .eq('id', artworkId)
       if (error) throw error
       toast.success('Artwork rejected')
       loadDashboard()
@@ -140,35 +159,9 @@ export default function AdminDashboard() {
         <div className="flex gap-2 overflow-x-auto">
           <button
             onClick={() => setActiveTab('overview')}
-            className={`px-4 py-2 rounded-lg text-sm font-medium transition-all whitespace-nowrap ${
-              activeTab === 'overview'
-                ? 'bg-amber-600 text-white'
-                : 'bg-neutral-900 text-neutral-400 hover:text-white border border-neutral-800'
-            }`}
+            className="px-4 py-2 rounded-lg text-sm font-medium transition-all whitespace-nowrap bg-amber-600 text-white"
           >
             Overview
-          </button>
-          <button
-            onClick={() => setActiveTab('analytics')}
-            className={`px-4 py-2 rounded-lg text-sm font-medium transition-all whitespace-nowrap flex items-center gap-2 ${
-              activeTab === 'analytics'
-                ? 'bg-amber-600 text-white'
-                : 'bg-neutral-900 text-neutral-400 hover:text-white border border-neutral-800'
-            }`}
-          >
-            <BarChart3 size={16} />
-            Platform Analytics
-          </button>
-          <button
-            onClick={() => setActiveTab('chat')}
-            className={`px-4 py-2 rounded-lg text-sm font-medium transition-all whitespace-nowrap flex items-center gap-2 ${
-              activeTab === 'chat'
-                ? 'bg-amber-600 text-white'
-                : 'bg-neutral-900 text-neutral-400 hover:text-white border border-neutral-800'
-            }`}
-          >
-            <MessageCircle size={16} />
-            Support Chats
           </button>
         </div>
 
@@ -176,9 +169,7 @@ export default function AdminDashboard() {
           <LoadingSpinner />
         ) : (
           <>
-            {activeTab === 'overview' && (
-              <>
-                <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 lg:gap-6">
+            <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 lg:gap-6">
                   {statCards.map((stat, i) => (
                     <motion.div
                       key={stat.label}
@@ -300,21 +291,6 @@ export default function AdminDashboard() {
                     />
                   </motion.div>
                 </div>
-              </>
-            )}
-
-            {activeTab === 'analytics' && user && (
-              <AdvancedAnalytics userId={user.user_id} role="admin" />
-            )}
-
-            {activeTab === 'chat' && (
-              <div className="rounded-xl border border-neutral-800 bg-neutral-900/50 p-6">
-                <h3 className="text-xl font-light text-white mb-4" style={{ fontFamily: 'ForestSmooth, serif' }}>
-                  Active Support Chats
-                </h3>
-                <p className="text-neutral-400 text-sm">Support chat management interface coming soon...</p>
-              </div>
-            )}
           </>
         )}
       </div>

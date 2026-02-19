@@ -13,6 +13,8 @@ function ViewUserModal({ user, onClose, loadUserStats }: any) {
   const [stats, setStats] = useState({ artworks: 0, exhibitions: 0 })
   const [loading, setLoading] = useState(true)
 
+  const getProfileImage = (user: any) => user.avatar_url || null
+
   useEffect(() => {
     loadUserStats(user.id).then((data: any) => {
       setStats(data)
@@ -45,9 +47,13 @@ function ViewUserModal({ user, onClose, loadUserStats }: any) {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           <div className="lg:col-span-1 space-y-6">
             <div className="flex flex-col items-center text-center p-6 bg-neutral-800/50 rounded-xl border border-neutral-800">
-              <div className="flex h-24 w-24 items-center justify-center rounded-full bg-neutral-700 text-3xl font-bold text-white mb-4">
-                {(user.full_name || '?').charAt(0).toUpperCase()}
-              </div>
+              {getProfileImage(user) ? (
+                <img src={getProfileImage(user)} alt={user.full_name} className="h-24 w-24 rounded-full object-cover mb-4" />
+              ) : (
+                <div className="flex h-24 w-24 items-center justify-center rounded-full bg-neutral-700 text-3xl font-bold text-white mb-4">
+                  {(user.full_name || '?').charAt(0).toUpperCase()}
+                </div>
+              )}
               <h3 className="text-xl font-light text-white mb-2" style={{ fontFamily: 'ForestSmooth, serif' }}>{user.full_name}</h3>
               <div className="flex gap-2 mb-3">
                 <span className="rounded-full px-3 py-1 text-xs bg-neutral-700 text-neutral-300">
@@ -179,6 +185,8 @@ export default function AdminUsers() {
     role: ''
   })
 
+  const getProfileImage = (user: any) => user.avatar_url || null
+
   useEffect(() => {
     loadUsers()
   }, [filter])
@@ -188,7 +196,7 @@ export default function AdminUsers() {
     try {
       let query = supabase
         .from('users')
-        .select('id, email, full_name, role, status, phone, location, bio, created_at, updated_at')
+        .select('id, email, full_name, role, status, phone, location, bio, avatar_url, created_at, updated_at')
         .order('created_at', { ascending: false })
       if (filter !== 'all') query = query.eq('role', filter)
       const { data, error } = await query
@@ -323,9 +331,13 @@ export default function AdminUsers() {
                     className="rounded-xl border border-neutral-800 bg-neutral-800/30 p-4"
                   >
                     <div className="flex items-start gap-3 mb-4">
-                      <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-neutral-700 text-lg font-bold text-white">
-                        {(user.full_name || '?').charAt(0).toUpperCase()}
-                      </div>
+                      {getProfileImage(user) ? (
+                        <img src={getProfileImage(user)} alt={user.full_name} className="h-12 w-12 shrink-0 rounded-full object-cover" />
+                      ) : (
+                        <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-neutral-700 text-lg font-bold text-white">
+                          {(user.full_name || '?').charAt(0).toUpperCase()}
+                        </div>
+                      )}
                       <div className="min-w-0 flex-1">
                         <h3 className="font-light text-white mb-1 truncate" style={{ fontFamily: 'ForestSmooth, serif' }}>{user.full_name}</h3>
                         <div className="flex flex-wrap gap-2 mb-2">
@@ -447,9 +459,13 @@ export default function AdminUsers() {
               <div className="grid grid-cols-1 lg:grid-cols-5 gap-6">
                 <div className="lg:col-span-2 space-y-4">
                   <div className="flex flex-col items-center text-center p-6 bg-neutral-800/50 rounded-xl border border-neutral-800">
-                    <div className="flex h-24 w-24 items-center justify-center rounded-full bg-neutral-700 text-3xl font-bold text-white mb-4">
-                      {(editForm.full_name || '?').charAt(0).toUpperCase()}
-                    </div>
+                    {getProfileImage(editingUser) ? (
+                      <img src={getProfileImage(editingUser)} alt={editForm.full_name} className="h-24 w-24 rounded-full object-cover mb-4" />
+                    ) : (
+                      <div className="flex h-24 w-24 items-center justify-center rounded-full bg-neutral-700 text-3xl font-bold text-white mb-4">
+                        {(editForm.full_name || '?').charAt(0).toUpperCase()}
+                      </div>
+                    )}
                     <h3 className="text-lg font-light text-white mb-1" style={{ fontFamily: 'ForestSmooth, serif' }}>{editForm.full_name || 'No Name'}</h3>
                     <p className="text-xs text-neutral-400 mb-3">{editingUser.email}</p>
                     <div className="flex gap-2">
