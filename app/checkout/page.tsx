@@ -10,6 +10,7 @@ import { CreditCard, Lock, Loader2, CheckCircle2 } from 'lucide-react'
 import { motion } from 'framer-motion'
 import { sendPurchaseEmails, sendSupportEmails } from '@/lib/email/sender'
 import { triggerNotification } from '@/lib/notification-triggers'
+import { getImageUrl } from '@/lib/image-utils'
 
 function CheckoutContent() {
   const router = useRouter()
@@ -103,10 +104,10 @@ function CheckoutContent() {
         // Send support emails
         if (artist) {
           await sendSupportEmails({
-            collectorName: user.full_name || 'Collector',
+            collectorName: user.user_name || 'Collector',
             collectorEmail: user.email || '',
             artistName: artist.full_name,
-            artistEmail: '', // Will be fetched in sender
+            artistEmail: '',
             artistId: artistId,
             amount: baseAmount,
             platformFee: platformFee,
@@ -125,7 +126,7 @@ function CheckoutContent() {
         
         // Send purchase emails
         await sendPurchaseEmails({
-          buyerName: user.full_name || 'Buyer',
+          buyerName: user.user_name || 'Buyer',
           buyerEmail: user.email || '',
           artistName: artwork.artist_name,
           artistEmail: '', // Will be fetched in sender
@@ -254,7 +255,7 @@ function CheckoutContent() {
                 <div className="flex gap-4">
                   <div className="h-20 w-20 rounded-full bg-neutral-800 overflow-hidden flex-shrink-0">
                     {artist.avatar_url ? (
-                      <img src={artist.avatar_url} alt={artist.full_name} className="w-full h-full object-cover" />
+                      <img src={getImageUrl(artist.avatar_url)} alt={artist.full_name} className="w-full h-full object-cover" />
                     ) : (
                       <div className="w-full h-full flex items-center justify-center text-2xl text-purple-600">
                         {artist.full_name.charAt(0).toUpperCase()}
@@ -269,7 +270,7 @@ function CheckoutContent() {
                 </div>
               ) : artwork ? (
                 <div className="flex gap-4">
-                  <img src={artwork.image_url || ''} alt="" className="h-20 w-20 object-cover rounded-lg border border-gray-200" />
+                  <img src={getImageUrl(artwork.image_url)} alt="" className="h-20 w-20 object-cover rounded-lg border border-gray-200" />
                   <div className="flex-1">
                     <h3 className="font-semibold text-gray-900 mb-1">{artwork.title}</h3>
                     <p className="text-sm text-gray-600 font-normal">by {artwork.artist_name}</p>
