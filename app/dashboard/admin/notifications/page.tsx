@@ -340,7 +340,7 @@ export default function AdminNotificationsPage() {
             </h2>
           </div>
           
-          <div className="space-y-2 lg:space-y-3 max-h-[400px] lg:max-h-[500px] overflow-y-auto">
+          <div className="space-y-2 lg:space-y-3 max-h-[400px] lg:max-h-[500px] overflow-y-auto scrollbar-hide">
             {notifications.length === 0 ? (
               <div className="text-center py-12">
                 <Bell className="w-12 h-12 text-neutral-700 mx-auto mb-3" />
@@ -369,10 +369,8 @@ export default function AdminNotificationsPage() {
                     <div className="shrink-0">
                       {notif.status === 'sent' ? (
                         <CheckCircle className="text-green-500" size={18} />
-                      ) : notif.status === 'failed' ? (
-                        <XCircle className="text-red-500" size={18} />
                       ) : (
-                        <div className="w-4 h-4 border-2 border-amber-600 border-t-transparent rounded-full animate-spin" />
+                        <XCircle className="text-red-500" size={18} />
                       )}
                     </div>
                   </div>

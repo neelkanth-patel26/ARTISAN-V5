@@ -89,7 +89,7 @@ export function HeroSection() {
             transition={{ duration: 0.8, delay: 0.8 }}
           >
             <motion.div 
-              className="h-px w-12 md:w-20 bg-gradient-to-r from-transparent via-amber-600/60 to-transparent"
+              className="h-px w-12 md:w-20 bg-gradient-to-r from-transparent via-amber-600/60 to-transparent hidden md:block"
               initial={isMobile ? false : { width: 0, opacity: 0 }}
               animate={showContent ? { width: '5rem', opacity: 1 } : { width: 0, opacity: 0 }}
               transition={{ duration: 1.2, delay: 1.2 }}
@@ -103,7 +103,7 @@ export function HeroSection() {
               CURATED ART MARKETPLACE
             </motion.p>
             <motion.div 
-              className="h-px w-12 md:w-20 bg-gradient-to-r from-transparent via-amber-600/60 to-transparent"
+              className="h-px w-12 md:w-20 bg-gradient-to-r from-transparent via-amber-600/60 to-transparent hidden md:block"
               initial={isMobile ? false : { width: 0, opacity: 0 }}
               animate={showContent ? { width: '5rem', opacity: 1 } : { width: 0, opacity: 0 }}
               transition={{ duration: 1.2, delay: 1.2 }}
