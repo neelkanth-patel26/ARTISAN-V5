@@ -18,18 +18,21 @@ if (process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY && process.env.VAPID_PRIVATE_KEY) {
 export async function POST(req: NextRequest) {
   try {
     if (!process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY || !process.env.VAPID_PRIVATE_KEY) {
+      console.error('VAPID keys not configured')
       return NextResponse.json({ error: 'VAPID keys not configured' }, { status: 500 })
     }
 
     const { notificationId } = await req.json()
+    console.log('Sending notification:', notificationId)
 
-    const { data: notification } = await supabase
+    const { data: notification, error: notifError } = await supabase
       .from('notifications')
       .select('*')
       .eq('id', notificationId)
       .single()
 
-    if (!notification) {
+    if (notifError || !notification) {
+      console.error('Notification not found:', notifError)
       return NextResponse.json({ error: 'Notification not found' }, { status: 404 })
     }
 
@@ -38,11 +41,16 @@ export async function POST(req: NextRequest) {
       .update({ status: 'sending' })
       .eq('id', notificationId)
 
-    const { data: subscriptions } = await supabase.rpc('get_subscriptions_by_target', {
+    const { data: subscriptions, error: subError } = await supabase.rpc('get_subscriptions_by_target', {
       p_target_type: notification.target_type,
       p_target_user_id: notification.target_user_id,
       p_target_role: notification.target_role
     })
+
+    if (subError) {
+      console.error('RPC error:', subError)
+      return NextResponse.json({ error: subError.message }, { status: 500 })
+    }
 
     if (!subscriptions || subscriptions.length === 0) {
       await supabase
@@ -90,6 +98,7 @@ export async function POST(req: NextRequest) {
 
         successCount++
       } catch (error: any) {
+        console.error('Push send error:', error)
         await supabase.from('notification_receipts').insert({
           notification_id: notificationId,
           user_id: sub.user_id,
@@ -129,6 +138,6 @@ export async function POST(req: NextRequest) {
     })
   } catch (error: any) {
     console.error('Send notification error:', error)
-    return NextResponse.json({ error: error.message }, { status: 500 })
+    return NextResponse.json({ error: error.message || 'Unknown error' }, { status: 500 })
   }
 }

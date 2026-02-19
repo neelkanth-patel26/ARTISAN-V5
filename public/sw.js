@@ -55,13 +55,18 @@ self.addEventListener('fetch', (event) => {
   const { request } = event
   const url = new URL(request.url)
 
+  // Skip caching for HEAD requests
+  if (request.method === 'HEAD') {
+    event.respondWith(fetch(request))
+    return
+  }
+
   // Handle API requests with network-first strategy
   if (url.pathname.startsWith('/api/')) {
     event.respondWith(
       fetch(request)
         .then((response) => {
-          // Cache successful API responses
-          if (response.status === 200) {
+          if (response.status === 200 && request.method === 'GET') {
             const responseClone = response.clone()
             caches.open(API_CACHE_NAME).then((cache) => {
               cache.put(request, responseClone)
@@ -69,10 +74,7 @@ self.addEventListener('fetch', (event) => {
           }
           return response
         })
-        .catch(() => {
-          // Return cached API response if available
-          return caches.match(request)
-        })
+        .catch(() => caches.match(request))
     )
     return
   }
@@ -82,7 +84,6 @@ self.addEventListener('fetch', (event) => {
     event.respondWith(
       fetch(request)
         .then((response) => {
-          // Cache successful navigation responses
           if (response.status === 200) {
             const responseClone = response.clone()
             caches.open(CACHE_NAME).then((cache) => {
@@ -91,10 +92,7 @@ self.addEventListener('fetch', (event) => {
           }
           return response
         })
-        .catch(() => {
-          // Return offline page for navigation failures
-          return caches.match(OFFLINE_URL) || caches.match('/')
-        })
+        .catch(() => caches.match(OFFLINE_URL) || caches.match('/'))
     )
     return
   }
@@ -103,12 +101,9 @@ self.addEventListener('fetch', (event) => {
   event.respondWith(
     caches.match(request)
       .then((response) => {
-        if (response) {
-          return response
-        }
+        if (response) return response
 
         return fetch(request).then((response) => {
-          // Don't cache non-successful responses
           if (!response || response.status !== 200 || response.type !== 'basic') {
             return response
           }
@@ -122,7 +117,6 @@ self.addEventListener('fetch', (event) => {
         })
       })
       .catch(() => {
-        // Return offline fallback for failed requests
         if (request.destination === 'document') {
           return caches.match(OFFLINE_URL)
         }
