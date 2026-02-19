@@ -54,9 +54,22 @@ function SortableGridItem({ artwork, updateArtwork, removeArtwork }: any) {
         </div>
         {artwork.status !== 'pending' && (
           <div className="absolute inset-0 bg-black/50 flex items-center justify-center">
-            {artwork.status === 'uploading' && <div className="w-8 h-8 border-3 border-amber-600 border-t-transparent rounded-full animate-spin" />}
-            {artwork.status === 'success' && <div className="p-3 bg-green-600 rounded-full"><Check size={24} className="text-white" /></div>}
-            {artwork.status === 'error' && <div className="p-3 bg-red-600 rounded-full" title={artwork.error}><AlertCircle size={24} className="text-white" /></div>}
+            {artwork.status === 'uploading' && (
+              <div className="relative">
+                <div className="w-16 h-16 rounded-full border-4 border-amber-600/20 flex items-center justify-center">
+                  <div className="absolute inset-0 rounded-full border-4 border-transparent border-t-amber-600 animate-spin" />
+                  <div className="absolute inset-2 rounded-full border-4 border-transparent border-t-amber-400 animate-spin" style={{ animationDuration: '1.5s', animationDirection: 'reverse' }} />
+                  <div className="absolute inset-4 rounded-full border-4 border-transparent border-t-amber-500 animate-spin" style={{ animationDuration: '2s' }} />
+                </div>
+              </div>
+            )}
+            {artwork.status === 'success' && <div className="p-3 bg-green-600 rounded-full animate-bounce"><Check size={24} className="text-white" /></div>}
+            {artwork.status === 'error' && (
+              <div className="flex flex-col items-center gap-2 p-4">
+                <div className="p-3 bg-red-600 rounded-full animate-pulse"><AlertCircle size={24} className="text-white" /></div>
+                <p className="text-white text-xs text-center bg-red-600/90 px-3 py-1 rounded-lg max-w-[200px]">{artwork.error || 'Upload failed'}</p>
+              </div>
+            )}
           </div>
         )}
       </div>
@@ -112,9 +125,22 @@ function SortableListItem({ artwork, updateArtwork, removeArtwork }: any) {
         </div>
         <div className="flex items-center gap-2">
           {artwork.status === 'pending' && <button onClick={() => removeArtwork(artwork.id)} className="p-2 text-neutral-400 hover:text-red-500 transition-colors"><Trash2 size={18} /></button>}
-          {artwork.status === 'uploading' && <div className="w-6 h-6 border-2 border-amber-600 border-t-transparent rounded-full animate-spin" />}
-          {artwork.status === 'success' && <div className="p-2 bg-green-600 rounded-full"><Check size={18} className="text-white" /></div>}
-          {artwork.status === 'error' && <div className="p-2 bg-red-600 rounded-full" title={artwork.error}><AlertCircle size={18} className="text-white" /></div>}
+          {artwork.status === 'uploading' && (
+            <div className="relative w-10 h-10">
+              <div className="absolute inset-0 rounded-full border-2 border-amber-600/20" />
+              <div className="absolute inset-0 rounded-full border-2 border-transparent border-t-amber-600 animate-spin" />
+              <div className="absolute inset-1 rounded-full border-2 border-transparent border-t-amber-400 animate-spin" style={{ animationDuration: '1.5s', animationDirection: 'reverse' }} />
+            </div>
+          )}
+          {artwork.status === 'success' && <div className="p-2 bg-green-600 rounded-full animate-bounce"><Check size={18} className="text-white" /></div>}
+          {artwork.status === 'error' && (
+            <div className="relative group">
+              <div className="p-2 bg-red-600 rounded-full animate-pulse"><AlertCircle size={18} className="text-white" /></div>
+              <div className="absolute right-0 top-full mt-2 w-48 p-2 bg-red-600 text-white text-xs rounded-lg opacity-0 group-hover:opacity-100 transition-opacity z-10">
+                {artwork.error || 'Upload failed'}
+              </div>
+            </div>
+          )}
         </div>
       </div>
     </div>
@@ -209,7 +235,9 @@ export function BulkUpload({ artistId, onComplete }: { artistId: string; onCompl
         updateArtwork(artwork.id, 'status', 'success')
       } catch (error: any) {
         updateArtwork(artwork.id, 'status', 'error')
-        updateArtwork(artwork.id, 'error', error.message)
+        const errorMsg = error.message || 'Upload failed'
+        updateArtwork(artwork.id, 'error', errorMsg)
+        toast.error(`Failed: ${artwork.title} - ${errorMsg}`)
       }
     }
     setUploading(false)

@@ -49,7 +49,7 @@ export function NotificationPermissionPrompt() {
   if (!showPrompt) return null
 
   return (
-    <div className="fixed top-4 left-1/2 -translate-x-1/2 z-50 max-w-sm w-full mx-4">
+    <div className="fixed bottom-4 left-1/2 -translate-x-1/2 z-50 max-w-sm w-full mx-4">
       <div className="bg-neutral-900 border border-amber-600/30 rounded-lg shadow-2xl p-4">
         <button
           onClick={() => setShowPrompt(false)}

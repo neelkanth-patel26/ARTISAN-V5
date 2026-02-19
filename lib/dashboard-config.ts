@@ -15,6 +15,7 @@ import {
   TrendingUp,
   FileText,
   Ticket,
+  HardDrive,
   type LucideIcon,
 } from 'lucide-react'
 
@@ -46,6 +47,7 @@ export const DASHBOARD_NAV: Record<'artist' | 'admin' | 'collector', NavItem[]> 
     { icon: Calendar, label: 'Exhibitions', href: '/dashboard/admin/exhibitions' },
     { icon: Ticket, label: 'Bookings', href: '/dashboard/admin/bookings' },
     { icon: MessageSquare, label: 'Notifications', href: '/dashboard/admin/notifications' },
+    { icon: HardDrive, label: 'Storage', href: '/dashboard/admin/storage' },
     { icon: BarChart3, label: 'Analytics', href: '/dashboard/admin/analytics' },
     { icon: Settings, label: 'Settings', href: '/dashboard/admin/settings' },
   ],

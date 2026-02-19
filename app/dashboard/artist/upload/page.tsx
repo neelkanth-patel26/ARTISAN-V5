@@ -113,6 +113,7 @@ export default function UploadArtwork() {
       )
       router.push('/dashboard/artist')
     } catch (error: any) {
+      const errorMessage = error.message || 'Please try again'
       toast.error(
         <div className="flex items-center gap-3">
           <div className="w-10 h-10 rounded-full bg-red-600/20 flex items-center justify-center">
@@ -120,7 +121,7 @@ export default function UploadArtwork() {
           </div>
           <div>
             <p className="font-medium text-white">Upload failed</p>
-            <p className="text-xs text-neutral-400">{error.message || 'Please try again'}</p>
+            <p className="text-xs text-neutral-400">{errorMessage}</p>
           </div>
         </div>,
         { duration: 4000, style: { background: 'linear-gradient(135deg, #1c1917 0%, #0a0a0a 100%)', border: '1px solid rgba(239, 68, 68, 0.3)', padding: '16px', borderRadius: '12px' } }
@@ -302,8 +303,13 @@ export default function UploadArtwork() {
                       {uploading && (
                         <div className="absolute inset-0 bg-neutral-900/90 flex items-center justify-center z-10">
                           <div className="text-center">
-                            <Loader2 className="animate-spin text-amber-600 mx-auto mb-2" size={40} />
-                            <p className="text-neutral-300 text-sm">Processing image...</p>
+                            <div className="relative w-20 h-20 mx-auto mb-4">
+                              <div className="absolute inset-0 rounded-full border-4 border-amber-600/20" />
+                              <div className="absolute inset-0 rounded-full border-4 border-transparent border-t-amber-600 animate-spin" />
+                              <div className="absolute inset-2 rounded-full border-4 border-transparent border-t-amber-400 animate-spin" style={{ animationDuration: '1.5s', animationDirection: 'reverse' }} />
+                              <div className="absolute inset-4 rounded-full border-4 border-transparent border-t-amber-500 animate-spin" style={{ animationDuration: '2s' }} />
+                            </div>
+                            <p className="text-neutral-300 text-sm font-medium">Processing image...</p>
                           </div>
                         </div>
                       )}
