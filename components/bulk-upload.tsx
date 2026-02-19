@@ -8,6 +8,7 @@ import { arrayMove, SortableContext, useSortable, rectSortingStrategy, verticalL
 import { CSS } from '@dnd-kit/utilities'
 import { supabase } from '@/lib/supabase'
 import { toast } from 'sonner'
+import { triggerNotification, showUploadProgress } from '@/lib/notification-triggers'
 
 interface ArtworkData {
   id: string
@@ -201,9 +202,16 @@ export function BulkUpload({ artistId, onComplete }: { artistId: string; onCompl
 
   const uploadAll = async () => {
     setUploading(true)
-    for (const artwork of artworks) {
+    triggerNotification('UPLOAD_STARTED')
+    
+    for (let i = 0; i < artworks.length; i++) {
+      const artwork = artworks[i]
       if (artwork.status === 'success') continue
+      
       updateArtwork(artwork.id, 'status', 'uploading')
+      const progress = Math.round(((i + 1) / artworks.length) * 100)
+      showUploadProgress(progress, `${i + 1}/${artworks.length} artworks`)
+      
       try {
         const formData = new FormData()
         formData.append('file', artwork.file)
@@ -211,7 +219,6 @@ export function BulkUpload({ artistId, onComplete }: { artistId: string; onCompl
         if (!uploadResponse.ok) throw new Error('Upload failed')
         const { url: publicUrl } = await uploadResponse.json()
         
-        // Get category_id from category name
         const { data: categoryData } = await supabase
           .from('categories')
           .select('id')
@@ -240,7 +247,9 @@ export function BulkUpload({ artistId, onComplete }: { artistId: string; onCompl
         toast.error(`Failed: ${artwork.title} - ${errorMsg}`)
       }
     }
+    
     setUploading(false)
+    triggerNotification('UPLOAD_COMPLETE')
     toast.success('Bulk upload completed')
     setTimeout(onComplete, 2000)
   }

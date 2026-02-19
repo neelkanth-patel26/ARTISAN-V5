@@ -9,6 +9,7 @@ import { toast } from 'sonner'
 import { CreditCard, Lock, Loader2, CheckCircle2 } from 'lucide-react'
 import { motion } from 'framer-motion'
 import { sendPurchaseEmails, sendSupportEmails } from '@/lib/email/sender'
+import { triggerNotification } from '@/lib/notification-triggers'
 
 function CheckoutContent() {
   const router = useRouter()
@@ -96,6 +97,8 @@ function CheckoutContent() {
           transaction_type: 'support'
         })
         if (error) throw error
+        
+        triggerNotification(isSupport ? 'ARTIST_SUPPORT' : 'ARTWORK_PURCHASED')
         
         // Send support emails
         if (artist) {

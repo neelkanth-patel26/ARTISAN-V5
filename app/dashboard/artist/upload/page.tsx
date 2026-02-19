@@ -10,6 +10,7 @@ import { getCurrentUser } from '@/lib/auth'
 import { toast } from 'sonner'
 import { useRouter } from 'next/navigation'
 import { BulkUpload } from '@/components/bulk-upload'
+import { triggerNotification, showUploadProgress } from '@/lib/notification-triggers'
 
 export default function UploadArtwork() {
   const router = useRouter()
@@ -70,18 +71,37 @@ export default function UploadArtwork() {
       const file = imageInput.files?.[0]
       if (!file) throw new Error('Please select an image')
 
-      // Upload to local API instead of Supabase Storage
+      triggerNotification('UPLOAD_STARTED')
+
       const uploadFormData = new FormData()
       uploadFormData.append('file', file)
 
-      const uploadResponse = await fetch('/api/upload', {
-        method: 'POST',
-        body: uploadFormData,
+      const xhr = new XMLHttpRequest()
+      
+      xhr.upload.addEventListener('progress', (e) => {
+        if (e.lengthComputable) {
+          const progress = Math.round((e.loaded / e.total) * 100)
+          if (progress % 25 === 0) showUploadProgress(progress, file.name)
+        }
       })
 
-      if (!uploadResponse.ok) throw new Error('Image upload failed')
+      const uploadPromise = new Promise<string>((resolve, reject) => {
+        xhr.onload = () => {
+          if (xhr.status === 200) {
+            const { url } = JSON.parse(xhr.responseText)
+            resolve(url)
+          } else {
+            reject(new Error('Upload failed'))
+          }
+        }
+        xhr.onerror = () => reject(new Error('Upload failed'))
+        xhr.open('POST', '/api/upload')
+        xhr.send(uploadFormData)
+      })
 
-      const { url: publicUrl } = await uploadResponse.json()
+      const publicUrl = await uploadPromise
+
+      triggerNotification('UPLOAD_COMPLETE')
 
       const { data, error: insertError } = await supabase.from('artworks').insert({
         artist_id: user.user_id,
@@ -98,6 +118,8 @@ export default function UploadArtwork() {
       }).select().single()
 
       if (insertError) throw insertError
+
+      triggerNotification('ARTWORK_UPLOADED')
 
       toast.success(
         <div className="flex items-center gap-3">
