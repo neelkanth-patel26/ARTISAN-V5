@@ -21,7 +21,7 @@ export function NeonRing() {
     return () => window.removeEventListener('resize', checkMobile)
   }, [])
 
-  const ringSize = isMobile ? (isPWA ? '400px' : '350px') : '700px'
+  const ringSize = isMobile ? (isPWA ? '310px' : '290px') : '700px'
   const borderWidth = isMobile ? (isPWA ? '3px' : '4px') : '6px'
   const glowIntensity = isPWA ? {
     initial: '0 0 60px rgba(217, 119, 6, 0.8), 0 0 90px rgba(217, 119, 6, 0.6), inset 0 0 60px rgba(217, 119, 6, 0.4)',
