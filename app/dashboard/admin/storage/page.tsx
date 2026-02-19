@@ -183,15 +183,25 @@ export default function StorageManagement() {
                     <div className="text-sm text-neutral-400">{formatSize(file.size)} • {new Date(file.lastModified).toLocaleDateString()}</div>
                   </div>
                   <div className="flex gap-2">
-                    <a
-                      href={file.url}
-                      target="_blank"
-                      rel="noopener noreferrer"
+                    <button
+                      onClick={() => {
+                        const modal = document.createElement('div')
+                        modal.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.9);display:flex;align-items:center;justify-content:center;z-index:9999;padding:20px'
+                        modal.innerHTML = `
+                          <div style="position:relative;max-width:90vw;max-height:90vh">
+                            <button id="close" style="position:absolute;top:-40px;right:0;background:#262626;color:#fff;border:none;border-radius:8px;padding:8px 16px;cursor:pointer;font-weight:500">Close</button>
+                            <img src="${file.url}" style="max-width:100%;max-height:90vh;object-fit:contain;border-radius:12px" />
+                          </div>
+                        `
+                        document.body.appendChild(modal)
+                        modal.addEventListener('click', (e) => { if (e.target === modal) document.body.removeChild(modal) })
+                        modal.querySelector('#close')?.addEventListener('click', () => document.body.removeChild(modal))
+                      }}
                       className="p-2 bg-neutral-700 hover:bg-neutral-600 rounded-lg transition-colors"
                       title="View"
                     >
                       <Eye size={16} className="text-white" />
-                    </a>
+                    </button>
                     <a
                       href={file.url}
                       download

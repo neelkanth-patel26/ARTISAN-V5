@@ -1,6 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server'
-import fs from 'fs'
-import path from 'path'
+import { createClient } from '@supabase/supabase-js'
+
+const supabase = createClient(
+  process.env.NEXT_PUBLIC_SUPABASE_URL!,
+  process.env.SUPABASE_SERVICE_ROLE_KEY!
+)
 
 export async function DELETE(req: NextRequest) {
   try {
@@ -10,30 +14,12 @@ export async function DELETE(req: NextRequest) {
       return NextResponse.json({ error: 'Filename required' }, { status: 400 })
     }
 
-    const uploadsDir = path.join(process.cwd(), 'public', 'uploads')
-    
-    // Search for file in all subdirectories
-    const findAndDelete = (dir: string): boolean => {
-      const items = fs.readdirSync(dir, { withFileTypes: true })
-      
-      for (const item of items) {
-        const fullPath = path.join(dir, item.name)
-        
-        if (item.isDirectory()) {
-          if (findAndDelete(fullPath)) return true
-        } else if (item.name === filename) {
-          fs.unlinkSync(fullPath)
-          return true
-        }
-      }
-      return false
-    }
+    // Delete from Supabase storage instead of local filesystem
+    const { error } = await supabase.storage
+      .from('artworks')
+      .remove([filename])
 
-    const deleted = findAndDelete(uploadsDir)
-    
-    if (!deleted) {
-      return NextResponse.json({ error: 'File not found' }, { status: 404 })
-    }
+    if (error) throw error
 
     return NextResponse.json({ message: 'File deleted successfully' })
   } catch (error: any) {
