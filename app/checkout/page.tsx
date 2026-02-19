@@ -6,7 +6,7 @@ import Link from 'next/link'
 import { getCurrentUser } from '@/lib/auth'
 import { supabase } from '@/lib/supabase'
 import { toast } from 'sonner'
-import { CreditCard, Lock, Loader2, CheckCircle2 } from 'lucide-react'
+import { CreditCard, Lock, Loader2, CheckCircle2, QrCode } from 'lucide-react'
 import { motion } from 'framer-motion'
 import { sendPurchaseEmails, sendSupportEmails } from '@/lib/email/sender'
 import { triggerNotification } from '@/lib/notification-triggers'
@@ -29,6 +29,8 @@ function CheckoutContent() {
   const [expiry, setExpiry] = useState('')
   const [cvc, setCvc] = useState('')
   const [name, setName] = useState('')
+  const [paymentMethod, setPaymentMethod] = useState<'card' | 'upi'>('card')
+  const [artistUpiId, setArtistUpiId] = useState('')
 
   const isSupport = type === 'support'
   const baseAmount = isSupport ? parseFloat(amount || '0') : (artwork?.price || 0)
@@ -40,8 +42,11 @@ function CheckoutContent() {
   useEffect(() => {
     async function load() {
       if (isSupport && artistId) {
-        const { data } = await supabase.from('users').select('id, full_name, avatar_url').eq('id', artistId).single()
-        if (data) setArtist(data)
+        const { data } = await supabase.from('users').select('id, full_name, avatar_url, upi_id').eq('id', artistId).single()
+        if (data) {
+          setArtist(data)
+          setArtistUpiId(data.upi_id || '')
+        }
         setLoading(false)
       } else if (artworkId) {
         const { data, error } = await supabase.rpc('get_all_artworks', { filter_status: 'approved' })
@@ -50,7 +55,11 @@ function CheckoutContent() {
           return
         }
         const found = (data as any[]).find((a: any) => a.id === artworkId)
-        if (found) setArtwork({ id: found.id, title: found.title, artist_name: found.artist_name, image_url: found.image_url, price: Number(found.price), artist_id: found.artist_id })
+        if (found) {
+          setArtwork({ id: found.id, title: found.title, artist_name: found.artist_name, image_url: found.image_url, price: Number(found.price), artist_id: found.artist_id })
+          const { data: artistData } = await supabase.from('users').select('upi_id').eq('id', found.artist_id).single()
+          if (artistData) setArtistUpiId(artistData.upi_id || '')
+        }
         setLoading(false)
       } else {
         setLoading(false)
@@ -78,12 +87,53 @@ function CheckoutContent() {
     e.preventDefault()
     const user = getCurrentUser()
     if (!user?.user_id) return
-    if (!cardNumber.replace(/\s/g, '').match(/^\d{16}$/) || !expiry.match(/^\d{2}\/\d{2}$/) || !cvc.match(/^\d{3,4}$/) || !name.trim()) {
-      toast.error('Please fill card details correctly')
-      return
+    
+    if (paymentMethod === 'card') {
+      if (!cardNumber.replace(/\s/g, '').match(/^\d{16}$/) || !expiry.match(/^\d{2}\/\d{2}$/) || !cvc.match(/^\d{3,4}$/) || !name.trim()) {
+        toast.error('Please fill card details correctly')
+        return
+      }
     }
+    
     setPaying(true)
     try {
+      if (paymentMethod === 'upi') {
+        if (!artistUpiId) {
+          toast.error('Artist UPI not available')
+          setPaying(false)
+          return
+        }
+        
+        const artistReceives = (baseAmount - (baseAmount * platformFeeRate)).toFixed(2)
+        const upiUrl = `upi://pay?pa=${artistUpiId}&pn=${encodeURIComponent(isSupport ? artist?.full_name || '' : artwork?.artist_name || '')}&am=${artistReceives}&cu=INR&tn=${isSupport ? 'Support' : 'Artwork'}%20Payment`
+        
+        if (isSupport && artistId) {
+          await supabase.from('transactions').insert({
+            transaction_code: 'SUP-' + Date.now(),
+            buyer_id: user.user_id,
+            artist_id: artistId,
+            amount: totalAmount,
+            platform_fee: platformFee,
+            artist_earnings: artistEarnings,
+            payment_method: 'upi',
+            status: 'completed',
+            transaction_type: 'support'
+          })
+        } else if (artwork) {
+          await supabase.rpc('create_transaction', {
+            p_buyer_id: user.user_id,
+            p_artwork_id: artwork.id,
+            p_amount: totalAmount,
+            p_payment_method: 'upi',
+          })
+        }
+        
+        window.location.href = upiUrl
+        toast.success('Opening UPI app...')
+        setTimeout(() => setSuccess(true), 2000)
+        return
+      }
+      
       await new Promise(resolve => setTimeout(resolve, 1000))
       if (isSupport && artistId) {
         const { error } = await supabase.from('transactions').insert({
@@ -284,7 +334,68 @@ function CheckoutContent() {
               <div className="px-6 py-4 border-b border-gray-200">
                 <h2 className="text-sm font-semibold text-gray-700 tracking-wide">PAYMENT METHOD</h2>
               </div>
-              <form onSubmit={handleSubmit} className="p-6 space-y-5">
+              <div className="p-6">
+                <div className="grid grid-cols-2 gap-3 mb-6">
+                  <button
+                    type="button"
+                    onClick={() => setPaymentMethod('card')}
+                    className={`flex items-center justify-center gap-2 px-4 py-3 rounded-lg border-2 font-medium transition-all ${
+                      paymentMethod === 'card'
+                        ? 'bg-purple-600 border-purple-600 text-white'
+                        : 'bg-white border-gray-300 text-gray-700 hover:border-purple-300'
+                    }`}
+                  >
+                    <CreditCard size={20} />
+                    Card
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setPaymentMethod('upi')}
+                    disabled={!artistUpiId}
+                    className={`flex items-center justify-center gap-2 px-4 py-3 rounded-lg border-2 font-medium transition-all ${
+                      paymentMethod === 'upi'
+                        ? 'bg-purple-600 border-purple-600 text-white'
+                        : !artistUpiId
+                        ? 'bg-gray-100 border-gray-300 text-gray-400 cursor-not-allowed'
+                        : 'bg-white border-gray-300 text-gray-700 hover:border-purple-300'
+                    }`}
+                  >
+                    <QrCode size={20} />
+                    UPI
+                  </button>
+                </div>
+                
+                {paymentMethod === 'upi' && artistUpiId ? (
+                  <form onSubmit={handleSubmit} className="space-y-5">
+                    <div className="bg-purple-50 p-4 rounded-lg border border-purple-200">
+                      <p className="text-sm text-purple-900 mb-2">Artist UPI ID</p>
+                      <code className="text-purple-700 font-mono text-sm break-all">{artistUpiId}</code>
+                      <div className="mt-4 pt-4 border-t border-purple-200 space-y-2">
+                        <div className="flex justify-between text-sm">
+                          <span className="text-purple-900">Amount</span>
+                          <span className="text-purple-900">₹{baseAmount.toFixed(2)}</span>
+                        </div>
+                        <div className="flex justify-between text-sm">
+                          <span className="text-purple-900">Platform Fee ({(platformFeeRate * 100).toFixed(0)}%)</span>
+                          <span className="text-orange-600">-₹{platformFee.toFixed(2)}</span>
+                        </div>
+                        <div className="flex justify-between text-sm pt-2 border-t border-purple-200">
+                          <span className="text-purple-900 font-medium">Artist Receives</span>
+                          <span className="text-green-600 font-semibold">₹{artistEarnings.toFixed(2)}</span>
+                        </div>
+                      </div>
+                    </div>
+                    <button
+                      type="submit"
+                      disabled={paying}
+                      className="w-full py-4 rounded-lg bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white font-semibold transition-all disabled:opacity-50 flex items-center justify-center gap-2 shadow-lg"
+                    >
+                      {paying ? <Loader2 className="h-5 w-5 animate-spin" /> : <QrCode size={18} />}
+                      Pay via UPI
+                    </button>
+                  </form>
+                ) : paymentMethod === 'card' ? (
+                  <form onSubmit={handleSubmit} className="space-y-5">
                 <div>
                   <label className="block text-sm font-medium text-gray-900 mb-2">Card number</label>
                   <div className="relative">
@@ -341,6 +452,8 @@ function CheckoutContent() {
                   Pay ₹{totalAmount.toLocaleString()}
                 </button>
               </form>
+                ) : null}
+              </div>
             </div>
           </div>
 
