@@ -33,9 +33,11 @@ export default function TestNotificationPage() {
     
     if (!subscription) {
       try {
+        const vapidKey = 'BPaOdiaILDPWhKVh5aep1uB6oGi8I2WTdBj1VIaxxZicpLeWmHKUwaFmGNhsHfbW7baaOjfFJxXWZFHczhdndck'
+        
         subscription = await registration.pushManager.subscribe({
           userVisibleOnly: true,
-          applicationServerKey: process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY
+          applicationServerKey: vapidKey
         })
         setStatus('✅ Push subscription created')
       } catch (error: any) {

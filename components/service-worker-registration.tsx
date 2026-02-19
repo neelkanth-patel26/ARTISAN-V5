@@ -19,9 +19,11 @@ export function ServiceWorkerRegistration() {
           // Subscribe to push notifications
           if ('PushManager' in window && Notification.permission === 'granted') {
             try {
+              const vapidKey = 'BPaOdiaILDPWhKVh5aep1uB6oGi8I2WTdBj1VIaxxZicpLeWmHKUwaFmGNhsHfbW7baaOjfFJxXWZFHczhdndck'
+              
               const subscription = await registration.pushManager.subscribe({
                 userVisibleOnly: true,
-                applicationServerKey: process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY
+                applicationServerKey: vapidKey
               })
 
               // Send subscription to server

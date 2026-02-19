@@ -55,6 +55,11 @@ self.addEventListener('fetch', (event) => {
   const { request } = event
   const url = new URL(request.url)
 
+  // Skip chrome-extension and other non-http(s) schemes
+  if (!url.protocol.startsWith('http')) {
+    return
+  }
+
   // Skip caching for HEAD requests
   if (request.method === 'HEAD') {
     event.respondWith(fetch(request))

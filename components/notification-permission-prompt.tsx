@@ -26,9 +26,11 @@ export function NotificationPermissionPrompt() {
       const registration = await navigator.serviceWorker.ready
       
       try {
+        const vapidKey = 'BPaOdiaILDPWhKVh5aep1uB6oGi8I2WTdBj1VIaxxZicpLeWmHKUwaFmGNhsHfbW7baaOjfFJxXWZFHczhdndck'
+        
         const subscription = await registration.pushManager.subscribe({
           userVisibleOnly: true,
-          applicationServerKey: process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY
+          applicationServerKey: vapidKey
         })
 
         await fetch('/api/notifications/subscribe', {
