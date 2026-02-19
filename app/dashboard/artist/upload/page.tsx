@@ -14,6 +14,7 @@ import { BulkUpload } from '@/components/bulk-upload'
 export default function UploadArtwork() {
   const router = useRouter()
   const [loading, setLoading] = useState(false)
+  const [uploading, setUploading] = useState(false)
   const [imagePreview, setImagePreview] = useState<string | null>(null)
   const [categories, setCategories] = useState<any[]>([])
   const [activeTab, setActiveTab] = useState<'single' | 'bulk'>('single')
@@ -47,9 +48,11 @@ export default function UploadArtwork() {
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]
     if (file) {
+      setUploading(true)
       const reader = new FileReader()
       reader.onloadend = () => {
         setImagePreview(reader.result as string)
+        setUploading(false)
       }
       reader.readAsDataURL(file)
     }
@@ -295,13 +298,26 @@ export default function UploadArtwork() {
                 <div className="bg-neutral-900 rounded-2xl border border-neutral-800 p-8">
                   <h3 className="text-lg font-medium text-white mb-6">Artwork Image *</h3>
                   <label className="block cursor-pointer group">
-                    <div className="border-2 border-dashed border-neutral-700 rounded-2xl p-12 hover:border-amber-600 transition-all group-hover:bg-neutral-800/50">
+                    <div className="border-2 border-dashed border-neutral-700 rounded-2xl p-12 hover:border-amber-600 transition-all group-hover:bg-neutral-800/50 relative overflow-hidden">
+                      {uploading && (
+                        <div className="absolute inset-0 bg-neutral-900/90 flex items-center justify-center z-10">
+                          <div className="text-center">
+                            <Loader2 className="animate-spin text-amber-600 mx-auto mb-2" size={40} />
+                            <p className="text-neutral-300 text-sm">Processing image...</p>
+                          </div>
+                        </div>
+                      )}
                       {imagePreview ? (
-                        <img src={imagePreview} alt="Preview" className="w-full h-72 object-contain rounded-xl" />
+                        <div className="relative">
+                          <img src={imagePreview} alt="Preview" className="w-full h-72 object-contain rounded-xl" />
+                          <div className="absolute inset-0 bg-gradient-to-t from-neutral-900/80 to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex items-end justify-center pb-4">
+                            <p className="text-white text-sm">Click to change image</p>
+                          </div>
+                        </div>
                       ) : (
                         <div className="text-center">
-                          <div className="w-16 h-16 mx-auto mb-4 rounded-2xl bg-neutral-800 flex items-center justify-center">
-                            <ImageIcon className="text-neutral-600" size={32} />
+                          <div className="w-16 h-16 mx-auto mb-4 rounded-2xl bg-neutral-800 flex items-center justify-center group-hover:scale-110 transition-transform">
+                            <ImageIcon className="text-neutral-600 group-hover:text-amber-600 transition-colors" size={32} />
                           </div>
                           <p className="text-neutral-300 font-medium mb-1">Click to upload</p>
                           <p className="text-neutral-500 text-sm">PNG, JPG up to 10MB</p>

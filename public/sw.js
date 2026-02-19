@@ -145,47 +145,90 @@ async function doBackgroundSync() {
 
 // Handle push notifications
 self.addEventListener('push', (event) => {
+  console.log('Service Worker: Push notification received', event)
+  
+  let data = { title: 'Artisan', body: 'New notification' }
+  
   if (event.data) {
-    const data = event.data.json()
-    const options = {
-      body: data.body,
-      icon: data.icon || '/icon-192.png',
-      badge: data.badge || '/icon-192.png',
-      image: data.image,
-      vibrate: [100, 50, 100],
-      data: data.data,
-      actions: [
-        { action: 'open', title: 'Open' },
-        { action: 'close', title: 'Close' }
-      ]
+    try {
+      data = event.data.json()
+    } catch (e) {
+      console.error('Service Worker: Failed to parse push data', e)
+      data.body = event.data.text()
     }
-
-    event.waitUntil(
-      self.registration.showNotification(data.title, options)
-    )
   }
+
+  const options = {
+    body: data.body || 'New notification',
+    icon: data.icon || '/icon-192.png',
+    badge: data.badge || '/icon-192.png',
+    image: data.image,
+    vibrate: [200, 100, 200],
+    tag: data.tag || 'artisan-notification',
+    requireInteraction: false,
+    renotify: true,
+    data: {
+      url: data.data?.url || data.url || '/',
+      notificationId: data.data?.notificationId,
+      timestamp: Date.now()
+    },
+    actions: [
+      { action: 'open', title: 'View', icon: '/icon-192.png' },
+      { action: 'close', title: 'Dismiss' }
+    ]
+  }
+
+  event.waitUntil(
+    self.registration.showNotification(data.title || 'Artisan', options)
+      .then(() => console.log('Service Worker: Notification displayed'))
+      .catch(err => console.error('Service Worker: Notification display failed', err))
+  )
 })
 
 // Handle notification clicks
 self.addEventListener('notificationclick', (event) => {
+  console.log('Service Worker: Notification clicked', event.action)
   event.notification.close()
 
   if (event.action === 'close') {
     return
   }
 
-  const urlToOpen = event.notification.data?.url || '/'
+  const urlToOpen = new URL(event.notification.data?.url || '/', self.location.origin).href
 
   event.waitUntil(
     clients.matchAll({ type: 'window', includeUncontrolled: true }).then((clientList) => {
+      // Check if there's already a window open
       for (const client of clientList) {
-        if (client.url === urlToOpen && 'focus' in client) {
+        const clientUrl = new URL(client.url).pathname
+        const targetUrl = new URL(urlToOpen).pathname
+        
+        if (clientUrl === targetUrl && 'focus' in client) {
           return client.focus()
         }
       }
+      
+      // Focus any existing window and navigate
+      if (clientList.length > 0 && 'focus' in clientList[0]) {
+        return clientList[0].focus().then(client => {
+          if ('navigate' in client) {
+            return client.navigate(urlToOpen)
+          }
+          return clients.openWindow(urlToOpen)
+        })
+      }
+      
+      // Open new window
       if (clients.openWindow) {
         return clients.openWindow(urlToOpen)
       }
+    }).catch(err => {
+      console.error('Service Worker: Failed to handle notification click', err)
     })
   )
+})
+
+// Handle notification close
+self.addEventListener('notificationclose', (event) => {
+  console.log('Service Worker: Notification closed', event.notification.tag)
 })

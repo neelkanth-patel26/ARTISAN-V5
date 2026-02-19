@@ -27,10 +27,10 @@ export default function AboutPage() {
   const { scrollYProgress } = useScroll({ target: ref })
 
   return (
-    <main className="bg-gradient-to-b from-neutral-950 via-neutral-900 to-neutral-950 overflow-x-hidden">
+    <main className="bg-gradient-to-b from-neutral-950 via-neutral-900 to-neutral-950 overflow-x-hidden" style={{ WebkitOverflowScrolling: 'touch' }}>
       <Navigation />
 
-      <section ref={ref} className="mx-auto flex min-h-[250vh] w-full flex-col items-center px-4 pb-20 md:pb-32">
+      <section ref={ref} className="mx-auto flex min-h-[250vh] w-full flex-col items-center px-4 pb-20 md:pb-32" style={{ WebkitOverflowScrolling: 'touch', transform: 'translateZ(0)' }}>
         <div className="mt-20 md:mt-32 relative flex w-fit flex-col items-center justify-center gap-3 md:gap-5 text-center md:bg-transparent bg-black/40 md:backdrop-blur-none backdrop-blur-md md:border-0 border border-neutral-700/30 md:p-0 p-6 rounded-2xl">
           <div className="text-amber-600/60 text-[10px] md:text-xs tracking-[0.3em] font-light mb-2 md:mb-4">WHO WE ARE</div>
           <h1 className="relative z-10 text-4xl md:text-7xl lg:text-9xl font-light tracking-[-0.08em] text-white/90 drop-shadow-[0_0_30px_rgba(0,0,0,0.9)] leading-[1.2] md:leading-[1.3]" style={{ fontFamily: 'ForestSmooth, serif' }}>

@@ -20,12 +20,21 @@ export interface NotificationPayload {
 }
 
 class PushNotificationService {
-  private vapidPublicKey = process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY || 'YOUR_VAPID_PUBLIC_KEY'
+  private vapidPublicKey = process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY || ''
 
   async requestPermission(): Promise<NotificationPermission> {
     if (!('Notification' in window)) {
       throw new Error('Notifications not supported')
     }
+    
+    if (Notification.permission === 'granted') {
+      return 'granted'
+    }
+    
+    if (Notification.permission === 'denied') {
+      throw new Error('Notification permission denied')
+    }
+    
     return await Notification.requestPermission()
   }
 
@@ -60,13 +69,28 @@ class PushNotificationService {
       throw new Error('Push notifications not supported')
     }
 
+    if (!this.vapidPublicKey) {
+      throw new Error('VAPID public key not configured')
+    }
+
     const permission = await this.requestPermission()
     if (permission !== 'granted') {
       throw new Error('Notification permission denied')
     }
 
+    // Wait for service worker to be ready
     const registration = await navigator.serviceWorker.ready
-    const subscription = await registration.pushManager.subscribe({
+    
+    // Check for existing subscription
+    let subscription = await registration.pushManager.getSubscription()
+    
+    // Unsubscribe if exists to get fresh subscription
+    if (subscription) {
+      await subscription.unsubscribe()
+    }
+    
+    // Create new subscription
+    subscription = await registration.pushManager.subscribe({
       userVisibleOnly: true,
       applicationServerKey: this.urlBase64ToUint8Array(this.vapidPublicKey)
     })
@@ -74,17 +98,22 @@ class PushNotificationService {
     const subscriptionData = subscription.toJSON()
     const deviceType = this.getDeviceType()
 
-    await supabase.from('push_subscriptions').upsert({
+    // Save to database
+    const { error } = await supabase.from('push_subscriptions').upsert({
       user_id: userId,
       endpoint: subscriptionData.endpoint!,
       p256dh: subscriptionData.keys!.p256dh!,
       auth: subscriptionData.keys!.auth!,
       device_type: deviceType,
       user_agent: navigator.userAgent,
-      is_active: true
+      is_active: true,
+      created_at: new Date().toISOString(),
+      updated_at: new Date().toISOString()
     }, {
       onConflict: 'user_id,endpoint'
     })
+
+    if (error) throw error
   }
 
   async unsubscribe(userId: string): Promise<void> {
@@ -97,7 +126,7 @@ class PushNotificationService {
       await subscription.unsubscribe()
       await supabase
         .from('push_subscriptions')
-        .update({ is_active: false })
+        .update({ is_active: false, updated_at: new Date().toISOString() })
         .eq('user_id', userId)
         .eq('endpoint', subscription.endpoint)
     }
@@ -128,11 +157,30 @@ class PushNotificationService {
     }
   }
 
+  async testNotification(title: string, body: string): Promise<void> {
+    if (!('Notification' in window)) {
+      throw new Error('Notifications not supported')
+    }
+
+    if (Notification.permission !== 'granted') {
+      throw new Error('Notification permission not granted')
+    }
+
+    new Notification(title, {
+      body,
+      icon: '/icon-192.png',
+      badge: '/icon-192.png',
+      vibrate: [200, 100, 200]
+    })
+  }
+
   private getDeviceType(): 'android' | 'ios' | 'desktop' | 'other' {
     const ua = navigator.userAgent.toLowerCase()
+    const isStandalone = window.matchMedia('(display-mode: standalone)').matches || (window.navigator as any).standalone === true
+    
     if (/android/.test(ua)) return 'android'
     if (/iphone|ipad|ipod/.test(ua)) return 'ios'
-    if (/windows|mac|linux/.test(ua)) return 'desktop'
+    if (/windows|mac|linux/.test(ua) && !isStandalone) return 'desktop'
     return 'other'
   }
 

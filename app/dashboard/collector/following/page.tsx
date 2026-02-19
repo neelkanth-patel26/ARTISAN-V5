@@ -81,7 +81,8 @@ export default function CollectorFollowing() {
                   initial={{ opacity: 0, y: 12 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: i * 0.05 }}
-                  className="rounded-xl border border-neutral-800 bg-neutral-800/30 p-4 transition-all hover:border-neutral-700"
+                  className="rounded-xl border border-neutral-800 bg-neutral-800/30 p-4 transition-all hover:border-neutral-700 cursor-pointer"
+                  onClick={() => window.location.href = `/artist?id=${item.following_id}`}
                 >
                   <div className="flex items-start gap-3 mb-3">
                     <div className="w-12 h-12 rounded-full bg-neutral-700 overflow-hidden flex-shrink-0">
@@ -94,7 +95,7 @@ export default function CollectorFollowing() {
                       )}
                     </div>
                     <div className="flex-1 min-w-0">
-                      <h3 className="font-light text-white truncate" style={{ fontFamily: 'ForestSmooth, serif' }}>
+                      <h3 className="font-light text-white truncate hover:text-amber-600 transition-colors" style={{ fontFamily: 'ForestSmooth, serif' }}>
                         {item.artist?.full_name}
                       </h3>
                       <div className="flex gap-3 text-xs text-neutral-400 mt-1">
@@ -107,7 +108,10 @@ export default function CollectorFollowing() {
                     <p className="text-sm text-neutral-400 mb-3 line-clamp-2">{item.artist.bio}</p>
                   )}
                   <button
-                    onClick={() => handleUnfollow(item.following_id)}
+                    onClick={(e) => {
+                      e.stopPropagation()
+                      handleUnfollow(item.following_id)
+                    }}
                     className="w-full px-3 py-2 bg-neutral-800 text-neutral-300 rounded-lg hover:bg-neutral-700 transition-all text-sm flex items-center justify-center gap-2"
                   >
                     <UserMinus size={14} />

@@ -71,11 +71,12 @@ export default function CollectorBookings() {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: i * 0.05 }}
-                className="bg-neutral-900 rounded-xl border border-neutral-800 p-6"
+                className="bg-neutral-900 rounded-xl border border-neutral-800 p-6 cursor-pointer hover:border-neutral-700 transition-colors"
+                onClick={() => window.location.href = `/exhibitions`}
               >
                 <div className="flex items-start justify-between mb-4">
                   <div>
-                    <h3 className="text-lg font-medium text-white mb-1">{booking.exhibition_title || 'Exhibition Visit'}</h3>
+                    <h3 className="text-lg font-medium text-white mb-1 hover:text-amber-600 transition-colors">{booking.exhibition_title || 'Exhibition Visit'}</h3>
                     <p className="text-sm text-neutral-400">Booking ID: {booking.id.slice(0, 8)}</p>
                   </div>
                   <div className={`flex items-center gap-2 px-3 py-1.5 rounded-full border text-xs ${getStatusColor(booking.status)}`}>

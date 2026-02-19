@@ -143,13 +143,22 @@ export default function CollectorPurchases() {
                 >
                   {transaction.transaction_type === 'purchase' && transaction.artworks ? (
                     <>
-                      <img 
-                        src={transaction.artworks.image_url} 
-                        alt={transaction.artworks.title} 
-                        className="w-full h-48 object-cover" 
-                      />
+                      <div className="relative cursor-pointer" onClick={() => window.location.href = `/gallery?artwork=${transaction.artworks.id}`}>
+                        <img 
+                          src={transaction.artworks.image_url} 
+                          alt={transaction.artworks.title} 
+                          className="w-full h-48 object-cover transition-transform hover:scale-105" 
+                        />
+                        <div className="absolute inset-0 bg-black/0 hover:bg-black/10 transition-colors" />
+                      </div>
                       <div className="p-4">
-                        <h3 className="font-light text-white mb-1" style={{ fontFamily: 'ForestSmooth, serif' }}>{transaction.artworks.title}</h3>
+                        <h3 
+                          className="font-light text-white mb-1 cursor-pointer hover:text-amber-600 transition-colors" 
+                          style={{ fontFamily: 'ForestSmooth, serif' }}
+                          onClick={() => window.location.href = `/gallery?artwork=${transaction.artworks.id}`}
+                        >
+                          {transaction.artworks.title}
+                        </h3>
                         <p className="text-sm text-neutral-400 mb-2">by {transaction.artworks.users?.full_name}</p>
                         <p className="mb-2 text-sm text-white">₹{transaction.amount}</p>
                         <div className="flex justify-between items-center text-xs text-neutral-400">

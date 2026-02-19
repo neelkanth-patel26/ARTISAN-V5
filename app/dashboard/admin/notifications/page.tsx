@@ -248,11 +248,7 @@ export default function AdminNotificationsPage() {
               <div className="grid grid-cols-2 lg:grid-cols-4 gap-2 lg:gap-3">
                 <button
                   type="button"
-                  onClick={(e) => {
-                    e.preventDefault()
-                    e.stopPropagation()
-                    setTargetType('all')
-                  }}
+                  onClick={() => setTargetType('all')}
                   className={`flex items-center justify-center gap-2 px-4 py-3 rounded-lg border transition-all ${
                     targetType === 'all'
                       ? 'bg-amber-600 border-amber-600 text-white'
@@ -264,11 +260,7 @@ export default function AdminNotificationsPage() {
                 </button>
                 <button
                   type="button"
-                  onClick={(e) => {
-                    e.preventDefault()
-                    e.stopPropagation()
-                    setTargetType('artist')
-                  }}
+                  onClick={() => setTargetType('artist')}
                   className={`flex items-center justify-center gap-2 px-4 py-3 rounded-lg border transition-all ${
                     targetType === 'artist'
                       ? 'bg-amber-600 border-amber-600 text-white'
@@ -280,11 +272,7 @@ export default function AdminNotificationsPage() {
                 </button>
                 <button
                   type="button"
-                  onClick={(e) => {
-                    e.preventDefault()
-                    e.stopPropagation()
-                    setTargetType('collector')
-                  }}
+                  onClick={() => setTargetType('collector')}
                   className={`flex items-center justify-center gap-2 px-4 py-3 rounded-lg border transition-all ${
                     targetType === 'collector'
                       ? 'bg-amber-600 border-amber-600 text-white'
@@ -296,11 +284,7 @@ export default function AdminNotificationsPage() {
                 </button>
                 <button
                   type="button"
-                  onClick={(e) => {
-                    e.preventDefault()
-                    e.stopPropagation()
-                    setTargetType('specific')
-                  }}
+                  onClick={() => setTargetType('specific')}
                   className={`flex items-center justify-center gap-2 px-4 py-3 rounded-lg border transition-all ${
                     targetType === 'specific'
                       ? 'bg-amber-600 border-amber-600 text-white'
@@ -333,11 +317,7 @@ export default function AdminNotificationsPage() {
 
             <button
               type="button"
-              onClick={(e) => {
-                e.preventDefault()
-                e.stopPropagation()
-                sendNotification()
-              }}
+              onClick={sendNotification}
               disabled={sending}
               className="w-full flex items-center justify-center gap-2 bg-amber-600 hover:bg-amber-500 text-white py-3.5 rounded-lg font-medium transition-all disabled:opacity-50 disabled:cursor-not-allowed"
             >
