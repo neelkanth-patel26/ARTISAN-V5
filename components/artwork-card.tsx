@@ -65,17 +65,29 @@ export function ArtworkCard({ artwork, initialLiked = false, onLike }: ArtworkCa
     })
   }
 
-  const handleShare = (e: React.MouseEvent) => {
+  const handleShare = async (e: React.MouseEvent) => {
     e.stopPropagation()
-    requireAuth(() => {
-      if (navigator.share) {
-        navigator.share({
+    const shareUrl = `${window.location.origin}/gallery?artwork=${artwork.id}`
+    
+    if (navigator.share) {
+      try {
+        await navigator.share({
           title: artwork.title,
           text: `Check out "${artwork.title}" by ${artwork.artist}`,
-          url: window.location.href,
+          url: shareUrl,
         })
+      } catch (err) {
+        // User cancelled share
       }
-    })
+    } else {
+      await navigator.clipboard.writeText(shareUrl)
+      // Show a simple toast notification
+      const toast = document.createElement('div')
+      toast.textContent = 'Link copied to clipboard!'
+      toast.style.cssText = 'position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:#d97706;color:white;padding:12px 24px;border-radius:8px;z-index:9999;font-size:14px;box-shadow:0 4px 12px rgba(0,0,0,0.3)'
+      document.body.appendChild(toast)
+      setTimeout(() => toast.remove(), 2000)
+    }
   }
 
   const handleDownload = (e: React.MouseEvent) => {
