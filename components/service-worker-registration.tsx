@@ -5,41 +5,58 @@ import { useEffect } from 'react'
 export function ServiceWorkerRegistration() {
   useEffect(() => {
     if ('serviceWorker' in navigator && typeof window !== 'undefined') {
-      // Register service worker
       navigator.serviceWorker
         .register('/sw.js', { scope: '/' })
-        .then((registration) => {
-          console.log('PWA: Service Worker registered successfully:', registration.scope)
+        .then(async (registration) => {
+          console.log('PWA: Service Worker registered')
 
-          // Handle updates
+          // Request notification permission
+          if ('Notification' in window && Notification.permission === 'default') {
+            const permission = await Notification.requestPermission()
+            console.log('Notification permission:', permission)
+          }
+
+          // Subscribe to push notifications
+          if ('PushManager' in window && Notification.permission === 'granted') {
+            try {
+              const subscription = await registration.pushManager.subscribe({
+                userVisibleOnly: true,
+                applicationServerKey: process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY
+              })
+
+              // Send subscription to server
+              await fetch('/api/notifications/subscribe', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(subscription)
+              })
+
+              console.log('Push subscription successful')
+            } catch (error) {
+              console.error('Push subscription failed:', error)
+            }
+          }
+
           registration.addEventListener('updatefound', () => {
             const newWorker = registration.installing
             if (newWorker) {
               newWorker.addEventListener('statechange', () => {
                 if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
-                  // New content is available, notify user
-                  console.log('PWA: New content is available and will be used when all tabs for this page are closed.')
+                  console.log('PWA: New content available')
                 }
               })
             }
           })
 
-          // Check for updates periodically
-          setInterval(() => {
-            registration.update()
-          }, 1000 * 60 * 60) // Check every hour
+          setInterval(() => registration.update(), 1000 * 60 * 60)
         })
         .catch((error) => {
           console.error('PWA: Service Worker registration failed:', error)
         })
 
-      // Handle controller change (when new SW takes control)
       navigator.serviceWorker.addEventListener('controllerchange', () => {
-        console.log('PWA: Service Worker controller changed, reloading page...')
         window.location.reload()
       })
-    } else {
-      console.warn('PWA: Service Worker not supported in this browser')
     }
   }, [])
 

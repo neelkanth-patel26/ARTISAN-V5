@@ -6,6 +6,7 @@ import { DevToolsBlocker } from '@/components/dev-tools-blocker'
 import { Toaster } from 'sonner'
 import { ServiceWorkerRegistration } from '@/components/service-worker-registration'
 import { PWAFullscreenManager } from '@/components/pwa-fullscreen-manager'
+import { NotificationPermissionPrompt } from '@/components/notification-permission-prompt'
 
 import './globals.css'
 
@@ -139,6 +140,7 @@ export default function RootLayout({
         <DevToolsBlocker />
         <ServiceWorkerRegistration />
         <PWAFullscreenManager />
+        <NotificationPermissionPrompt />
         <Toaster position="top-right" richColors />
         {children}
       </body>

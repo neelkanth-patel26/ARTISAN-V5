@@ -157,24 +157,31 @@ self.addEventListener('push', (event) => {
     icon: data.icon || '/icon-192.png',
     badge: data.badge || '/icon-192.png',
     image: data.image,
-    vibrate: [200, 100, 200],
-    tag: data.tag || 'artisan-notification',
-    requireInteraction: false,
+    vibrate: [200, 100, 200, 100, 200],
+    tag: 'artisan-notification',
+    requireInteraction: true,
     renotify: true,
+    silent: false,
     data: {
       url: data.data?.url || data.url || '/',
       notificationId: data.data?.notificationId,
       timestamp: Date.now()
     },
     actions: [
-      { action: 'open', title: 'View', icon: '/icon-192.png' },
+      { action: 'open', title: 'View' },
       { action: 'close', title: 'Dismiss' }
     ]
   }
 
   event.waitUntil(
     self.registration.showNotification(data.title || 'Artisan', options)
-      .then(() => console.log('Service Worker: Notification displayed'))
+      .then(() => {
+        console.log('Service Worker: Notification displayed')
+        // Play sound for iOS
+        if (self.registration.getNotifications) {
+          return self.registration.getNotifications({ tag: 'artisan-notification' })
+        }
+      })
       .catch(err => console.error('Service Worker: Notification display failed', err))
   )
 })

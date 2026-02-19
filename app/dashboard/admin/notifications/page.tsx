@@ -110,9 +110,11 @@ export default function AdminNotificationsPage() {
         body: JSON.stringify({ notificationId: notification.id })
       })
 
-      if (!response.ok) throw new Error('Failed to send notification')
+      const result = await response.json()
 
-      toast.success('Notification sent successfully')
+      if (!response.ok) throw new Error(result.error || 'Failed to send notification')
+
+      toast.success('Notification sent to devices')
       setTitle('')
       setBody('')
       setUrl('')
@@ -121,6 +123,7 @@ export default function AdminNotificationsPage() {
       loadNotifications()
       loadStats()
     } catch (error: any) {
+      console.error('Send error:', error)
       toast.error(error.message || 'Failed to send notification')
     } finally {
       setSending(false)
