@@ -35,6 +35,8 @@ export default function ArtistEarnings() {
   const totalEarnings = transactions.reduce((sum, t) => sum + Number(t.artist_earnings ?? 0), 0)
   const totalSales = transactions.length
   const platformFees = transactions.reduce((sum, t) => sum + Number(t.platform_fee ?? 0), 0)
+  const upiTransactions = transactions.filter(t => t.payment_method === 'upi')
+  const upiPlatformFees = upiTransactions.reduce((sum, t) => sum + Number(t.platform_fee ?? 0), 0)
 
   return (
     <DashboardLayout navItems={DASHBOARD_NAV.artist} role="artist">
@@ -99,7 +101,16 @@ export default function ArtistEarnings() {
               transition={{ delay: 0.15 }}
               className="rounded-xl border border-neutral-800 bg-neutral-900/50 p-6"
             >
-              <h2 className="mb-6 text-lg font-semibold text-white">Transaction History</h2>
+              <div className="flex items-center justify-between mb-6">
+                <h2 className="text-lg font-semibold text-white">Transaction History</h2>
+                {upiPlatformFees > 0 && (
+                  <div className="text-right">
+                    <p className="text-xs text-neutral-500">UPI Platform Fees</p>
+                    <p className="text-sm text-orange-400 font-medium">₹{upiPlatformFees.toFixed(2)}</p>
+                    <p className="text-xs text-neutral-600">gaming.network.studio.mg@okicici</p>
+                  </div>
+                )}
+              </div>
               {transactions.length === 0 ? (
                 <EmptyState
                   icon={DollarSign}
@@ -133,6 +144,9 @@ export default function ArtistEarnings() {
                         <div className="text-left sm:text-right w-full sm:w-auto">
                           <p className="font-bold text-green-500">+₹{Number(tx.artist_earnings).toFixed(2)}</p>
                           <p className="text-xs text-neutral-500">from ₹{Number(tx.amount).toFixed(2)}</p>
+                          {tx.payment_method === 'upi' && tx.platform_fee && (
+                            <p className="text-xs text-orange-400">Fee: ₹{Number(tx.platform_fee).toFixed(2)}</p>
+                          )}
                         </div>
                       </div>
                       

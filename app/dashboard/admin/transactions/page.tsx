@@ -10,7 +10,7 @@ import { motion } from 'framer-motion'
 
 export default function AdminTransactions() {
   const [transactions, setTransactions] = useState<any[]>([])
-  const [stats, setStats] = useState({ totalRevenue: 0, purchases: 0, supports: 0, platformFees: 0 })
+  const [stats, setStats] = useState({ totalRevenue: 0, purchases: 0, supports: 0, platformFees: 0, upiPlatformFees: 0 })
   const [loading, setLoading] = useState(true)
   const [filter, setFilter] = useState<'all' | 'purchase' | 'support'>('all')
   const [searchQuery, setSearchQuery] = useState('')
@@ -60,8 +60,9 @@ export default function AdminTransactions() {
       const purchases = enriched.filter(t => t.transaction_type === 'purchase').length
       const supports = enriched.filter(t => t.transaction_type === 'support').length
       const platformFees = enriched.reduce((sum, t) => sum + Number(t.platform_fee || 0), 0)
+      const upiPlatformFees = enriched.filter(t => t.payment_method === 'upi').reduce((sum, t) => sum + Number(t.platform_fee || 0), 0)
 
-      setStats({ totalRevenue, purchases, supports, platformFees })
+      setStats({ totalRevenue, purchases, supports, platformFees, upiPlatformFees })
     }
     setLoading(false)
   }
@@ -87,6 +88,18 @@ export default function AdminTransactions() {
           <StatCard icon={Heart} label="Supports" value={stats.supports.toString()} />
           <StatCard icon={TrendingUp} label="Platform Fees" value={`₹${stats.platformFees.toLocaleString()}`} />
         </div>
+
+        {stats.upiPlatformFees > 0 && (
+          <div className="rounded-xl border border-amber-600/30 bg-amber-600/5 p-4">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm text-neutral-400">UPI Platform Fees (5%)</p>
+                <p className="text-xs text-neutral-500 mt-1">gaming.network.studio.mg@okicici</p>
+              </div>
+              <p className="text-2xl font-bold text-amber-600">₹{stats.upiPlatformFees.toFixed(2)}</p>
+            </div>
+          </div>
+        )}
 
         <div className="flex flex-col sm:flex-row gap-3">
           <div className="relative flex-1">
@@ -165,6 +178,9 @@ export default function AdminTransactions() {
                       <div>
                         <p className="text-lg font-semibold text-white">₹{Number(tx.amount || 0).toLocaleString()}</p>
                         <p className="text-xs text-neutral-400">Fee: ₹{Number(tx.platform_fee || 0).toFixed(2)}</p>
+                        {tx.payment_method === 'upi' && (
+                          <p className="text-xs text-amber-500">UPI</p>
+                        )}
                       </div>
                       <span className={`px-2 py-1 rounded text-xs ${
                         tx.transaction_type === 'purchase' 

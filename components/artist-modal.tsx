@@ -34,6 +34,9 @@ export function ArtistModal({ artist, onClose }: ArtistModalProps) {
   const [showSupport, setShowSupport] = useState(false)
   const [amount, setAmount] = useState('')
   const [paymentMethod, setPaymentMethod] = useState<'upi' | 'gateway'>('gateway')
+  const platformFeePercent = 5
+  const platformFee = amount ? (parseFloat(amount) * platformFeePercent / 100).toFixed(2) : '0.00'
+  const artistReceives = amount ? (parseFloat(amount) - parseFloat(platformFee)).toFixed(2) : '0.00'
   const [artworkCount, setArtworkCount] = useState(0)
   const [artworks, setArtworks] = useState<any[]>([])
   const [showArtworks, setShowArtworks] = useState(false)
@@ -152,11 +155,33 @@ export function ArtistModal({ artist, onClose }: ArtistModalProps) {
       if (artist?.upi_qr_code) {
         setShowSupport(true)
       } else if (artist?.upi_id) {
-        const upiUrl = `upi://pay?pa=${artist.upi_id}&pn=${encodeURIComponent(artist.full_name)}&am=${amount}&cu=INR`
+        const totalAmount = parseFloat(amount)
+        const fee = parseFloat(platformFee)
+        const upiUrl = `upi://pay?pa=${artist.upi_id}&pn=${encodeURIComponent(artist.full_name)}&am=${artistReceives}&cu=INR&tn=Support%20Payment`
+        
+        // Record transaction in database
+        recordUpiTransaction(totalAmount, fee)
+        
         window.location.href = upiUrl
         toast.success('Opening UPI app...')
       }
     }
+  }
+
+  const recordUpiTransaction = async (totalAmount: number, fee: number) => {
+    if (!user || !artist) return
+    
+    await supabase.from('transactions').insert({
+      buyer_id: user.user_id,
+      artist_id: artist.id,
+      amount: totalAmount,
+      platform_fee: fee,
+      artist_earnings: totalAmount - fee,
+      transaction_type: 'support',
+      payment_method: 'upi',
+      status: 'completed',
+      transaction_code: `UPI-${Date.now()}`
+    })
   }
 
   const handleShare = (artwork: any) => {
@@ -423,7 +448,7 @@ export function ArtistModal({ artist, onClose }: ArtistModalProps) {
 
                     <div className="grid grid-cols-2 gap-2 sm:gap-3">
                       <button
-                        onClick={() => (artist.upi_id || artist.upi_qr_code) && setPaymentMethod('upi')}
+                        onClick={() => setPaymentMethod('upi')}
                         disabled={!artist.upi_id && !artist.upi_qr_code}
                         className={`flex items-center justify-center gap-2 px-4 py-3 rounded-lg border font-medium transition-all ${
                           paymentMethod === 'upi'
@@ -453,6 +478,24 @@ export function ArtistModal({ artist, onClose }: ArtistModalProps) {
                       <div className="bg-neutral-800/50 p-4 rounded-lg border border-neutral-700">
                         <p className="text-sm text-neutral-400 mb-2">UPI ID</p>
                         <code className="text-amber-600 font-mono text-sm sm:text-base break-all">{artist.upi_id}</code>
+                      </div>
+                    )}
+
+                    {paymentMethod === 'upi' && amount && parseFloat(amount) > 0 && (
+                      <div className="bg-neutral-800/50 p-4 rounded-lg border border-neutral-700 space-y-2">
+                        <div className="flex justify-between text-sm">
+                          <span className="text-neutral-400">Amount</span>
+                          <span className="text-white">₹{parseFloat(amount).toFixed(2)}</span>
+                        </div>
+                        <div className="flex justify-between text-sm">
+                          <span className="text-neutral-400">Platform Fee (5%)</span>
+                          <span className="text-orange-400">-₹{platformFee}</span>
+                        </div>
+                        <div className="flex justify-between text-sm pt-2 border-t border-neutral-700">
+                          <span className="text-neutral-300 font-medium">Artist Receives</span>
+                          <span className="text-green-400 font-semibold">₹{artistReceives}</span>
+                        </div>
+                        <p className="text-xs text-neutral-500 mt-2">Platform fee goes to: gaming.network.studio.mg@okicici</p>
                       </div>
                     )}
 
