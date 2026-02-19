@@ -116,7 +116,7 @@ export default function ArtistEarnings() {
                       transition={{ delay: 0.03 * i }}
                       className="rounded-lg border border-neutral-800 bg-neutral-800/30 p-4 transition-colors hover:border-neutral-700"
                     >
-                      <div className="flex items-center gap-4">
+                      <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4">
                         {tx.artworks?.image_url && (
                           <img
                             src={tx.artworks.image_url}
@@ -124,13 +124,13 @@ export default function ArtistEarnings() {
                             className="w-16 h-16 rounded-lg object-cover border border-neutral-700"
                           />
                         )}
-                        <div className="flex-1">
-                          <p className="font-medium text-white">{tx.artworks?.title}</p>
-                          <p className="text-sm text-neutral-400">
+                        <div className="flex-1 min-w-0">
+                          <p className="font-medium text-white truncate">{tx.artworks?.title}</p>
+                          <p className="text-sm text-neutral-400 truncate">
                             {new Date(tx.created_at).toLocaleDateString()} • {tx.transaction_code}
                           </p>
                         </div>
-                        <div className="text-right">
+                        <div className="text-left sm:text-right w-full sm:w-auto">
                           <p className="font-bold text-green-500">+₹{Number(tx.artist_earnings).toFixed(2)}</p>
                           <p className="text-xs text-neutral-500">from ₹{Number(tx.amount).toFixed(2)}</p>
                         </div>
