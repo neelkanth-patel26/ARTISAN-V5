@@ -1,6 +1,5 @@
 'use client'
 
-import { motion } from 'framer-motion'
 import { AlertTriangle, Home } from 'lucide-react'
 
 export default function GlobalError({
@@ -12,57 +11,38 @@ export default function GlobalError({
 }) {
   return (
     <html>
+      <head>
+        <link rel="stylesheet" href="/_next/static/css/app/layout.css" />
+      </head>
       <body>
-        <div className="relative min-h-screen bg-gradient-to-b from-neutral-950 via-neutral-900 to-neutral-950 overflow-hidden flex items-center justify-center">
-          <motion.div 
-            className="absolute top-20 left-10 w-72 h-72 bg-red-600/10 rounded-full blur-3xl"
-            animate={{ x: [0, 100, 0], y: [0, 50, 0], scale: [1, 1.3, 1], opacity: [0.3, 0.6, 0.3] }}
-            transition={{ duration: 10, repeat: Infinity, ease: "easeInOut" }}
-          />
-          <motion.div 
-            className="absolute bottom-20 right-10 w-96 h-96 bg-amber-500/10 rounded-full blur-3xl"
-            animate={{ x: [0, -50, 0], y: [0, -80, 0], scale: [1, 1.4, 1], opacity: [0.3, 0.5, 0.3] }}
-            transition={{ duration: 12, repeat: Infinity, ease: "easeInOut" }}
-          />
+        <div style={{ minHeight: '100vh', background: 'linear-gradient(to bottom, #0a0a0a, #171717, #0a0a0a)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: 'system-ui, -apple-system, sans-serif' }}>
+          <div style={{ textAlign: 'center', padding: '24px', maxWidth: '600px' }}>
+            <div style={{ marginBottom: '32px' }}>
+              <AlertTriangle style={{ width: '96px', height: '96px', color: '#d97706', margin: '0 auto', opacity: 0.8 }} strokeWidth={1} />
+            </div>
 
-          <div className="relative z-10 text-center px-6 max-w-2xl mx-auto">
-            <motion.div
-              initial={{ opacity: 0, scale: 0.5 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ duration: 0.8 }}
-              className="mb-8"
-            >
-              <AlertTriangle className="w-24 h-24 md:w-32 md:h-32 text-amber-600/80 mx-auto" strokeWidth={1} />
-            </motion.div>
+            <h2 style={{ fontSize: '32px', fontWeight: '300', color: 'rgba(255,255,255,0.9)', marginBottom: '16px' }}>
+              Critical Error
+            </h2>
+            <p style={{ color: '#a3a3a3', fontSize: '16px', lineHeight: '1.6', fontWeight: '300', marginBottom: '32px' }}>
+              A critical error occurred. Please refresh the page or return home.
+            </p>
 
-            <motion.div
-              initial={{ opacity: 0, y: 30 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, delay: 0.3 }}
-            >
-              <h2 className="text-2xl md:text-4xl font-light text-white/90 mb-4">
-                Critical Error
-              </h2>
-              <p className="text-neutral-400 text-sm md:text-base leading-relaxed font-light mb-8">
-                A critical error occurred. Please refresh the page or return home.
-              </p>
-
-              <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
-                <button
-                  onClick={reset}
-                  className="px-6 py-3 rounded-lg bg-gradient-to-r from-amber-600 to-amber-700 text-white font-light tracking-wider"
-                >
-                  TRY AGAIN
-                </button>
-                <a
-                  href="/"
-                  className="flex items-center gap-2 px-6 py-3 rounded-lg border border-amber-600/20 bg-neutral-900/60 text-amber-600 font-light tracking-wider"
-                >
-                  <Home size={18} />
-                  GO HOME
-                </a>
-              </div>
-            </motion.div>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '16px', alignItems: 'center' }}>
+              <button
+                onClick={() => window.location.reload()}
+                style={{ padding: '12px 24px', borderRadius: '8px', background: 'linear-gradient(to right, #d97706, #b45309)', color: 'white', fontWeight: '300', letterSpacing: '0.05em', border: 'none', cursor: 'pointer', fontSize: '14px' }}
+              >
+                TRY AGAIN
+              </button>
+              <a
+                href="/"
+                style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '12px 24px', borderRadius: '8px', border: '1px solid rgba(217,119,6,0.2)', background: 'rgba(23,23,23,0.6)', color: '#d97706', fontWeight: '300', letterSpacing: '0.05em', textDecoration: 'none', fontSize: '14px' }}
+              >
+                <Home size={18} />
+                GO HOME
+              </a>
+            </div>
           </div>
         </div>
       </body>
