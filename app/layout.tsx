@@ -129,6 +129,7 @@ export default function RootLayout({
         <meta name="color" content="#000000" />
         <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover" />
         <meta name="robots" content="noarchive, noimageindex" />
+        <meta httpEquiv="Permissions-Policy" content="geolocation=(self)" />
         <style dangerouslySetInnerHTML={{
           __html: `/* Copyright © 2019-2026 Gaming Network Studio Media Group - All Rights Reserved */`
         }} />

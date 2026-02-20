@@ -55,15 +55,15 @@ export default function LoginPage() {
       const redirectUrl = typeof window !== 'undefined' ? localStorage.getItem('auth_redirect') : null
       if (redirectUrl) {
         localStorage.removeItem('auth_redirect')
-        window.location.href = redirectUrl
+        router.replace(redirectUrl)
         return
       }
       
       // Default redirects based on role
-      if (user.user_role === 'admin') window.location.href = '/dashboard/admin'
-      else if (user.user_role === 'artist') window.location.href = '/dashboard/artist'
-      else if (user.user_role === 'collector') window.location.href = '/dashboard/collector'
-      else window.location.href = '/'
+      if (user.user_role === 'admin') router.replace('/dashboard/admin')
+      else if (user.user_role === 'artist') router.replace('/dashboard/artist')
+      else if (user.user_role === 'collector') router.replace('/dashboard/collector')
+      else router.replace('/')
     } catch (error: any) {
       setLoading(false)
       

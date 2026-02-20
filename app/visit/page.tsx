@@ -2,91 +2,123 @@
 
 import { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
+import { useRouter } from 'next/navigation'
+import Link from 'next/link'
 import { Navigation } from '@/components/navigation'
 import { Footer } from '@/components/footer'
-import { MapPin, Calendar, Clock, Navigation2, Building2, Map } from 'lucide-react'
+import { EventsMap } from '@/components/events-map'
+import { MapPin, Calendar, Clock, Navigation2, Building2, Map, Loader2, MapIcon, ExternalLink, LogIn } from 'lucide-react'
+import { fetchNearbyEvents, fetchGlobalEvents, ProcessedEvent } from '@/lib/ticketmaster'
+import { getCurrentUser } from '@/lib/auth'
 
 export default function VisitPage() {
+  const router = useRouter()
+  const [user, setUser] = useState<any>(null)
+  const [events, setEvents] = useState<ProcessedEvent[]>([])
+  const [loading, setLoading] = useState(true)
+  const [locationLoading, setLocationLoading] = useState(false)
+  const [userLocation, setUserLocation] = useState<{ lat: number; lng: number } | null>(null)
+  const [error, setError] = useState<string | null>(null)
+  const [showMap, setShowMap] = useState(false)
+
+  const [showGlobalEvents, setShowGlobalEvents] = useState(false)
+
+  useEffect(() => {
+    const currentUser = getCurrentUser()
+    setUser(currentUser)
+    setLoading(false)
+  }, [])
+
+  const loadGlobalEvents = async () => {
+    setLocationLoading(true)
+    setError(null)
+    
+    try {
+      const globalEvents = await fetchGlobalEvents()
+      setEvents(globalEvents)
+      setShowGlobalEvents(true)
+      setShowMap(false)
+    } catch (err) {
+      setError('Failed to fetch global events. Please try again.')
+      console.error('Error fetching global events:', err)
+    } finally {
+      setLocationLoading(false)
+    }
+  }
+
+  const requestLocation = async () => {
+    if (!user) {
+      if (typeof window !== 'undefined') {
+        localStorage.setItem('auth_redirect', window.location.pathname + window.location.search)
+      }
+      router.push('/login')
+      return
+    }
+
+    setLocationLoading(true)
+    setError(null)
+
+    if (!navigator.geolocation) {
+      setError('Geolocation is not supported by this browser')
+      setLocationLoading(false)
+      return
+    }
+
+    navigator.geolocation.getCurrentPosition(
+      async (position) => {
+        const { latitude, longitude } = position.coords
+        setUserLocation({ lat: latitude, lng: longitude })
+        
+        try {
+          const radius = parseInt(process.env.NEXT_PUBLIC_DEFAULT_SEARCH_RADIUS || '50')
+          const nearbyEvents = await fetchNearbyEvents(latitude, longitude, radius)
+          setEvents(nearbyEvents)
+          setShowMap(true)
+        } catch (err) {
+          setError('Failed to fetch nearby events. Please try again.')
+          console.error('Error fetching events:', err)
+        } finally {
+          setLocationLoading(false)
+        }
+      },
+      (error) => {
+        let errorMessage = 'Unable to retrieve your location.'
+        switch(error.code) {
+          case error.PERMISSION_DENIED:
+            errorMessage = 'Location access denied. Please enable location services and try again.'
+            break
+          case error.POSITION_UNAVAILABLE:
+            errorMessage = 'Location information unavailable. Please try again.'
+            break
+          case error.TIMEOUT:
+            errorMessage = 'Location request timed out. Please try again.'
+            break
+        }
+        setError(errorMessage)
+        setLocationLoading(false)
+        console.error('Geolocation error:', error)
+      },
+      {
+        enableHighAccuracy: true,
+        timeout: parseInt(process.env.NEXT_PUBLIC_LOCATION_TIMEOUT || '10000'),
+        maximumAge: parseInt(process.env.NEXT_PUBLIC_LOCATION_MAX_AGE || '300000')
+      }
+    )
+  }
+
   const stats = [
-    { label: 'Art Venues', value: '25+', icon: Building2 },
-    { label: 'Active Events', value: '18', icon: Calendar },
-    { label: 'Nearby', value: '5 km', icon: Map },
+    { label: 'Events Found', value: events.length.toString(), icon: Building2 },
+    { label: showGlobalEvents ? 'Coverage' : 'Search Radius', value: showGlobalEvents ? 'Worldwide' : `${process.env.NEXT_PUBLIC_DEFAULT_SEARCH_RADIUS || '50'} km`, icon: Map },
+    { label: 'Live Data', value: 'Real-time', icon: Calendar },
   ]
 
-  const events = [
-    {
-      id: 1,
-      name: 'Downtown Art Gallery',
-      type: 'Gallery',
-      image: 'https://images.unsplash.com/photo-1536924430914-91f9e2041b83?w=800&h=600&fit=crop&q=90',
-      distance: '0.5 km',
-      address: '123 Main Street, Downtown',
-      hours: 'Mon-Sat: 10:00 AM - 8:00 PM',
-      event: 'Contemporary Art Exhibition',
-      date: 'Ongoing',
-      description: 'Featuring modern and contemporary artworks from local and international artists.'
-    },
-    {
-      id: 2,
-      name: 'City Museum of Art',
-      type: 'Museum',
-      image: 'https://images.unsplash.com/photo-1564951434112-64d74cc2a2d7?w=800&h=600&fit=crop&q=90',
-      distance: '1.2 km',
-      address: '456 Cultural Avenue',
-      hours: 'Tue-Sun: 9:00 AM - 6:00 PM',
-      event: 'Classical Sculptures Display',
-      date: 'Until March 2024',
-      description: 'Explore timeless sculptures and classical art pieces from various eras.'
-    },
-    {
-      id: 3,
-      name: 'Urban Art Space',
-      type: 'Art Space',
-      image: 'https://images.unsplash.com/photo-1460661419201-fd4cecdf8a8b?w=800&h=600&fit=crop&q=90',
-      distance: '2.0 km',
-      address: '789 Street Art Lane',
-      hours: 'Daily: 11:00 AM - 9:00 PM',
-      event: 'Street Art Festival',
-      date: 'Feb 15-20, 2024',
-      description: 'Vibrant street art and graffiti from renowned urban artists.'
-    },
-    {
-      id: 4,
-      name: 'Photography Center',
-      type: 'Gallery',
-      image: 'https://images.unsplash.com/photo-1452587925148-ce544e77e70d?w=800&h=600&fit=crop&q=90',
-      distance: '1.8 km',
-      address: '321 Lens Boulevard',
-      hours: 'Wed-Sun: 10:00 AM - 7:00 PM',
-      event: 'World Photography Showcase',
-      date: 'Jan 10 - Mar 15, 2024',
-      description: 'Stunning photography from award-winning photographers around the globe.'
-    },
-    {
-      id: 5,
-      name: 'Abstract Art Studio',
-      type: 'Studio',
-      image: 'https://images.unsplash.com/photo-1547826039-bfc35e0f1ea8?w=800&h=600&fit=crop&q=90',
-      distance: '3.5 km',
-      address: '555 Creative Drive',
-      hours: 'Mon-Fri: 12:00 PM - 8:00 PM',
-      event: 'Abstract Expressions Workshop',
-      date: 'Every Weekend',
-      description: 'Interactive workshops and exhibitions focusing on abstract art forms.'
-    },
-    {
-      id: 6,
-      name: 'Digital Arts Hub',
-      type: 'Gallery',
-      image: 'https://images.unsplash.com/photo-1561214115-f2f134cc4912?w=800&h=600&fit=crop&q=90',
-      distance: '2.8 km',
-      address: '888 Tech Plaza',
-      hours: 'Daily: 10:00 AM - 10:00 PM',
-      event: 'Digital Art & NFT Exhibition',
-      date: 'Ongoing',
-      description: 'Cutting-edge digital art installations and NFT showcases.'
-    },
-  ]
+  if (loading) {
+    return (
+      <main className="min-h-screen bg-gradient-to-b from-neutral-950 via-neutral-900 to-neutral-950 flex items-center justify-center">
+        <Loader2 className="h-10 w-10 animate-spin text-amber-600" />
+      </main>
+    )
+  }
 
   return (
     <main className="min-h-screen bg-gradient-to-b from-neutral-950 via-neutral-900 to-neutral-950">
@@ -104,93 +136,242 @@ export default function VisitPage() {
           <h1 className="text-5xl sm:text-6xl md:text-8xl font-light text-white/90 mb-6" style={{ fontFamily: 'ForestSmooth, serif' }}>
             Visit & Explore
           </h1>
-          <p className="text-neutral-400 max-w-2xl mx-auto font-light mb-12">Discover art venues, galleries, and exhibitions near you</p>
+          <p className="text-neutral-400 max-w-2xl mx-auto font-light mb-12">
+            Discover real art venues, galleries, and exhibitions near your location or explore events worldwide using live data from Ticketmaster
+          </p>
           
-          <div className="max-w-4xl mx-auto grid grid-cols-3 gap-4">
-            {stats.map((stat) => {
-              const Icon = stat.icon
-              return (
-                <div key={stat.label} className="bg-neutral-900/30 border border-neutral-700/30 rounded-xl p-5 backdrop-blur-sm">
-                  <Icon size={24} className="text-amber-600/70 mx-auto mb-3" />
-                  <p className="text-2xl md:text-3xl font-light text-white/90 mb-1">{stat.value}</p>
-                  <p className="text-xs text-neutral-500 uppercase tracking-wider">{stat.label}</p>
+          {!user ? (
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="max-w-md mx-auto bg-neutral-900/50 border border-neutral-700/50 rounded-xl p-8 backdrop-blur-sm"
+            >
+              <LogIn className="mx-auto mb-4 text-amber-600" size={48} />
+              <h2 className="text-xl text-white/90 mb-4">Login Required</h2>
+              <p className="text-neutral-400 mb-6 text-sm">
+                Please login to access location-based event discovery and view nearby art venues.
+              </p>
+              <Link
+                href="/login"
+                onClick={() => {
+                  if (typeof window !== 'undefined') {
+                    localStorage.setItem('auth_redirect', window.location.pathname + window.location.search)
+                  }
+                }}
+                className="inline-block w-full py-3 bg-amber-600 hover:bg-amber-700 text-white rounded-lg text-sm tracking-[0.2em] font-light transition-colors duration-300"
+              >
+                LOGIN TO CONTINUE
+              </Link>
+            </motion.div>
+          ) : (
+            <>
+              {!showMap && !showGlobalEvents && (
+                <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
+                  <motion.button
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    onClick={requestLocation}
+                    disabled={locationLoading}
+                    className="inline-flex items-center gap-3 px-8 py-4 bg-amber-600/90 hover:bg-amber-600 border border-amber-600 text-white rounded-lg text-sm tracking-[0.2em] font-light transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
+                  >
+                    {locationLoading ? (
+                      <>
+                        <Loader2 className="animate-spin" size={20} />
+                        FINDING EVENTS...
+                      </>
+                    ) : (
+                      <>
+                        <MapIcon size={20} />
+                        DISCOVER NEARBY EVENTS
+                      </>
+                    )}
+                  </motion.button>
+                  
+                  <motion.button
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.1 }}
+                    onClick={loadGlobalEvents}
+                    disabled={locationLoading}
+                    className="inline-flex items-center gap-3 px-8 py-4 bg-neutral-700/50 hover:bg-neutral-600/50 border border-neutral-600 text-white rounded-lg text-sm tracking-[0.2em] font-light transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
+                  >
+                    {locationLoading ? (
+                      <>
+                        <Loader2 className="animate-spin" size={20} />
+                        LOADING...
+                      </>
+                    ) : (
+                      <>
+                        <Building2 size={20} />
+                        VIEW GLOBAL EVENTS
+                      </>
+                    )}
+                  </motion.button>
                 </div>
-              )
-            })}
-          </div>
+              )}
+
+              {error && (
+                <motion.div
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  className="mt-6 p-4 bg-red-900/30 border border-red-700/50 rounded-lg text-red-400 text-sm max-w-md mx-auto"
+                >
+                  {error}
+                </motion.div>
+              )}
+
+              {(showMap || showGlobalEvents) && events.length > 0 && (
+                <div className="max-w-4xl mx-auto grid grid-cols-3 gap-4 mt-8">
+                  {stats.map((stat) => {
+                    const Icon = stat.icon
+                    return (
+                      <div key={stat.label} className="bg-neutral-900/30 border border-neutral-700/30 rounded-xl p-5 backdrop-blur-sm">
+                        <Icon size={24} className="text-amber-600/70 mx-auto mb-3" />
+                        <p className="text-2xl md:text-3xl font-light text-white/90 mb-1">{stat.value}</p>
+                        <p className="text-xs text-neutral-500 uppercase tracking-wider">{stat.label}</p>
+                      </div>
+                    )
+                  })}
+                </div>
+              )}
+            </>
+          )}
         </motion.div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-7xl mx-auto">
-          {events.map((event, index) => (
-            <motion.div
-              key={event.id}
-              initial={{ opacity: 0, y: 30 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.3 + index * 0.1 }}
-              className="group relative overflow-hidden bg-neutral-900/30 border border-neutral-700/50 rounded-xl hover:border-amber-600/50 transition-all duration-500 hover:-translate-y-1 hover:shadow-2xl hover:shadow-amber-600/10"
-            >
-              <div className="relative h-56 overflow-hidden">
-                <img
-                  src={event.image}
-                  alt={event.name}
-                  className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/50 to-transparent" />
-                <div className="absolute top-4 right-4">
-                  <span className="px-3 py-1.5 text-[10px] tracking-wider font-light bg-amber-600/90 text-white backdrop-blur-sm rounded-full border border-amber-600">
-                    {event.type}
-                  </span>
-                </div>
-                <div className="absolute bottom-4 left-4 right-4">
-                  <h2 className="text-xl font-light text-white mb-1 group-hover:text-amber-400 transition-colors duration-300" style={{ fontFamily: 'serif' }}>
-                    {event.name}
-                  </h2>
-                  <div className="flex items-center gap-2 text-amber-600/80 text-xs">
-                    <Navigation2 size={12} />
-                    <span>{event.distance} away</span>
+        {showMap && userLocation && (
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+            className="max-w-7xl mx-auto mb-12"
+          >
+            <div className="mb-6">
+              <h2 className="text-2xl font-light text-white/90 mb-2">Interactive Map</h2>
+              <p className="text-neutral-400 text-sm">Your location and nearby events are marked on the map</p>
+            </div>
+            <EventsMap events={events} userLocation={userLocation} />
+          </motion.div>
+        )}
+
+        {events.length > 0 && (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-7xl mx-auto">
+            {events.map((event, index) => (
+              <motion.div
+                key={event.id}
+                initial={{ opacity: 0, y: 30 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6, delay: 0.1 + index * 0.05 }}
+                className="group relative overflow-hidden bg-neutral-900/30 border border-neutral-700/50 rounded-xl hover:border-amber-600/50 transition-all duration-500 hover:-translate-y-1 hover:shadow-2xl hover:shadow-amber-600/10"
+              >
+                <div className="relative h-56 overflow-hidden">
+                  <img
+                    src={event.image}
+                    alt={event.name}
+                    className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/50 to-transparent" />
+                  <div className="absolute top-4 right-4">
+                    <span className="px-3 py-1.5 text-[10px] tracking-wider font-light bg-amber-600/90 text-white backdrop-blur-sm rounded-full border border-amber-600">
+                      {event.type}
+                    </span>
                   </div>
-                </div>
-              </div>
-
-              <div className="p-5 space-y-4">
-                <div>
-                  <p className="text-white/90 text-sm font-light mb-1">{event.event}</p>
-                  <p className="text-neutral-400 text-xs leading-relaxed font-light">{event.description}</p>
-                </div>
-
-                <div className="grid grid-cols-1 gap-2">
-                  <div className="bg-neutral-800/30 rounded-lg p-3 border border-neutral-700/30">
-                    <div className="flex items-center gap-2 mb-1">
-                      <MapPin size={12} className="text-amber-600/70" />
-                      <p className="text-neutral-500 text-[10px] tracking-wider uppercase">Address</p>
+                  <div className="absolute bottom-4 left-4 right-4">
+                    <h2 className="text-xl font-light text-white mb-1 group-hover:text-amber-400 transition-colors duration-300" style={{ fontFamily: 'serif' }}>
+                      {event.name}
+                    </h2>
+                    <div className="flex items-center gap-2 text-amber-600/80 text-xs">
+                      <Navigation2 size={12} />
+                      <span>{showGlobalEvents ? event.distance : `${event.distance} away`}</span>
                     </div>
-                    <p className="text-neutral-300 text-xs font-light">{event.address}</p>
                   </div>
-                  <div className="grid grid-cols-2 gap-2">
+                </div>
+
+                <div className="p-5 space-y-4">
+                  <div>
+                    <p className="text-white/90 text-sm font-light mb-1">{event.name}</p>
+                    <p className="text-neutral-400 text-xs leading-relaxed font-light">{event.description}</p>
+                  </div>
+
+                  <div className="grid grid-cols-1 gap-2">
                     <div className="bg-neutral-800/30 rounded-lg p-3 border border-neutral-700/30">
                       <div className="flex items-center gap-2 mb-1">
-                        <Calendar size={12} className="text-amber-600/70" />
-                        <p className="text-neutral-500 text-[10px] tracking-wider uppercase">Date</p>
+                        <MapPin size={12} className="text-amber-600/70" />
+                        <p className="text-neutral-500 text-[10px] tracking-wider uppercase">Address</p>
                       </div>
-                      <p className="text-neutral-300 text-xs font-light">{event.date}</p>
+                      <p className="text-neutral-300 text-xs font-light">{event.address}</p>
                     </div>
-                    <div className="bg-neutral-800/30 rounded-lg p-3 border border-neutral-700/30">
-                      <div className="flex items-center gap-2 mb-1">
-                        <Clock size={12} className="text-amber-600/70" />
-                        <p className="text-neutral-500 text-[10px] tracking-wider uppercase">Hours</p>
+                    <div className="grid grid-cols-2 gap-2">
+                      <div className="bg-neutral-800/30 rounded-lg p-3 border border-neutral-700/30">
+                        <div className="flex items-center gap-2 mb-1">
+                          <Calendar size={12} className="text-amber-600/70" />
+                          <p className="text-neutral-500 text-[10px] tracking-wider uppercase">Date</p>
+                        </div>
+                        <p className="text-neutral-300 text-xs font-light">{event.date}</p>
                       </div>
-                      <p className="text-neutral-300 text-xs font-light truncate">{event.hours}</p>
+                      <div className="bg-neutral-800/30 rounded-lg p-3 border border-neutral-700/30">
+                        <div className="flex items-center gap-2 mb-1">
+                          <Clock size={12} className="text-amber-600/70" />
+                          <p className="text-neutral-500 text-[10px] tracking-wider uppercase">Time</p>
+                        </div>
+                        <p className="text-neutral-300 text-xs font-light">{event.time || 'TBA'}</p>
+                      </div>
                     </div>
+                    {event.priceRange && (
+                      <div className="bg-neutral-800/30 rounded-lg p-3 border border-neutral-700/30">
+                        <div className="flex items-center gap-2 mb-1">
+                          <span className="text-amber-600/70 text-xs">💰</span>
+                          <p className="text-neutral-500 text-[10px] tracking-wider uppercase">Price Range</p>
+                        </div>
+                        <p className="text-neutral-300 text-xs font-light">{event.priceRange}</p>
+                      </div>
+                    )}
+                  </div>
+
+                  <div className="flex gap-2">
+                    {event.url && (
+                      <a
+                        href={event.url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="flex-1 flex items-center justify-center gap-2 py-3 bg-amber-600/90 border border-amber-600 text-white rounded-lg text-xs tracking-[0.2em] font-light hover:bg-amber-600 transition-all duration-300"
+                      >
+                        <ExternalLink size={12} />
+                        VIEW DETAILS
+                      </a>
+                    )}
+                    {event.latitude && event.longitude && (
+                      <a
+                        href={`https://www.google.com/maps/dir/?api=1&destination=${event.latitude},${event.longitude}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="flex-1 flex items-center justify-center gap-2 py-3 bg-neutral-700/50 border border-neutral-600 text-white rounded-lg text-xs tracking-[0.2em] font-light hover:bg-neutral-600/50 transition-all duration-300"
+                      >
+                        <Navigation2 size={12} />
+                        DIRECTIONS
+                      </a>
+                    )}
                   </div>
                 </div>
+              </motion.div>
+            ))}
+          </div>
+        )}
 
-                <button className="w-full mt-3 py-3 bg-amber-600/90 border border-amber-600 text-white rounded-lg text-xs tracking-[0.2em] font-light hover:bg-amber-600 transition-all duration-300">
-                  GET DIRECTIONS
-                </button>
-              </div>
-            </motion.div>
-          ))}
-        </div>
+        {(showMap || showGlobalEvents) && events.length === 0 && !locationLoading && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            className="text-center py-12"
+          >
+            <Building2 className="mx-auto mb-4 text-neutral-600" size={48} />
+            <h3 className="text-xl text-white/70 mb-2">No Events Found</h3>
+            <p className="text-neutral-400 max-w-md mx-auto">
+              {showGlobalEvents 
+                ? 'No arts and theatre events found globally. Try again later.' 
+                : 'No arts and theatre events found within 50km of your location. Try again later or check a different area.'}
+            </p>
+          </motion.div>
+        )}
       </div>
       <Footer />
     </main>

@@ -11,6 +11,15 @@ const nextConfig = {
   },
   headers: async () => [
     {
+      source: '/(.*)',
+      headers: [
+        {
+          key: 'Permissions-Policy',
+          value: 'geolocation=(self), camera=(), microphone=()'
+        }
+      ]
+    },
+    {
       source: '/sw.js',
       headers: [
         {
