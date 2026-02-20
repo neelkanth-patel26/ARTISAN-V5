@@ -105,8 +105,8 @@ function CheckoutContent() {
           return
         }
         
-        const artistReceives = (baseAmount - (baseAmount * platformFeeRate)).toFixed(2)
-        const upiUrl = `upi://pay?pa=${artistUpiId}&pn=${encodeURIComponent(isSupport ? artist?.full_name || '' : artwork?.artist_name || '')}&am=${artistReceives}&cu=INR&tn=${isSupport ? 'Support' : 'Artwork'}%20Payment`
+        const artistReceives = baseAmount.toFixed(2)
+        const upiUrl = `upi://pay?pa=${artistUpiId}&pn=${encodeURIComponent(isSupport ? artist?.full_name || '' : artwork?.artist_name || '')}&am=${artistReceives}&cu=INR&tn=${encodeURIComponent(isSupport ? 'Support Payment' : 'Artwork Purchase')}`
         
         window.location.href = upiUrl
         toast.success('Opening UPI app...')
@@ -467,16 +467,12 @@ function CheckoutContent() {
                       <code className="text-purple-700 font-mono text-sm break-all">{artistUpiId}</code>
                       <div className="mt-4 pt-4 border-t border-purple-200 space-y-2">
                         <div className="flex justify-between text-sm">
-                          <span className="text-purple-900">Amount</span>
+                          <span className="text-purple-900">Total Amount</span>
                           <span className="text-purple-900">₹{baseAmount.toFixed(2)}</span>
                         </div>
-                        <div className="flex justify-between text-sm">
-                          <span className="text-purple-900">Platform Fee ({(platformFeeRate * 100).toFixed(0)}%)</span>
-                          <span className="text-orange-600">-₹{platformFee.toFixed(2)}</span>
-                        </div>
-                        <div className="flex justify-between text-sm pt-2 border-t border-purple-200">
-                          <span className="text-purple-900 font-medium">Artist Receives</span>
-                          <span className="text-green-600 font-semibold">₹{artistEarnings.toFixed(2)}</span>
+                        <div className="flex justify-between text-xs text-purple-700">
+                          <span>Platform fee will be deducted separately</span>
+                          <span>₹{platformFee.toFixed(2)}</span>
                         </div>
                       </div>
                     </div>
