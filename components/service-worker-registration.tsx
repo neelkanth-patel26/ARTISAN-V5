@@ -33,20 +33,28 @@ export function ServiceWorkerRegistration() {
         window.location.reload()
       })
       
-      // Check profile completion
+      // Check profile completion with error handling
       setTimeout(async () => {
-        const user = getCurrentUser()
-        if (user?.user_id) {
-          const profile = await getProfile(user.user_id)
-          if (profile && (!profile.bio || !profile.phone || !profile.location)) {
-            triggerNotification('PROFILE_INCOMPLETE')
+        try {
+          const user = getCurrentUser()
+          if (user?.user_id) {
+            const profile = await getProfile(user.user_id)
+            if (profile && (!profile.bio || !profile.phone || !profile.location)) {
+              triggerNotification('PROFILE_INCOMPLETE')
+            }
           }
+        } catch (error) {
+          console.error('Profile check failed:', error)
         }
       }, 5000)
       
-      // Start random notifications
-      if (Notification.permission === 'granted') {
-        scheduleRandomNotification()
+      // Start random notifications with error handling
+      try {
+        if (Notification.permission === 'granted') {
+          scheduleRandomNotification()
+        }
+      } catch (error) {
+        console.error('Notification scheduling failed:', error)
       }
     }
   }, [])

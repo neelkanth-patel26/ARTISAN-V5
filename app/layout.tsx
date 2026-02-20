@@ -130,6 +130,9 @@ export default function RootLayout({
         <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover" />
         <meta name="robots" content="noarchive, noimageindex" />
         <meta httpEquiv="Permissions-Policy" content="geolocation=(self)" />
+        <script dangerouslySetInnerHTML={{
+          __html: `window.addEventListener('error', function(e) { console.error('Global error:', e.error); }); window.addEventListener('unhandledrejection', function(e) { console.error('Unhandled rejection:', e.reason); });`
+        }} />
         <style dangerouslySetInnerHTML={{
           __html: `/* Copyright © 2019-2026 Gaming Network Studio Media Group - All Rights Reserved */`
         }} />
