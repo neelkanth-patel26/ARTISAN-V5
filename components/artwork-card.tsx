@@ -90,13 +90,23 @@ export function ArtworkCard({ artwork, initialLiked = false, onLike }: ArtworkCa
     }
   }
 
-  const handleDownload = (e: React.MouseEvent) => {
+  const handleDownload = async (e: React.MouseEvent) => {
     e.stopPropagation()
-    requireAuth(() => {
-      const link = document.createElement('a')
-      link.href = artwork.image
-      link.download = `${artwork.title}.jpg`
-      link.click()
+    requireAuth(async () => {
+      try {
+        const response = await fetch(artwork.image)
+        const blob = await response.blob()
+        const url = window.URL.createObjectURL(blob)
+        const link = document.createElement('a')
+        link.href = url
+        link.download = `${artwork.title}.jpg`
+        document.body.appendChild(link)
+        link.click()
+        document.body.removeChild(link)
+        window.URL.revokeObjectURL(url)
+      } catch (error) {
+        console.error('Download failed:', error)
+      }
     })
   }
 
