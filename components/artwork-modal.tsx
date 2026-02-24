@@ -271,13 +271,19 @@ export function ArtworkModal({ artwork, onClose, onShowAuthPrompt }: ArtworkModa
   }
 
   const handleDownload = async () => {
-    requireAuth(() => {
-      const link = document.createElement('a')
-      link.href = `/api/download?url=${encodeURIComponent(artwork.image)}&filename=${encodeURIComponent(artwork.title)}.jpg`
-      link.download = `${artwork.title}.jpg`
-      document.body.appendChild(link)
-      link.click()
-      document.body.removeChild(link)
+    requireAuth(async () => {
+      try {
+        const response = await fetch(`/api/download?url=${encodeURIComponent(artwork.image)}&filename=${encodeURIComponent(artwork.title)}.jpg`)
+        const blob = await response.blob()
+        const url = window.URL.createObjectURL(blob)
+        const link = document.createElement('a')
+        link.href = url
+        link.download = `${artwork.title}.jpg`
+        link.click()
+        window.URL.revokeObjectURL(url)
+      } catch (error) {
+        console.error('Download failed:', error)
+      }
     })
   }
 
