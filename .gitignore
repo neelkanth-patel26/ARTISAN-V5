@@ -28,3 +28,6 @@ ts-debug.log*
 
 # vercel
 .vercel
+
+# capacitor/android
+/android/
