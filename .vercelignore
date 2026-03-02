@@ -1,0 +1,5 @@
+# Exclude Android folder from Vercel deployment
+android/
+out/
+.next/
+node_modules/
