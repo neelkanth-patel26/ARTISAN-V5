@@ -106,10 +106,10 @@ export function Navigation() {
               animate={{ x: 0 }}
               exit={{ x: '100%' }}
               transition={{ duration: 0.3, ease: 'easeInOut' }}
-              className="fixed top-0 right-0 h-screen w-full md:w-[420px] bg-gradient-to-br from-neutral-950 via-neutral-900 to-neutral-950 [.native-mode_&]:bg-neutral-950 border-l border-amber-600/20 shadow-2xl z-[60] overflow-hidden pt-[max(48px,env(safe-area-inset-top))]"
+              className="fixed top-0 right-0 h-screen w-full md:w-[420px] bg-[#050505] border-l border-amber-600/20 shadow-2xl z-[60] overflow-hidden pt-[max(48px,env(safe-area-inset-top))]"
             >
               <div className="h-full flex flex-col">
-                <div className="flex items-center justify-between p-6 md:p-8 border-b border-neutral-800/50 bg-neutral-900/30 backdrop-blur-sm">
+                <div className="flex items-center justify-between p-6 md:p-8 border-b border-neutral-800/50">
                   <div className="flex items-center gap-3">
                     <div className="w-8 h-8 border border-amber-600/40 flex items-center justify-center lg:hidden">
                       <span className="text-amber-600/70 text-xs font-serif">A</span>
