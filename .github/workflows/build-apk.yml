@@ -39,7 +39,17 @@ jobs:
           # 1. Force App Name in strings.xml
           echo '<?xml version="1.0" encoding="utf-8"?><resources><string name="app_name">artisan</string><string name="title_activity_main">artisan</string><string name="package_name">com.artisan.v5</string><string name="custom_url_scheme">com.artisan.v5</string></resources>' > android/app/src/main/res/values/strings.xml
           
-          # 2. Delete Adaptive Icons (XMLs) that override our PNGs
+          # 2. Inject Permissions into AndroidManifest.xml
+          # We add permissions for Notifications, Location, and Storage Downloads
+          MANIFEST="android/app/src/main/AndroidManifest.xml"
+          sed -i '/<\/manifest>/i \    <uses-permission android:name="android.permission.INTERNET" />' $MANIFEST
+          sed -i '/<\/manifest>/i \    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />' $MANIFEST
+          sed -i '/<\/manifest>/i \    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />' $MANIFEST
+          sed -i '/<\/manifest>/i \    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />' $MANIFEST
+          sed -i '/<\/manifest>/i \    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />' $MANIFEST
+          sed -i '/<\/manifest>/i \    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />' $MANIFEST
+
+          # 3. Delete Adaptive Icons (XMLs) that override our PNGs
           find android/app/src/main/res -name "ic_launcher_foreground.xml" -delete
           find android/app/src/main/res -name "ic_launcher_background.xml" -delete
           rm -rf android/app/src/main/res/mipmap-anydpi-v26
