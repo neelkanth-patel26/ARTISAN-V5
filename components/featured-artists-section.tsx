@@ -6,22 +6,22 @@ import Link from 'next/link'
 
 export function FeaturedArtistsSection() {
   const artists = [
-    { 
-      name: 'Sarah Chen', 
-      specialty: 'Abstract Paintings', 
-      image: 'https://images.pexels.com/photos/774909/pexels-photo-774909.jpeg?auto=compress&cs=tinysrgb&w=600&h=750&fit=crop',
+    {
+      name: 'Neelkanth Patel',
+      specialty: 'Abstract Paintings',
+      image: '/images/artists/neelkanth_logo.png',
       works: '24'
     },
-    { 
-      name: 'Marcus Rivera', 
-      specialty: 'Bronze Sculptures', 
-      image: 'https://images.pexels.com/photos/1043474/pexels-photo-1043474.jpeg?auto=compress&cs=tinysrgb&w=600&h=750&fit=crop',
+    {
+      name: 'Urmi Thakkar',
+      specialty: 'Bronze Sculptures',
+      image: '/images/artists/urmi_logo.png',
       works: '18'
     },
-    { 
-      name: 'Elena Volkov', 
-      specialty: 'Contemporary Art', 
-      image: 'https://images.pexels.com/photos/415829/pexels-photo-415829.jpeg?auto=compress&cs=tinysrgb&w=600&h=750&fit=crop',
+    {
+      name: 'Jay Shah',
+      specialty: 'Contemporary Art',
+      image: '/images/artists/jay_logo.png',
       works: '32'
     },
   ]
@@ -38,7 +38,7 @@ export function FeaturedArtistsSection() {
           transition={{ duration: 0.8 }}
           className="text-center mb-8 md:mb-16"
         >
-          <motion.div 
+          <motion.div
             className="flex items-center justify-center gap-2 text-amber-600/70 text-xs tracking-[0.3em] font-light mb-4"
             initial={{ opacity: 0, scale: 0.8 }}
             whileInView={{ opacity: 1, scale: 1 }}
@@ -48,7 +48,7 @@ export function FeaturedArtistsSection() {
             <Users size={14} strokeWidth={1.5} />
             FEATURING
           </motion.div>
-          <motion.h2 
+          <motion.h2
             className="text-3xl md:text-7xl font-light text-white/90 mb-3 md:mb-4"
             style={{ fontFamily: 'ForestSmooth, serif' }}
             initial={{ opacity: 0, y: 20 }}
@@ -58,7 +58,7 @@ export function FeaturedArtistsSection() {
           >
             Featured <span className="text-transparent bg-clip-text bg-gradient-to-r from-amber-600 to-amber-400">Artists</span>
           </motion.h2>
-          <motion.p 
+          <motion.p
             className="text-neutral-400 text-xs md:text-sm font-light"
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -80,7 +80,7 @@ export function FeaturedArtistsSection() {
               whileHover={{ y: -10 }}
               className="group cursor-pointer will-change-transform"
             >
-              <motion.div 
+              <motion.div
                 className="relative overflow-hidden border border-neutral-800/50 group-hover:border-amber-600/30 transition-all duration-500 mb-4"
                 whileHover={{ scale: 1.02 }}
                 transition={{ duration: 0.3 }}
@@ -104,7 +104,7 @@ export function FeaturedArtistsSection() {
                 </div>
               </motion.div>
               <Link href="/gallery">
-                <motion.button 
+                <motion.button
                   whileHover={{ x: 5 }}
                   transition={{ duration: 0.2 }}
                   className="group/btn flex items-center gap-2 text-xs text-amber-600/70 hover:text-amber-600 transition-all duration-300 tracking-wider font-light"
