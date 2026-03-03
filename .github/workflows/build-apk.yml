@@ -24,15 +24,27 @@ jobs:
 
       - name: Capacitor Setup & Build
         run: |
+          # Create dummy web directory to satisfy Capacitor
+          mkdir -p out
+          echo "<html><body>Artisan V5 Mobile Shell</body></html>" > out/index.html
+
           # Ensure android platform is added
           npx cap add android
           
-          # Create assets directory if it doesn't exist
+          # Create necessary directories
           mkdir -p android/app/src/main/assets
+          mkdir -p android/app/src/main/res/values
+
+          # --- SURGICAL IDENTITY FIX ---
+          # 1. Force App Name in strings.xml
+          echo '<?xml version="1.0" encoding="utf-8"?><resources><string name="app_name">Gaming Network Studio Media Group</string><string name="title_activity_main">Gaming Network Studio Media Group</string><string name="package_name">com.artisan.v5</string><string name="custom_url_scheme">com.artisan.v5</string></resources>' > android/app/src/main/res/values/strings.xml
           
-          # Inject icons from public/ to android resources
-          # Note: We use the 512px icon for all for simplicity in CI, 
-          # Android Studio/Gradle will handle scaling if needed or we just use one high-res one.
+          # 2. Delete Adaptive Icons (XMLs) that override our PNGs
+          find android/app/src/main/res -name "ic_launcher_foreground.xml" -delete
+          find android/app/src/main/res -name "ic_launcher_background.xml" -delete
+          rm -rf android/app/src/main/res/mipmap-anydpi-v26
+          
+          # 3. Inject icons from public/ to android resources
           for size in mdpi hdpi xhdpi xxhdpi xxxhdpi; do
             mkdir -p android/app/src/main/res/mipmap-$size
             cp public/icon-512.png android/app/src/main/res/mipmap-$size/ic_launcher.png
