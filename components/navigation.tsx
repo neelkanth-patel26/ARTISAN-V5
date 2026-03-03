@@ -48,11 +48,11 @@ export function Navigation() {
   ]
 
   return (
-    <motion.nav 
+    <motion.nav
       initial={pathname === '/' && !isMobile ? { y: -100, opacity: 0 } : false}
       animate={showNav ? { y: 0, opacity: 1 } : { y: -100, opacity: 0 }}
       transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
-      className="fixed top-0 left-0 right-0 z-50 py-6 md:py-8 bg-gradient-to-b from-black/50 via-black/30 to-transparent backdrop-blur-sm border-b border-amber-600/10"
+      className="fixed top-0 left-0 right-0 z-50 py-6 md:py-8 bg-gradient-to-b from-black/50 via-black/30 to-transparent backdrop-blur-sm border-b border-amber-600/10 pt-[max(64px,env(safe-area-inset-top))]"
     >
       <div className="px-6 md:px-12 flex items-center justify-between">
         <div className="flex items-center gap-2 md:gap-3">
@@ -140,11 +140,10 @@ export function Navigation() {
                           onClick={(e) => {
                             setIsMenuOpen(false)
                           }}
-                          className={`block py-4 px-4 text-base transition-all font-light tracking-wider rounded-lg group ${
-                            pathname === item.path
-                              ? 'text-amber-600 bg-amber-600/10 border border-amber-600/30'
-                              : 'text-neutral-400 hover:text-white hover:bg-neutral-800/30'
-                          }`}
+                          className={`block py-4 px-4 text-base transition-all font-light tracking-wider rounded-lg group ${pathname === item.path
+                            ? 'text-amber-600 bg-amber-600/10 border border-amber-600/30'
+                            : 'text-neutral-400 hover:text-white hover:bg-neutral-800/30'
+                            }`}
                         >
                           <span className="flex items-center justify-between">
                             {item.name}
