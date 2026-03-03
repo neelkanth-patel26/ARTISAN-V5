@@ -80,8 +80,8 @@ export function DashboardLayout({ children, navItems, role }: DashboardLayoutPro
       <Link
         href={item.href}
         className={`flex items-center gap-3 rounded-lg px-3 py-3 text-sm font-light tracking-wider transition-all duration-200 ${isActive
-            ? navAccent.active
-            : `text-neutral-400 ${navAccent.hover}`
+          ? navAccent.active
+          : `text-neutral-400 ${navAccent.hover}`
           }`}
         style={{ fontFamily: 'Oughter, serif' }}
       >
@@ -197,7 +197,7 @@ export function DashboardLayout({ children, navItems, role }: DashboardLayoutPro
               animate={{ x: 0 }}
               exit={{ x: '100%' }}
               transition={{ duration: 0.3, ease: 'easeInOut' }}
-              className="absolute right-0 top-0 flex h-full w-64 flex-col border-l border-amber-600/20 bg-gradient-to-b from-neutral-950 to-neutral-900 py-4"
+              className="absolute right-0 top-0 flex h-full w-64 flex-col border-l border-amber-600/20 bg-gradient-to-b from-neutral-950 to-neutral-900 pt-[max(60px,env(safe-area-inset-top))] pb-4"
               onClick={(e) => e.stopPropagation()}
             >
               <nav className="flex-1 space-y-1 overflow-y-auto scrollbar-hide px-3">

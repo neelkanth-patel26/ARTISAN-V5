@@ -106,7 +106,7 @@ export function Navigation() {
               animate={{ x: 0 }}
               exit={{ x: '100%' }}
               transition={{ duration: 0.3, ease: 'easeInOut' }}
-              className="fixed top-0 right-0 h-screen w-full md:w-[420px] bg-gradient-to-br from-neutral-950 via-neutral-900 to-neutral-950 border-l border-amber-600/20 shadow-2xl z-[60] overflow-hidden"
+              className="fixed top-0 right-0 h-screen w-full md:w-[420px] bg-gradient-to-br from-neutral-950 via-neutral-900 to-neutral-950 border-l border-amber-600/20 shadow-2xl z-[60] overflow-hidden pt-[max(60px,env(safe-area-inset-top))]"
             >
               <div className="h-full flex flex-col">
                 <div className="flex items-center justify-between p-6 md:p-8 border-b border-neutral-800/50 bg-neutral-900/30 backdrop-blur-sm">
