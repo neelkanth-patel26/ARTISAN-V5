@@ -1,6 +1,7 @@
 'use client'
 
 import { useEffect } from 'react'
+import { Capacitor } from '@capacitor/core'
 
 export function PWAFullscreenManager() {
   useEffect(() => {
@@ -18,6 +19,11 @@ export function PWAFullscreenManager() {
         themeColorMeta.content = '#000000'
         document.head.appendChild(themeColorMeta)
       }
+    }
+
+    // Detect native platform (APK) and add class for conditional styling
+    if (Capacitor.isNativePlatform()) {
+      document.body.classList.add('native-mode')
     }
   }, [])
 

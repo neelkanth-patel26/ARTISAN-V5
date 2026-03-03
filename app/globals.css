@@ -100,12 +100,10 @@
     padding-right: env(safe-area-inset-right, 0px);
   }
 
-  /* Hide browser UI when in standalone mode */
-  @media all and (display-mode: standalone) {
-    body {
-      /* Force a minimum 75px padding to clear Android status bar icons and avoid clipping fixed elements */
-      padding-top: max(75px, env(safe-area-inset-top, 0px)) !important;
-    }
+  /* Hide browser UI when in standalone mode - Forced padding ONLY for native APK */
+  body.native-mode {
+    /* Force a minimum 75px padding to clear Android status bar icons and avoid clipping fixed elements */
+    padding-top: max(75px, env(safe-area-inset-top, 0px)) !important;
   }
 
   /* Prevent zoom on input focus in iOS */
