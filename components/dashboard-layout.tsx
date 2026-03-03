@@ -223,10 +223,10 @@ export function DashboardLayout({ children, navItems, role }: DashboardLayoutPro
                   <Home size={20} strokeWidth={1.5} />
                   <span className="text-sm font-light tracking-wider" style={{ fontFamily: 'Oughter, serif' }}>Go to home</span>
                 </Link>
-                <div className="mb-2 rounded-lg border border-amber-600/20 bg-black/30 px-3 py-2">
-                  <p className="mb-0.5 text-xs font-light uppercase tracking-wider text-amber-600/70" style={{ fontFamily: 'Oughter, serif' }}>Account</p>
-                  <p className="truncate text-sm font-light text-white" style={{ fontFamily: 'ForestSmooth, serif' }}>{profile?.full_name || '...'}</p>
-                  <p className="truncate text-xs text-neutral-400">{profile?.email || '...'}</p>
+                <div className="mb-2 rounded-lg border border-amber-600/20 bg-black/30 px-3 py-3">
+                  <p className="mb-1 text-[10px] font-light uppercase tracking-wider text-amber-600/70" style={{ fontFamily: 'Oughter, serif' }}>Account</p>
+                  <p className="text-sm font-light text-white leading-relaxed mb-0.5" style={{ fontFamily: 'ForestSmooth, serif' }}>{profile?.full_name || '...'}</p>
+                  <p className="break-all text-[11px] text-neutral-400 leading-tight">{profile?.email || '...'}</p>
                 </div>
                 <button
                   onClick={handleLogout}
