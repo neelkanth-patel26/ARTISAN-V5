@@ -37,7 +37,7 @@ jobs:
 
           # --- SURGICAL IDENTITY FIX ---
           # 1. Force App Name in strings.xml
-          echo '<?xml version="1.0" encoding="utf-8"?><resources><string name="app_name">Gaming Network Studio Media Group</string><string name="title_activity_main">Gaming Network Studio Media Group</string><string name="package_name">com.artisan.v5</string><string name="custom_url_scheme">com.artisan.v5</string></resources>' > android/app/src/main/res/values/strings.xml
+          echo '<?xml version="1.0" encoding="utf-8"?><resources><string name="app_name">artisan</string><string name="title_activity_main">artisan</string><string name="package_name">com.artisan.v5</string><string name="custom_url_scheme">com.artisan.v5</string></resources>' > android/app/src/main/res/values/strings.xml
           
           # 2. Delete Adaptive Icons (XMLs) that override our PNGs
           find android/app/src/main/res -name "ic_launcher_foreground.xml" -delete

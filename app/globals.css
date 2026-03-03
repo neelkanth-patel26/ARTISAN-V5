@@ -103,8 +103,8 @@
   /* Hide browser UI when in standalone mode */
   @media all and (display-mode: standalone) {
     body {
-      /* Force a minimum 30px padding to clear Android status bar icons */
-      padding-top: max(30px, env(safe-area-inset-top, 0px)) !important;
+      /* Force a minimum 64px padding to clear Android status bar icons and navbar */
+      padding-top: max(64px, env(safe-area-inset-top, 0px)) !important;
     }
   }
 
