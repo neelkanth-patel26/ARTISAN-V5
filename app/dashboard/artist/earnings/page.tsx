@@ -137,19 +137,19 @@ export default function ArtistEarnings() {
                         )}
                         <div className="flex-1 min-w-0">
                           <p className="font-medium text-white truncate">{tx.artworks?.title}</p>
-                          <p className="text-sm text-neutral-400 truncate">
-                            {new Date(tx.created_at).toLocaleDateString()} • {tx.transaction_code}
+                          <p className="text-[11px] leading-relaxed text-neutral-400 break-all">
+                            {new Date(tx.created_at).toLocaleDateString()} • <span className="opacity-70">{tx.transaction_code}</span>
                           </p>
                         </div>
-                        <div className="text-left sm:text-right w-full sm:w-auto">
+                        <div className="text-left sm:text-right w-full sm:w-auto mt-2 sm:mt-0 pt-2 sm:pt-0 border-t sm:border-t-0 border-neutral-700/30">
                           <p className="font-bold text-green-500">+₹{Number(tx.artist_earnings).toFixed(2)}</p>
                           <p className="text-xs text-neutral-500">from ₹{Number(tx.amount).toFixed(2)}</p>
                           {tx.payment_method === 'upi' && tx.platform_fee && (
-                            <p className="text-xs text-orange-400">Fee: ₹{Number(tx.platform_fee).toFixed(2)}</p>
+                            <p className="text-[11px] text-orange-400 font-medium">Fee: ₹{Number(tx.platform_fee).toFixed(2)}</p>
                           )}
                         </div>
                       </div>
-                      
+
                       {/* Buyer Info */}
                       {tx.buyer && (
                         <div className="mt-4 pt-4 border-t border-neutral-700/50">

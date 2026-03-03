@@ -52,7 +52,7 @@ export function Navigation() {
       initial={pathname === '/' && !isMobile ? { y: -100, opacity: 0 } : false}
       animate={showNav ? { y: 0, opacity: 1 } : { y: -100, opacity: 0 }}
       transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
-      className="fixed top-0 left-0 right-0 z-50 py-4 md:py-6 bg-gradient-to-b from-black/50 via-black/30 to-transparent [.native-mode_&]:bg-gradient-to-r [.native-mode_&]:from-neutral-950 [.native-mode_&]:to-neutral-900 backdrop-blur-sm border-b border-amber-600/10 pt-[max(38px,env(safe-area-inset-top))]"
+      className="fixed top-0 left-0 right-0 z-50 py-4 md:py-6 bg-gradient-to-b from-black/50 via-black/30 to-transparent [.native-mode_&]:bg-gradient-to-r [.native-mode_&]:from-neutral-950 [.native-mode_&]:to-neutral-900 backdrop-blur-sm border-b border-amber-600/10 pt-[max(48px,env(safe-area-inset-top))]"
     >
       <div className="px-6 md:px-12 flex items-center justify-between">
         <div className="flex items-center gap-2 md:gap-3">
@@ -106,7 +106,7 @@ export function Navigation() {
               animate={{ x: 0 }}
               exit={{ x: '100%' }}
               transition={{ duration: 0.3, ease: 'easeInOut' }}
-              className="fixed top-0 right-0 h-screen w-full md:w-[420px] bg-gradient-to-br from-neutral-950 via-neutral-900 to-neutral-950 [.native-mode_&]:bg-neutral-950 border-l border-amber-600/20 shadow-2xl z-[60] overflow-hidden pt-[max(38px,env(safe-area-inset-top))]"
+              className="fixed top-0 right-0 h-screen w-full md:w-[420px] bg-gradient-to-br from-neutral-950 via-neutral-900 to-neutral-950 [.native-mode_&]:bg-neutral-950 border-l border-amber-600/20 shadow-2xl z-[60] overflow-hidden pt-[max(48px,env(safe-area-inset-top))]"
             >
               <div className="h-full flex flex-col">
                 <div className="flex items-center justify-between p-6 md:p-8 border-b border-neutral-800/50 bg-neutral-900/30 backdrop-blur-sm">
