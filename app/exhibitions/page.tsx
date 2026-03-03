@@ -40,11 +40,10 @@ function ExhibitionCard({ exhibition, index, onBookVisit }: { exhibition: Exhibi
         />
         <div className="absolute inset-0 bg-gradient-to-t from-black/95 via-black/50 to-transparent" />
         <div className="absolute top-4 right-4 flex gap-2">
-          <span className={`px-4 py-1.5 text-xs tracking-[0.2em] font-light backdrop-blur-md rounded-full ${
-            exhibition.status === 'Current'
+          <span className={`px-4 py-1.5 text-xs tracking-[0.2em] font-light backdrop-blur-md rounded-full ${exhibition.status === 'Current'
               ? 'bg-amber-600/90 text-white border border-amber-500'
               : 'bg-neutral-900/80 text-amber-600 border border-amber-600/50'
-          }`}>
+            }`}>
             {exhibition.status}
           </span>
         </div>
@@ -151,19 +150,19 @@ export default function ExhibitionsPage() {
     {
       id: 1,
       title: 'Modern Perspectives',
-      artist: 'Various Artists',
+      artist: 'Neelkanth Patel',
       image: 'https://images.unsplash.com/photo-1541961017774-22349e4a1262?w=800&h=600&fit=crop&q=90',
-      date: 'Jan 15 - Mar 30, 2024',
+      date: 'Aug 14, 2025',
       location: 'Main Gallery',
-      time: '10:00 AM - 6:00 PM',
-      status: 'Current',
+      time: '07:00 PM',
+      status: 'Completed',
       visitors: '2.3K',
       description: 'A collection of contemporary artworks exploring modern themes and perspectives.'
     },
     {
       id: 2,
       title: 'Digital Dreams',
-      artist: 'Sarah Chen',
+      artist: 'Neelkanth Patel',
       image: 'https://images.unsplash.com/photo-1561214115-f2f134cc4912?w=800&h=600&fit=crop&q=90',
       date: 'Feb 1 - Apr 15, 2024',
       location: 'East Wing',
@@ -175,7 +174,7 @@ export default function ExhibitionsPage() {
     {
       id: 3,
       title: 'Sculptural Forms',
-      artist: 'Marcus Stone',
+      artist: 'Urmi Thakkar',
       image: 'https://images.unsplash.com/photo-1564951434112-64d74cc2a2d7?w=800&h=600&fit=crop&q=90',
       date: 'Mar 10 - May 20, 2024',
       location: 'Sculpture Garden',
@@ -187,7 +186,7 @@ export default function ExhibitionsPage() {
     {
       id: 4,
       title: 'Abstract Expressions',
-      artist: 'Elena Rodriguez',
+      artist: 'Jay Shah',
       image: 'https://images.unsplash.com/photo-1547826039-bfc35e0f1ea8?w=800&h=600&fit=crop&q=90',
       date: 'Apr 5 - Jun 30, 2024',
       location: 'West Gallery',
@@ -239,12 +238,12 @@ export default function ExhibitionsPage() {
             Exhibitions
           </h1>
           <p className="text-neutral-400 max-w-2xl mx-auto font-light mb-12">Experience world-class art exhibitions featuring renowned and emerging artists</p>
-          
+
           <div className="max-w-4xl mx-auto grid grid-cols-3 gap-4">
             {stats.map((stat, i) => {
               const Icon = stat.icon
               return (
-                <motion.div 
+                <motion.div
                   key={stat.label}
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}

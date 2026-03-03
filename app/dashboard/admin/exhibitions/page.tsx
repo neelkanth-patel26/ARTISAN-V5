@@ -286,7 +286,7 @@ export default function AdminExhibitions() {
                                 type="text"
                                 value={formData.artist}
                                 onChange={(e) => setFormData({ ...formData, artist: e.target.value })}
-                                placeholder="e.g. Sarah Chen"
+                                placeholder="e.g. Neelkanth Patel"
                                 className="w-full px-4 py-2.5 bg-neutral-800 border border-neutral-700 rounded-lg text-white text-sm focus:outline-none focus:border-neutral-500 placeholder-neutral-600"
                               />
                             </div>
@@ -416,37 +416,36 @@ export default function AdminExhibitions() {
               >
                 {exhibition.image_url && (
                   <div className="relative h-48 overflow-hidden">
-                    <img 
-                      src={exhibition.image_url} 
-                      alt={exhibition.title} 
-                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" 
+                    <img
+                      src={exhibition.image_url}
+                      alt={exhibition.title}
+                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-neutral-900 via-neutral-900/50 to-transparent"></div>
-                    <span className={`absolute top-3 right-3 text-xs px-3 py-1 rounded-full font-medium backdrop-blur-sm ${
-                      exhibition.status === 'active' ? 'bg-green-600/80 text-white' :
-                      exhibition.status === 'upcoming' ? 'bg-blue-600/80 text-white' :
-                      exhibition.status === 'completed' ? 'bg-neutral-600/80 text-neutral-200' :
-                      'bg-red-600/80 text-white'
-                    }`}>
+                    <span className={`absolute top-3 right-3 text-xs px-3 py-1 rounded-full font-medium backdrop-blur-sm ${exhibition.status === 'active' ? 'bg-green-600/80 text-white' :
+                        exhibition.status === 'upcoming' ? 'bg-blue-600/80 text-white' :
+                          exhibition.status === 'completed' ? 'bg-neutral-600/80 text-neutral-200' :
+                            'bg-red-600/80 text-white'
+                      }`}>
                       {exhibition.status}
                     </span>
                   </div>
                 )}
                 <div className="p-4">
                   <h3 className="font-bold text-white text-lg mb-2 line-clamp-1">{exhibition.title}</h3>
-                  
+
                   {exhibition.artist && (
                     <div className="flex items-center gap-2 text-neutral-400 text-xs mb-2">
                       <User size={12} />
                       <span>{exhibition.artist}</span>
                     </div>
                   )}
-                  
+
                   <div className="flex items-center gap-2 text-neutral-400 text-xs mb-2">
                     <MapPin size={12} />
                     <span className="line-clamp-1">{exhibition.location}</span>
                   </div>
-                  
+
                   <div className="flex items-center gap-2 text-neutral-400 text-xs mb-2">
                     <Calendar size={12} />
                     <span className="text-[11px]">
@@ -464,7 +463,7 @@ export default function AdminExhibitions() {
                   {exhibition.description && (
                     <p className="text-neutral-400 text-xs mb-4 line-clamp-2 leading-relaxed">{exhibition.description}</p>
                   )}
-                  
+
                   <div className="flex gap-2 pt-3 border-t border-neutral-800">
                     <button
                       onClick={() => setViewingExhibition(exhibition)}
@@ -525,12 +524,11 @@ export default function AdminExhibitions() {
 
                   <div>
                     <h3 className="text-2xl font-bold text-white mb-2">{viewingExhibition.title}</h3>
-                    <span className={`inline-block text-xs px-3 py-1 rounded-full font-medium ${
-                      viewingExhibition.status === 'active' ? 'bg-green-600/20 text-green-400' :
-                      viewingExhibition.status === 'upcoming' ? 'bg-blue-600/20 text-blue-400' :
-                      viewingExhibition.status === 'completed' ? 'bg-neutral-600/20 text-neutral-400' :
-                      'bg-red-600/20 text-red-400'
-                    }`}>
+                    <span className={`inline-block text-xs px-3 py-1 rounded-full font-medium ${viewingExhibition.status === 'active' ? 'bg-green-600/20 text-green-400' :
+                        viewingExhibition.status === 'upcoming' ? 'bg-blue-600/20 text-blue-400' :
+                          viewingExhibition.status === 'completed' ? 'bg-neutral-600/20 text-neutral-400' :
+                            'bg-red-600/20 text-red-400'
+                      }`}>
                       {viewingExhibition.status.charAt(0).toUpperCase() + viewingExhibition.status.slice(1)}
                     </span>
                   </div>
