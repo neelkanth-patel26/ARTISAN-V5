@@ -7,6 +7,7 @@ import { Toaster } from 'sonner'
 import { ServiceWorkerRegistration } from '@/components/service-worker-registration'
 import { PWAFullscreenManager } from '@/components/pwa-fullscreen-manager'
 import { NotificationPermissionPrompt } from '@/components/notification-permission-prompt'
+import { NativePermissionsRequester } from '@/components/native-permissions-requester'
 
 import './globals.css'
 
@@ -144,6 +145,7 @@ export default function RootLayout({
         <DevToolsBlocker />
         <ServiceWorkerRegistration />
         <PWAFullscreenManager />
+        <NativePermissionsRequester />
         <NotificationPermissionPrompt />
         <Toaster position="top-right" richColors />
         {children}

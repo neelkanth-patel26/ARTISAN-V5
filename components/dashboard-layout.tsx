@@ -79,11 +79,10 @@ export function DashboardLayout({ children, navItems, role }: DashboardLayoutPro
     return (
       <Link
         href={item.href}
-        className={`flex items-center gap-3 rounded-lg px-3 py-3 text-sm font-light tracking-wider transition-all duration-200 ${
-          isActive
+        className={`flex items-center gap-3 rounded-lg px-3 py-3 text-sm font-light tracking-wider transition-all duration-200 ${isActive
             ? navAccent.active
             : `text-neutral-400 ${navAccent.hover}`
-        }`}
+          }`}
         style={{ fontFamily: 'Oughter, serif' }}
       >
         <Icon size={20} strokeWidth={1.5} />
@@ -167,7 +166,7 @@ export function DashboardLayout({ children, navItems, role }: DashboardLayoutPro
       </aside>
 
       {/* Mobile Header */}
-      <header className="fixed left-0 right-0 top-0 z-50 flex h-16 items-center justify-between border-b border-amber-600/20 bg-gradient-to-r from-neutral-950 to-neutral-900 px-4 backdrop-blur-xl lg:hidden">
+      <header className="fixed left-0 right-0 top-0 z-50 flex h-auto min-h-[4rem] items-center justify-between border-b border-amber-600/20 bg-gradient-to-r from-neutral-950 to-neutral-900 px-4 pt-[max(60px,env(safe-area-inset-top))] pb-3 backdrop-blur-xl lg:hidden">
         <Link href="/" className="flex items-center gap-2">
           <div className={`flex h-9 w-9 items-center justify-center rounded-lg border ${navAccent.logo}`}>
             <span className="text-xs font-serif" style={{ fontFamily: 'Oughter, serif' }}>A</span>
@@ -190,7 +189,7 @@ export function DashboardLayout({ children, navItems, role }: DashboardLayoutPro
       <AnimatePresence>
         {sidebarOpen && (
           <div
-            className="fixed inset-0 z-40 mt-16 bg-black/60 backdrop-blur-sm lg:hidden"
+            className="fixed inset-0 z-40 mt-[max(60px,env(safe-area-inset-top))] bg-black/60 backdrop-blur-sm lg:hidden"
             onClick={() => setSidebarOpen(false)}
           >
             <motion.div
@@ -207,9 +206,8 @@ export function DashboardLayout({ children, navItems, role }: DashboardLayoutPro
                     key={item.href}
                     href={item.href}
                     onClick={() => setSidebarOpen(false)}
-                    className={`flex items-center gap-3 rounded-lg px-3 py-3 transition-all ${
-                      pathname === item.href ? navAccent.active : 'text-neutral-400 hover:bg-amber-600/10 hover:text-amber-600'
-                    }`}
+                    className={`flex items-center gap-3 rounded-lg px-3 py-3 transition-all ${pathname === item.href ? navAccent.active : 'text-neutral-400 hover:bg-amber-600/10 hover:text-amber-600'
+                      }`}
                   >
                     <item.icon size={20} strokeWidth={1.5} />
                     <span className="text-sm font-light tracking-wider" style={{ fontFamily: 'Oughter, serif' }}>{item.label}</span>
@@ -253,9 +251,8 @@ export function DashboardLayout({ children, navItems, role }: DashboardLayoutPro
               <a
                 key={item.href}
                 href={item.href}
-                className={`flex flex-1 flex-col items-center justify-center gap-0.5 py-2 transition-colors ${
-                  isActive ? navAccent.mobile : 'text-neutral-500'
-                }`}
+                className={`flex flex-1 flex-col items-center justify-center gap-0.5 py-2 transition-colors ${isActive ? navAccent.mobile : 'text-neutral-500'
+                  }`}
               >
                 <Icon size={22} strokeWidth={1.5} />
                 <span className="text-[10px] font-light tracking-wider" style={{ fontFamily: 'Oughter, serif' }}>{item.label}</span>
@@ -266,14 +263,14 @@ export function DashboardLayout({ children, navItems, role }: DashboardLayoutPro
       </nav>
 
       {/* Main Content */}
-      <main className="relative min-h-screen pb-20 pt-16 lg:pb-0 lg:pt-0 lg:pl-64 overflow-x-hidden">
+      <main className="relative min-h-screen pb-20 pt-[calc(4rem+max(60px,env(safe-area-inset-top,0px)))] lg:pb-0 lg:pt-0 lg:pl-64 overflow-x-hidden">
         <div className="min-h-screen overflow-x-hidden">
           {loading ? (
             <div className="p-6 lg:p-10 space-y-6">
               <div className="h-8 bg-neutral-800 rounded w-1/3 animate-pulse" />
               <div className="h-4 bg-neutral-800 rounded w-1/2 animate-pulse" />
               <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mt-8">
-                {[1,2,3,4].map(i => <div key={i} className="h-24 bg-neutral-800 rounded-xl animate-pulse" />)}
+                {[1, 2, 3, 4].map(i => <div key={i} className="h-24 bg-neutral-800 rounded-xl animate-pulse" />)}
               </div>
             </div>
           ) : children}
