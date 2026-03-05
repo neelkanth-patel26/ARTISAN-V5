@@ -102,8 +102,8 @@
 
   /* Hide browser UI when in standalone mode - Forced padding ONLY for native APK */
   body.native-mode {
-    /* Force a minimum 50px padding to clear Android status bar icons and avoid clipping fixed elements */
-    padding-top: max(50px, env(safe-area-inset-top, 0px)) !important;
+    /* Clear Android status bar while keeping header sleeker */
+    padding-top: max(32px, env(safe-area-inset-top, 0px)) !important;
   }
 
   /* Prevent zoom on input focus in iOS */
