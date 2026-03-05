@@ -166,7 +166,7 @@ export function DashboardLayout({ children, navItems, role }: DashboardLayoutPro
       </aside>
 
       {/* Mobile Header */}
-      <header className="fixed left-0 right-0 top-0 z-50 flex h-auto min-h-[3.5rem] items-center justify-between border-b border-amber-600/20 bg-gradient-to-r from-neutral-950 to-neutral-900 px-4 pt-[max(8px,env(safe-area-inset-top))] [.native-mode_&]:pt-[max(32px,env(safe-area-inset-top))] pb-3 backdrop-blur-xl lg:hidden">
+      <header className="fixed left-0 right-0 top-0 z-50 flex h-auto min-h-[3rem] items-center justify-between border-b border-amber-600/20 bg-gradient-to-r from-neutral-950 to-neutral-900 px-4 pt-[max(6px,env(safe-area-inset-top))] [.native-mode_&]:pt-[max(32px,env(safe-area-inset-top))] pb-2 backdrop-blur-xl lg:hidden">
         <Link href="/" className="flex items-center gap-2">
           <div className={`flex h-9 w-9 items-center justify-center rounded-lg border ${navAccent.logo}`}>
             <span className="text-xs font-serif" style={{ fontFamily: 'Oughter, serif' }}>A</span>
