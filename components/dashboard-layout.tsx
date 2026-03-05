@@ -166,7 +166,7 @@ export function DashboardLayout({ children, navItems, role }: DashboardLayoutPro
       </aside>
 
       {/* Mobile Header */}
-      <header className="fixed left-0 right-0 top-0 z-50 flex h-auto min-h-[3rem] items-center justify-between border-b border-amber-600/20 bg-gradient-to-r from-neutral-950 to-neutral-900 px-4 pt-[max(6px,env(safe-area-inset-top))] [.native-mode_&]:pt-[max(32px,env(safe-area-inset-top))] pb-2 backdrop-blur-xl lg:hidden">
+      <header className="fixed left-0 right-0 top-0 z-50 flex h-auto min-h-[3.5rem] items-center justify-between border-b border-amber-600/20 bg-gradient-to-r from-neutral-950 to-neutral-900 px-4 pt-[max(10px,env(safe-area-inset-top))] pb-3 backdrop-blur-xl lg:hidden">
         <Link href="/" className="flex items-center gap-2">
           <div className={`flex h-9 w-9 items-center justify-center rounded-lg border ${navAccent.logo}`}>
             <span className="text-xs font-serif" style={{ fontFamily: 'Oughter, serif' }}>A</span>
@@ -189,7 +189,7 @@ export function DashboardLayout({ children, navItems, role }: DashboardLayoutPro
       <AnimatePresence>
         {sidebarOpen && (
           <div
-            className="fixed inset-0 z-40 mt-[max(8px,env(safe-area-inset-top))] [.native-mode_&]:mt-[max(32px,env(safe-area-inset-top))] bg-black/60 backdrop-blur-sm lg:hidden"
+            className="fixed inset-0 z-40 mt-[max(10px,env(safe-area-inset-top))] bg-black/60 backdrop-blur-sm lg:hidden"
             onClick={() => setSidebarOpen(false)}
           >
             <motion.div
@@ -197,7 +197,7 @@ export function DashboardLayout({ children, navItems, role }: DashboardLayoutPro
               animate={{ x: 0 }}
               exit={{ x: '100%' }}
               transition={{ duration: 0.3, ease: 'easeInOut' }}
-              className="absolute right-0 top-0 flex h-full w-64 flex-col border-l border-amber-600/20 bg-gradient-to-b from-neutral-950 to-neutral-900 pt-[max(8px,env(safe-area-inset-top))] [.native-mode_&]:pt-[max(32px,env(safe-area-inset-top))] pb-4"
+              className="absolute right-0 top-0 flex h-full w-64 flex-col border-l border-amber-600/20 bg-gradient-to-b from-neutral-950 to-neutral-900 pt-[max(10px,env(safe-area-inset-top))] pb-4"
               onClick={(e) => e.stopPropagation()}
             >
               <nav className="flex-1 space-y-1 overflow-y-auto scrollbar-hide px-3">
@@ -263,7 +263,7 @@ export function DashboardLayout({ children, navItems, role }: DashboardLayoutPro
       </nav>
 
       {/* Main Content */}
-      <main className="relative min-h-screen pb-20 pt-[calc(3.5rem+max(8px,env(safe-area-inset-top,0px)))] [.native-mode_&]:pt-[calc(3.5rem+max(32px,env(safe-area-inset-top,0px)))] lg:pb-0 lg:pt-0 lg:pl-64 overflow-x-hidden">
+      <main className="relative min-h-screen pb-20 pt-[calc(3.5rem+max(10px,env(safe-area-inset-top,0px)))] lg:pb-0 lg:pt-0 lg:pl-64 overflow-x-hidden">
         <div className="min-h-screen overflow-x-hidden">
           {loading ? (
             <div className="p-6 lg:p-10 space-y-6">
