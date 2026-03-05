@@ -197,10 +197,10 @@ export function DashboardLayout({ children, navItems, role }: DashboardLayoutPro
               animate={{ x: 0 }}
               exit={{ x: '100%' }}
               transition={{ duration: 0.3, ease: 'easeInOut' }}
-              className="absolute right-0 top-0 flex h-full w-64 flex-col border-l border-amber-600/20 bg-gradient-to-b from-neutral-950 to-neutral-900 pt-[max(10px,env(safe-area-inset-top))] pb-4"
+              className="absolute right-0 top-0 flex h-full w-64 flex-col border-l border-amber-600/20 bg-gradient-to-b from-neutral-950 to-neutral-900 pt-[calc(3.5rem+max(10px,env(safe-area-inset-top,0px)))] pb-4 overflow-y-auto scrollbar-hide"
               onClick={(e) => e.stopPropagation()}
             >
-              <nav className="flex-1 space-y-1 overflow-y-auto scrollbar-hide px-3">
+              <nav className="flex-1 space-y-1 px-3">
                 {navItems.map((item) => (
                   <Link
                     key={item.href}
