@@ -6,7 +6,7 @@ import { motion } from 'framer-motion'
 import { Navigation } from '@/components/navigation'
 import { ArtistModal } from '@/components/artist-modal'
 import { supabase } from '@/lib/supabase'
-import { Heart, MapPin, Eye, UserPlus, Image, Share2 } from 'lucide-react'
+import { Heart, MapPin, Eye, UserPlus, Image, Share2, ArrowRight, UserCheck } from 'lucide-react'
 import { getCurrentUser } from '@/lib/auth'
 import { toast } from 'sonner'
 
@@ -178,101 +178,154 @@ function ArtistPageContent() {
   return (
     <>
       <Navigation />
-      <div className="min-h-screen bg-gradient-to-b from-neutral-950 via-neutral-900 to-neutral-950 pt-32 pb-20 px-6">
-      <div className="max-w-7xl mx-auto">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="text-center mb-16"
-        >
-          <h1 className="text-5xl md:text-7xl font-light tracking-wider text-white/90 mb-4" style={{ fontFamily: 'ForestSmooth, serif' }}>
-            Our Artists
-          </h1>
-          <p className="text-neutral-400 text-lg">Support talented artists by contributing directly</p>
-        </motion.div>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {artists.map((artist, index) => (
-            <motion.div
-              key={artist.id}
-              initial={{ opacity: 0, y: 30 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: index * 0.1 }}
-              onClick={() => setSelectedArtist(artist)}
-              whileHover={{ y: -8 }}
-              className="group bg-gradient-to-br from-neutral-900/80 to-neutral-900/50 border border-amber-600/20 rounded-2xl overflow-hidden hover:border-amber-600/50 hover:shadow-2xl hover:shadow-amber-600/10 transition-all duration-300 cursor-pointer backdrop-blur-sm"
-            >
-              <div className="relative h-72 bg-gradient-to-br from-neutral-800 to-neutral-900 overflow-hidden">
-                {artist.avatar_url ? (
-                  <img src={artist.avatar_url} alt={artist.full_name} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />
-                ) : (
-                  <div className="w-full h-full flex items-center justify-center text-7xl text-amber-600/30 font-light" style={{ fontFamily: 'ForestSmooth, serif' }}>
-                    {artist.full_name.charAt(0).toUpperCase()}
-                  </div>
-                )}
-                <div className="absolute inset-0 bg-gradient-to-t from-neutral-900 via-neutral-900/50 to-transparent opacity-60" />
-                <div className="absolute bottom-4 left-4 right-4">
-                  <h3 className="text-2xl font-light text-white mb-1" style={{ fontFamily: 'ForestSmooth, serif' }}>{artist.full_name}</h3>
-                  {artist.location && (
-                    <div className="flex items-center gap-1.5 text-neutral-300 text-sm">
-                      <MapPin size={14} />
-                      <span>{artist.location}</span>
-                    </div>
-                  )}
-                </div>
-              </div>
-
-              <div className="p-6 space-y-4">
-                {artist.bio && (
-                  <p className="text-neutral-400 text-sm leading-relaxed line-clamp-3">{artist.bio}</p>
-                )}
-
-                <div className="flex items-center justify-between text-sm">
-                  <div className="flex items-center gap-1 text-neutral-400">
-                    <Heart size={16} className="text-amber-600" />
-                    <span className="font-medium text-white">{artist.followers_count}</span>
-                    <span className="text-neutral-500">followers</span>
-                  </div>
-                  <div className="flex items-center gap-1 text-neutral-400">
-                    <Image size={16} className="text-amber-600" />
-                    <span className="font-medium text-white">{artist.artwork_count || 0}</span>
-                    <span className="text-neutral-500">works</span>
-                  </div>
-                </div>
-
-                <div className="pt-4 border-t border-neutral-800 space-y-2">
-                  <button
-                    onClick={(e) => toggleFollow(artist.id, e)}
-                    className={`w-full flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg font-medium transition-all ${
-                      followingIds.has(artist.id)
-                        ? 'bg-neutral-800 text-white hover:bg-neutral-700'
-                        : 'bg-amber-600 text-white hover:bg-amber-500 shadow-lg shadow-amber-600/20'
-                    }`}
-                  >
-                    <UserPlus size={16} />
-                    {followingIds.has(artist.id) ? 'Following' : 'Follow'}
-                  </button>
-                  <button
-                    onClick={(e) => shareArtist(artist.id, artist.full_name, e)}
-                    className="w-full flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg bg-neutral-800/50 text-neutral-300 hover:bg-neutral-700 hover:text-white font-medium transition-all border border-neutral-700/50 hover:border-neutral-600"
-                  >
-                    <Share2 size={16} />
-                    Share Profile
-                  </button>
-                </div>
-              </div>
-            </motion.div>
-          ))}
+      <div className="min-h-screen bg-neutral-950 pt-32 pb-32 px-6 relative overflow-hidden">
+        {/* Decorative Background Elements */}
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-full pointer-events-none opacity-20">
+           <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-amber-600/10 blur-[120px] rounded-full" />
+           <div className="absolute bottom-[10%] right-[-10%] w-[30%] h-[30%] bg-amber-600/5 blur-[100px] rounded-full" />
         </div>
 
-        {artists.length === 0 && (
-          <div className="text-center text-neutral-400 py-20">
-            <p className="text-xl">No artists found at the moment.</p>
-          </div>
-        )}
+        <div className="max-w-7xl mx-auto relative z-10">
+          {/* Elite Hero Section */}
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 1, ease: [0.16, 1, 0.3, 1] }}
+            className="text-center mb-24 space-y-6"
+          >
+            <div className="flex items-center justify-center gap-4 mb-4">
+               <div className="h-px w-8 bg-amber-600/30" />
+               <span className="text-[10px] text-amber-600 uppercase tracking-[0.5em] font-black">Global Selection</span>
+               <div className="h-px w-8 bg-amber-600/30" />
+            </div>
+            
+            <h1 className="text-6xl md:text-9xl font-light text-white leading-none tracking-tight" style={{ fontFamily: 'ForestSmooth, serif' }}>
+              The <span className="text-neutral-500 italic">Elite</span> Collection
+            </h1>
+            
+            <div className="max-w-2xl mx-auto">
+               <p className="text-neutral-500 text-sm md:text-lg font-light leading-relaxed tracking-wide">
+                 Acquire works from an exclusive circle of visionary artists redefined by modern craftsmanship and timeless aesthetics.
+               </p>
+            </div>
+          </motion.div>
+
+          {/* Staggered Grid Entry */}
+          <motion.div 
+            initial="hidden"
+            animate="show"
+            variants={{
+              hidden: { opacity: 0 },
+              show: {
+                opacity: 1,
+                transition: {
+                  staggerChildren: 0.15
+                }
+              }
+            }}
+            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10 lg:gap-14"
+          >
+            {artists.map((artist) => (
+              <motion.div
+                key={artist.id}
+                variants={{
+                  hidden: { opacity: 0, y: 40 },
+                  show: { opacity: 1, y: 0, transition: { duration: 0.8, ease: [0.16, 1, 0.3, 1] } }
+                }}
+                onClick={() => setSelectedArtist(artist)}
+                className="group cursor-pointer relative"
+              >
+                {/* Museum Card Structure */}
+                <div className="relative aspect-[4/5] overflow-hidden rounded-[2.5rem] bg-neutral-900 border border-neutral-800/80 transition-all duration-700 group-hover:border-amber-600/30 group-hover:shadow-[0_20px_60px_-15px_rgba(0,0,0,0.5),0_0_40px_-10px_rgba(217,119,6,0.1)]">
+                  
+                  {/* Image Container with Luxury Scaling */}
+                  <div className="absolute inset-0 z-0">
+                    {artist.avatar_url ? (
+                      <img 
+                        src={artist.avatar_url} 
+                        alt={artist.full_name} 
+                        className="w-full h-full object-cover grayscale-[0.2] contrast-[1.1] transition-all duration-1000 group-hover:scale-110 group-hover:grayscale-0" 
+                      />
+                    ) : (
+                      <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-neutral-800 to-neutral-900 text-8xl text-amber-600/10 font-light" style={{ fontFamily: 'ForestSmooth, serif' }}>
+                        {artist.full_name.charAt(0).toUpperCase()}
+                      </div>
+                    )}
+                    <div className="absolute inset-0 bg-gradient-to-b from-transparent via-neutral-950/20 to-neutral-950 group-hover:opacity-40 transition-opacity duration-700" />
+                  </div>
+
+                  {/* High-Fidelity Labels (Museum Plaque Style) */}
+                  <div className="absolute inset-x-0 bottom-0 p-10 z-10 space-y-6">
+                    <div className="space-y-2">
+                       <motion.h3 
+                         className="text-4xl font-light text-white tracking-tight" 
+                         style={{ fontFamily: 'ForestSmooth, serif' }}
+                       >
+                         {artist.full_name}
+                       </motion.h3>
+                       {artist.location && (
+                        <div className="flex items-center gap-2 text-neutral-400 text-[10px] tracking-widest uppercase font-black opacity-60">
+                           <MapPin size={10} className="text-amber-600" />
+                           {artist.location}
+                        </div>
+                       )}
+                    </div>
+
+                    {/* Revealable Stats */}
+                    <div className="flex items-center gap-8 pt-6 border-t border-white/5 opacity-0 translate-y-4 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-500">
+                       <div className="space-y-1">
+                          <p className="text-[14px] font-medium text-white">{artist.followers_count}</p>
+                          <p className="text-[8px] text-neutral-500 uppercase tracking-widest font-black">Patrons</p>
+                       </div>
+                       <div className="space-y-1">
+                          <p className="text-[14px] font-medium text-white">{artist.artwork_count || 0}</p>
+                          <p className="text-[8px] text-neutral-500 uppercase tracking-widest font-black">Pieces</p>
+                       </div>
+                       <div className="flex-1 flex justify-end">
+                          <div className="h-8 w-8 rounded-full border border-white/10 flex items-center justify-center text-white/50 group-hover:border-amber-600/50 group-hover:text-amber-600 transition-colors">
+                             <ArrowRight size={14} />
+                          </div>
+                       </div>
+                    </div>
+                  </div>
+
+                  {/* Interactive Buttons (Overlay on Hover) */}
+                  <div className="absolute top-6 right-6 flex flex-col gap-3 opacity-0 translate-x-4 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-500 delay-100">
+                    <button
+                      onClick={(e) => toggleFollow(artist.id, e)}
+                      className={`h-12 w-12 rounded-2xl flex items-center justify-center transition-all ${
+                        followingIds.has(artist.id)
+                          ? 'bg-neutral-800 text-amber-600 border border-neutral-700'
+                          : 'bg-white text-black hover:bg-neutral-200 shadow-xl'
+                      }`}
+                    >
+                      {followingIds.has(artist.id) ? <UserCheck size={18} /> : <UserPlus size={18} />}
+                    </button>
+                    <button
+                      onClick={(e) => shareArtist(artist.id, artist.full_name, e)}
+                      className="h-12 w-12 rounded-2xl bg-black/40 backdrop-blur-md border border-white/10 text-white hover:bg-black/60 transition-all flex items-center justify-center"
+                    >
+                      <Share2 size={18} />
+                    </button>
+                  </div>
+                </div>
+              </motion.div>
+            ))}
+          </motion.div>
+
+          {artists.length === 0 && (
+            <motion.div 
+               initial={{ opacity: 0 }}
+               animate={{ opacity: 1 }}
+               className="text-center py-40 border-t border-neutral-900 mt-20"
+            >
+              <p className="text-neutral-600 text-[10px] tracking-[0.5em] uppercase font-black">Archive Empty</p>
+              <h2 className="text-4xl font-light text-white/20 mt-4" style={{ fontFamily: 'ForestSmooth, serif' }}>Refining Selection...</h2>
+            </motion.div>
+          )}
+        </div>
       </div>
-    </div>
-    <ArtistModal artist={selectedArtist} onClose={() => setSelectedArtist(null)} />
+      <ArtistModal artist={selectedArtist} onClose={() => setSelectedArtist(null)} />
     </>
   )
 }
