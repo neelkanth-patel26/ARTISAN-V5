@@ -87,7 +87,7 @@ export function FeaturedArtistsSection() {
                 transition={{ duration: 0.4 }}
               >
                 <div suppressHydrationWarning className="absolute inset-0 bg-[radial-gradient(circle_at_center,_rgba(217,119,6,0.05)_0%,_transparent_80%)] opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
-                <div suppressHydrationWarning className="relative w-full h-[300px] md:h-[450px] p-10 md:p-16 flex items-center justify-center overflow-hidden">
+                <div suppressHydrationWarning className="relative w-full h-[300px] md:h-[450px] flex items-center justify-center overflow-hidden">
                   <motion.div 
                     className="absolute inset-0 bg-gradient-to-b from-transparent via-black/20 to-black z-10"
                     initial={{ opacity: 0 }}
@@ -97,8 +97,8 @@ export function FeaturedArtistsSection() {
                     suppressHydrationWarning
                     src={artist.image}
                     alt={artist.name}
-                    className="w-full h-full object-contain filter drop-shadow-[0_0_50px_rgba(0,0,0,0.8)] will-change-transform z-0"
-                    whileHover={{ scale: 1.08 }}
+                    className="w-full h-full object-cover filter will-change-transform z-0"
+                    whileHover={{ scale: 1.05 }}
                     transition={{ duration: 0.8 }}
                   />
                 </div>
