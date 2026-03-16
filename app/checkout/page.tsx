@@ -332,19 +332,15 @@ function CheckoutContent() {
   }
 
   if (loading) {
-    return (
-      <main className="min-h-screen bg-white flex items-center justify-center">
-        <Loader2 className="h-10 w-10 animate-spin text-purple-600" />
-      </main>
-    )
+    return <CheckoutSkeleton />
   }
 
   if (!isSupport && !artworkId) {
     return (
-      <main className="min-h-screen bg-white flex items-center justify-center px-4">
-        <div className="text-center">
-          <p className="text-lg text-gray-900 mb-2">Missing artwork</p>
-          <Link href="/gallery" className="text-purple-600 hover:text-purple-700 font-medium">Browse gallery</Link>
+      <main className="min-h-screen bg-neutral-950 flex items-center justify-center px-4">
+        <div className="text-center space-y-4">
+          <p className="text-lg text-neutral-400 font-light">Missing transaction details</p>
+          <Link href="/gallery" className="inline-block px-8 py-3 rounded-xl bg-amber-600 text-white font-black text-[10px] tracking-widest uppercase hover:bg-amber-500 transition-all">Browse gallery</Link>
         </div>
       </main>
     )
@@ -352,10 +348,10 @@ function CheckoutContent() {
 
   if (!isSupport && !artwork) {
     return (
-      <main className="min-h-screen bg-white flex items-center justify-center px-4">
-        <div className="text-center">
-          <p className="text-lg text-gray-900 mb-2">Artwork not found</p>
-          <Link href="/gallery" className="text-purple-600 hover:text-purple-700 font-medium">Browse gallery</Link>
+      <main className="min-h-screen bg-neutral-950 flex items-center justify-center px-4">
+        <div className="text-center space-y-4">
+          <p className="text-lg text-neutral-400 font-light">Artwork not found</p>
+          <Link href="/gallery" className="inline-block px-8 py-3 rounded-xl bg-amber-600 text-white font-black text-[10px] tracking-widest uppercase hover:bg-amber-500 transition-all">Browse gallery</Link>
         </div>
       </main>
     )
@@ -363,10 +359,10 @@ function CheckoutContent() {
 
   if (isSupport && !artist) {
     return (
-      <main className="min-h-screen bg-white flex items-center justify-center px-4">
-        <div className="text-center">
-          <p className="text-lg text-gray-900 mb-2">Artist not found</p>
-          <Link href="/artist" className="text-purple-600 hover:text-purple-700 font-medium">View artists</Link>
+      <main className="min-h-screen bg-neutral-950 flex items-center justify-center px-4">
+        <div className="text-center space-y-4">
+          <p className="text-lg text-neutral-400 font-light">Artist not found</p>
+          <Link href="/artist" className="inline-block px-8 py-3 rounded-xl bg-amber-600 text-white font-black text-[10px] tracking-widest uppercase hover:bg-amber-500 transition-all">View artists</Link>
         </div>
       </main>
     )
@@ -405,7 +401,7 @@ function CheckoutContent() {
           {/* Pricing Display */}
           <div className="space-y-4">
             <p className="text-[11px] text-neutral-500 uppercase tracking-[0.4em] font-black">Total Valuation</p>
-            <h2 className="text-7xl lg:text-8xl font-light text-white tracking-tighter" style={{ fontFamily: 'ForestSmooth, serif' }}>
+            <h2 className="text-7xl lg:text-8xl font-medium text-white tracking-tighter">
               ₹{Math.floor(totalAmount).toLocaleString()}
             </h2>
             <div className="flex items-center gap-2 text-neutral-400">
@@ -531,8 +527,7 @@ function CheckoutContent() {
                             onChange={(e) => setCardNumber(formatCardNumber(e.target.value))}
                             placeholder="0000 0000 0000 0000"
                             maxLength={19}
-                            className="w-full bg-black/40 border-2 border-neutral-800 rounded-2xl px-6 py-4 text-xl font-light text-white placeholder:text-neutral-800 focus:border-amber-600/50 focus:outline-none transition-all outline-none"
-                            style={{ fontFamily: 'ForestSmooth, serif' }}
+                            className="w-full bg-black/40 border-2 border-neutral-800 rounded-2xl px-6 py-4 text-xl font-medium text-white placeholder:text-neutral-800 focus:border-amber-600/50 focus:outline-none transition-all outline-none"
                           />
                           <CreditCard className="absolute right-6 top-1/2 -translate-y-1/2 text-neutral-700 group-focus-within/input:text-amber-600/50 transition-colors" size={24} />
                         </div>
@@ -547,8 +542,7 @@ function CheckoutContent() {
                             onChange={(e) => setExpiry(formatExpiry(e.target.value))}
                             placeholder="MM/YY"
                             maxLength={5}
-                            className="w-full bg-black/40 border-2 border-neutral-800 rounded-2xl px-6 py-4 text-xl font-light text-white placeholder:text-neutral-800 focus:border-amber-600/50 focus:outline-none transition-all outline-none"
-                            style={{ fontFamily: 'ForestSmooth, serif' }}
+                            className="w-full bg-black/40 border-2 border-neutral-800 rounded-2xl px-6 py-4 text-xl font-medium text-white placeholder:text-neutral-800 focus:border-amber-600/50 focus:outline-none transition-all outline-none"
                           />
                         </div>
                         <div className="space-y-4">
@@ -558,8 +552,7 @@ function CheckoutContent() {
                             value={cvc}
                             onChange={(e) => setCvc(e.target.value.replace(/\D/g, '').slice(0, 4))}
                             placeholder="•••"
-                            className="w-full bg-black/40 border-2 border-neutral-800 rounded-2xl px-6 py-4 text-xl font-light text-white placeholder:text-neutral-800 focus:border-amber-600/50 focus:outline-none transition-all outline-none"
-                            style={{ fontFamily: 'ForestSmooth, serif' }}
+                            className="w-full bg-black/40 border-2 border-neutral-800 rounded-2xl px-6 py-4 text-xl font-medium text-white placeholder:text-neutral-800 focus:border-amber-600/50 focus:outline-none transition-all outline-none"
                           />
                         </div>
                       </div>
@@ -641,9 +634,44 @@ function CheckoutContent() {
   )
 }
 
+function CheckoutSkeleton() {
+  return (
+    <main className="min-h-screen bg-neutral-950 flex flex-col lg:flex-row animate-pulse">
+      <section className="w-full lg:w-[40%] bg-neutral-900/30 lg:h-screen p-8 sm:p-12 lg:p-20 border-b lg:border-r border-neutral-800/50 space-y-12">
+        <div className="space-y-8">
+          <div className="h-4 w-24 bg-neutral-800 rounded-full" />
+          <div className="flex gap-4 items-center">
+            <div className="h-14 w-14 rounded-2xl bg-neutral-800" />
+            <div className="space-y-2">
+              <div className="h-6 w-32 bg-neutral-800 rounded-lg" />
+              <div className="h-3 w-40 bg-neutral-800 rounded-lg" />
+            </div>
+          </div>
+        </div>
+        <div className="space-y-4">
+           <div className="h-3 w-32 bg-neutral-800 rounded-lg" />
+           <div className="h-20 w-3/4 bg-neutral-800 rounded-2xl" />
+        </div>
+        <div className="h-32 w-full bg-neutral-800/50 rounded-[2rem]" />
+        <div className="space-y-4 pt-10 border-t border-neutral-800/50">
+           <div className="h-3 w-full bg-neutral-800 rounded-lg" />
+           <div className="h-3 w-full bg-neutral-800 rounded-lg" />
+        </div>
+      </section>
+      <section className="flex-1 lg:ml-[40%] bg-neutral-950 p-8 sm:p-12 lg:p-24 flex items-center justify-center">
+         <div className="w-full max-w-lg space-y-12">
+            <div className="h-3 w-32 bg-neutral-800 rounded-lg mx-auto" />
+            <div className="h-16 w-full bg-neutral-900/50 border border-neutral-800 rounded-[1.25rem]" />
+            <div className="h-[400px] w-full bg-neutral-900/50 border border-neutral-800 rounded-[2.5rem]" />
+         </div>
+      </section>
+    </main>
+  )
+}
+
 export default function CheckoutPage() {
   return (
-    <Suspense fallback={<div className="min-h-screen bg-white flex items-center justify-center"><Loader2 className="h-10 w-10 animate-spin text-purple-600" /></div>}>
+    <Suspense fallback={<CheckoutSkeleton />}>
       <CheckoutContent />
     </Suspense>
   )

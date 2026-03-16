@@ -367,10 +367,9 @@ export function ArtistModal({ artist, onClose }: ArtistModalProps) {
                             value={amount}
                             onChange={(e) => setAmount(e.target.value)}
                             placeholder="00.00"
-                            className="w-full bg-black/40 border-2 border-neutral-800 rounded-[1.25rem] px-8 py-5 text-2xl font-light text-white placeholder:text-neutral-800 focus:border-amber-600/50 focus:outline-none transition-all focus:bg-black/60 outline-none"
-                            style={{ fontFamily: 'ForestSmooth, serif' }}
+                            className="w-full bg-black/40 border-2 border-neutral-800 rounded-[1.25rem] px-8 py-5 text-2xl font-medium text-white placeholder:text-neutral-800 focus:border-amber-600/50 focus:outline-none transition-all focus:bg-black/60 outline-none"
                           />
-                          <div className="absolute right-6 top-1/2 -translate-y-1/2 text-2xl text-neutral-700 font-light" style={{ fontFamily: 'ForestSmooth, serif' }}>
+                          <div className="absolute right-6 top-1/2 -translate-y-1/2 text-2xl text-neutral-700 font-medium">
                             INR
                           </div>
                         </div>
@@ -432,7 +431,7 @@ export function ArtistModal({ artist, onClose }: ArtistModalProps) {
                           </div>
                           <div className="flex justify-between items-center pt-2 px-1">
                             <span className="text-xs text-neutral-300 tracking-wider uppercase font-black">Artist Receives</span>
-                            <span className="text-2xl font-light text-green-500" style={{ fontFamily: 'ForestSmooth, serif' }}>₹{artistReceives}</span>
+                            <span className="text-2xl font-medium text-green-500">₹{artistReceives}</span>
                           </div>
                         </motion.div>
                       )}
