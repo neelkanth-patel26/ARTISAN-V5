@@ -77,32 +77,7 @@ export function GalleryFilters({ categories, selectedCategory, setSelectedCatego
            </AnimatePresence>
         </div>
 
-        {/* Action Toggles */}
-        <div className="flex flex-col items-center gap-6">
-           <motion.button
-              whileHover={{ scale: 1.02 }}
-              whileTap={{ scale: 0.98 }}
-              onClick={() => setShowLiveOnly(!showLiveOnly)}
-              className={`group relative px-10 py-4 rounded-2xl text-[10px] tracking-[0.4em] font-black uppercase transition-all duration-700 overflow-hidden ${
-                showLiveOnly
-                  ? 'bg-white text-black shadow-[0_0_30px_rgba(255,255,255,0.15)]'
-                  : 'bg-neutral-900/40 backdrop-blur-xl border border-white/5 text-neutral-500 hover:text-white'
-              }`}
-           >
-              <div className="relative z-10 flex items-center gap-3">
-                 <div className={`w-1.5 h-1.5 rounded-full ${showLiveOnly ? 'bg-black animate-pulse' : 'bg-neutral-800 group-hover:bg-amber-600'} transition-colors`} />
-                 Live Collection Only
-              </div>
-              {/* Luxury hover glow */}
-              {!showLiveOnly && <div className="absolute inset-0 bg-gradient-to-r from-amber-600/0 via-amber-600/5 to-amber-600/0 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-1000" />}
-           </motion.button>
 
-           <div className="flex items-center gap-8 text-[10px] tracking-[0.3em] uppercase font-black text-neutral-500">
-              <div className="h-px w-8 bg-white/5" />
-              <p>Curated Selection</p>
-              <div className="h-px w-8 bg-white/5" />
-           </div>
-        </div>
       </div>
     </div>
   )

@@ -158,9 +158,14 @@ export function ArtistModal({ artist, onClose }: ArtistModalProps) {
       if (artist?.upi_qr_code) {
         setShowSupport(true)
       } else if (artist?.upi_id) {
+        const upiIdPattern = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9]+$/
+        if (!upiIdPattern.test(artist.upi_id)) {
+          toast.error('Invalid UPI ID')
+          return
+        }
         const totalAmount = parseFloat(amount)
         const fee = parseFloat(platformFee)
-        const upiUrl = `upi://pay?pa=${artist.upi_id}&pn=${encodeURIComponent(artist.full_name)}&am=${artistReceives}&cu=INR&tn=Support%20Payment`
+        const upiUrl = `upi://pay?pa=${encodeURIComponent(artist.upi_id)}&pn=${encodeURIComponent(artist.full_name)}&am=${encodeURIComponent(artistReceives)}&cu=INR&tn=Support%20Payment`
         
         // Record transaction in database
         recordUpiTransaction(totalAmount, fee)
@@ -224,7 +229,7 @@ export function ArtistModal({ artist, onClose }: ArtistModalProps) {
           animate={{ scale: 1, opacity: 1, y: 0 }}
           transition={{ type: 'spring', damping: 25, stiffness: 300 }}
           onClick={(e) => e.stopPropagation()}
-          style={{ height: viewportHeight ? `${viewportHeight * 0.95}px` : '95vh', maxHeight: '900px' }}
+          style={{ height: viewportHeight ? `${viewportHeight * 0.88}px` : '88dvh', maxHeight: '900px' }}
           className="bg-neutral-950 border border-neutral-800 rounded-t-[2rem] sm:rounded-[2.5rem] max-w-6xl w-full overflow-hidden shadow-[0_0_100px_rgba(217,119,6,0.1)] flex flex-col relative"
         >
           {/* Subtle Background Elements */}
@@ -238,15 +243,16 @@ export function ArtistModal({ artist, onClose }: ArtistModalProps) {
             <X size={24} className="group-hover:rotate-90 transition-transform duration-300" />
           </button>
 
-          <div className="flex-1 flex flex-col lg:flex-row overflow-hidden min-h-0">
-            {/* Sidebar — horizontal strip on mobile, vertical panel on desktop */}
-            <div className="lg:w-[340px] xl:w-[380px] bg-neutral-900/30 lg:border-r border-b lg:border-b-0 border-neutral-800/50 p-5 sm:p-8 lg:p-12 overflow-y-auto scrollbar-hide shrink-0">
-              <div className="space-y-10">
-                <div className="flex flex-row lg:flex-col items-center lg:text-center gap-5 lg:gap-6">
+          {/* Single scroll container on mobile, side-by-side on desktop */}
+          <div className="flex-1 overflow-y-auto scrollbar-hide lg:overflow-hidden lg:flex lg:flex-row min-h-0">
+            {/* Sidebar — inline on mobile (no scroll), fixed panel on desktop */}
+            <div className="lg:w-[340px] xl:w-[380px] bg-neutral-900/30 lg:border-r border-b lg:border-b-0 border-neutral-800/50 p-4 sm:p-6 lg:p-12 lg:overflow-y-auto scrollbar-hide lg:shrink-0">
+              <div className="space-y-4 lg:space-y-10">
+                <div className="flex flex-row lg:flex-col items-center lg:text-center gap-3 lg:gap-6">
                   {/* Avatar */}
                   <motion.div 
                     whileHover={{ scale: 1.02 }}
-                    className="relative w-20 h-20 sm:w-28 sm:h-28 lg:w-44 lg:h-44 rounded-2xl lg:rounded-3xl p-1 bg-black border border-neutral-800 group shrink-0"
+                    className="relative w-14 h-14 sm:w-20 sm:h-20 lg:w-44 lg:h-44 rounded-2xl lg:rounded-3xl p-1 bg-black border border-neutral-800 group shrink-0"
                   >
                     <div className="w-full h-full rounded-xl lg:rounded-[1.25rem] overflow-hidden bg-neutral-800">
                       {artist.avatar_url ? (
@@ -259,14 +265,14 @@ export function ArtistModal({ artist, onClose }: ArtistModalProps) {
                     </div>
                   </motion.div>
 
-                  <div className="space-y-1 min-w-0">
-                    <h3 className="text-xl sm:text-2xl lg:text-4xl font-light text-white tracking-tight truncate" style={{ fontFamily: 'ForestSmooth, serif' }}>
+                  <div className="space-y-0.5 min-w-0 flex-1">
+                    <h3 className="text-lg sm:text-2xl lg:text-4xl font-light text-white tracking-tight truncate" style={{ fontFamily: 'ForestSmooth, serif' }}>
                       {artist.full_name}
                     </h3>
-                    <div className="flex flex-col gap-1">
+                    <div className="flex items-center gap-3 flex-wrap">
                       {artist.location && (
-                        <div className="flex items-center gap-1.5 text-neutral-400 text-[10px] tracking-widest uppercase font-medium">
-                          <MapPin size={10} className="text-amber-600/60 shrink-0" />
+                        <div className="flex items-center gap-1 text-neutral-400 text-[10px] tracking-widest uppercase font-medium">
+                          <MapPin size={9} className="text-amber-600/60 shrink-0" />
                           <span className="truncate">{artist.location}</span>
                         </div>
                       )}
@@ -277,74 +283,63 @@ export function ArtistModal({ artist, onClose }: ArtistModalProps) {
                   </div>
                 </div>
 
-                {/* Stats — hidden on mobile to save space, shown on lg */}
-                <div className="hidden lg:grid grid-cols-2 gap-3">
-                  <div className="bg-black/20 rounded-2xl p-4 border border-neutral-800/50 hover:border-amber-600/20 transition-colors text-center group">
-                    <Heart size={14} className="text-amber-600/50 mx-auto mb-2 group-hover:scale-110 transition-transform" />
-                    <p className="text-lg font-light text-white leading-none">{artist.followers_count}</p>
-                    <p className="text-[8px] tracking-[0.15em] text-neutral-600 uppercase mt-1.5 font-bold">Followers</p>
-                  </div>
-                  <div className="bg-black/20 rounded-2xl p-4 border border-neutral-800/50 hover:border-amber-600/20 transition-colors text-center group">
-                    <Eye size={14} className="text-amber-600/50 mx-auto mb-2 group-hover:scale-110 transition-transform" />
-                    <p className="text-lg font-light text-white leading-none">{artist.total_views}</p>
-                    <p className="text-[8px] tracking-[0.15em] text-neutral-600 uppercase mt-1.5 font-bold">Views</p>
-                  </div>
-                  <div className="bg-black/20 rounded-2xl p-4 border border-neutral-800/50 hover:border-amber-600/20 transition-colors text-center group">
-                    <Palette size={14} className="text-amber-600/50 mx-auto mb-2 group-hover:scale-110 transition-transform" />
-                    <p className="text-lg font-light text-white leading-none">{artworkCount}</p>
-                    <p className="text-[8px] tracking-[0.15em] text-neutral-600 uppercase mt-1.5 font-bold">Works</p>
-                  </div>
-                  <div className="bg-black/20 rounded-2xl p-4 border border-neutral-800/50 hover:border-amber-600/20 transition-colors text-center group">
-                    <TrendingUp size={14} className="text-amber-600/50 mx-auto mb-2 group-hover:scale-110 transition-transform" />
-                    <p className="text-lg font-light text-white leading-none">{Math.floor(artist.total_views / Math.max(artworkCount, 1))}</p>
-                    <p className="text-[8px] tracking-[0.15em] text-neutral-600 uppercase mt-1.5 font-bold">Avg</p>
-                  </div>
+                {/* Stats — 4-col on mobile, 2-col on lg */}
+                <div className="grid grid-cols-4 lg:grid-cols-2 gap-2 lg:gap-3">
+                  {[
+                    { icon: Heart, val: artist.followers_count, label: 'Followers' },
+                    { icon: Eye, val: artist.total_views, label: 'Views' },
+                    { icon: Palette, val: artworkCount, label: 'Works' },
+                    { icon: TrendingUp, val: Math.floor(artist.total_views / Math.max(artworkCount, 1)), label: 'Avg' },
+                  ].map(({ icon: Icon, val, label }) => (
+                    <div key={label} className="bg-black/20 rounded-xl lg:rounded-2xl p-2 lg:p-4 border border-neutral-800/50 hover:border-amber-600/20 transition-colors text-center group">
+                      <Icon size={11} className="text-amber-600/50 mx-auto mb-1 group-hover:scale-110 transition-transform" />
+                      <p className="text-xs lg:text-lg font-light text-white leading-none">{val}</p>
+                      <p className="text-[7px] lg:text-[8px] tracking-[0.15em] text-neutral-600 uppercase mt-1 font-bold">{label}</p>
+                    </div>
+                  ))}
                 </div>
 
-                <div className="hidden lg:block space-y-4">
-                  <h4 className="flex items-center gap-2 text-[10px] text-amber-600/80 uppercase tracking-[0.3em] font-black">
-                    <Award size={14} />
+                <div className="space-y-2 lg:space-y-4">
+                  <h4 className="flex items-center gap-2 text-[9px] lg:text-[10px] text-amber-600/80 uppercase tracking-[0.3em] font-black">
+                    <Award size={11} />
                     About Artist
                   </h4>
-                  <div className="relative group">
-                    <div className="absolute -inset-px bg-gradient-to-b from-neutral-800/50 to-transparent rounded-2xl opacity-50" />
-                    <div className="relative bg-neutral-900/40 rounded-2xl p-5 border border-neutral-800/50">
-                      <p className="text-neutral-400 text-xs leading-relaxed italic font-light">
-                        {artist.bio ? `"${artist.bio}"` : "This artist prefers to let their work speak for itself."}
-                      </p>
-                    </div>
+                  <div className="relative bg-neutral-900/40 rounded-xl lg:rounded-2xl p-3 lg:p-5 border border-neutral-800/50">
+                    <p className="text-neutral-400 text-[11px] lg:text-xs leading-relaxed italic font-light">
+                      {artist.bio ? `"${artist.bio}"` : 'This artist prefers to let their work speak for itself.'}
+                    </p>
                   </div>
                 </div>
 
-                <div className="pt-2 lg:pt-4 flex flex-col gap-3">
+                <div className="flex flex-row lg:flex-col gap-2 lg:gap-3">
                   {artist.website && (
                     <a
                       href={artist.website}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="flex items-center justify-center gap-2 py-3.5 rounded-2xl bg-neutral-800/50 hover:bg-neutral-800 text-neutral-300 text-[10px] tracking-widest uppercase font-bold transition-all border border-neutral-800 hover:border-neutral-700"
+                      className="flex-1 flex items-center justify-center gap-2 py-2.5 lg:py-3.5 rounded-2xl bg-neutral-800/50 hover:bg-neutral-800 text-neutral-300 text-[10px] tracking-widest uppercase font-bold transition-all border border-neutral-800 hover:border-neutral-700"
                     >
-                      <ExternalLink size={14} />
+                      <ExternalLink size={13} />
                       Website
                     </a>
                   )}
                   <button
                     onClick={toggleFollow}
-                    className={`flex items-center justify-center gap-2 py-3.5 rounded-2xl transition-all text-[10px] tracking-[0.2em] uppercase font-black shadow-xl ${
+                    className={`flex-1 flex items-center justify-center gap-2 py-2.5 lg:py-3.5 rounded-2xl transition-all text-[10px] tracking-[0.2em] uppercase font-black shadow-xl ${
                       isFollowing
                         ? 'bg-neutral-800 text-neutral-400 border border-neutral-700'
                         : 'bg-white text-black hover:bg-neutral-200'
                     }`}
                   >
-                    {isFollowing ? <UserCheck size={16} /> : <UserPlus size={16} />}
-                    {isFollowing ? 'Following' : 'Follow Artist'}
+                    {isFollowing ? <UserCheck size={14} /> : <UserPlus size={14} />}
+                    {isFollowing ? 'Following' : 'Follow'}
                   </button>
                 </div>
               </div>
             </div>
 
             {/* Main Section */}
-            <div className="flex-1 p-5 sm:p-8 lg:p-12 xl:p-16 overflow-y-auto relative scrollbar-hide min-h-0">
+            <div className="lg:flex-1 p-4 sm:p-6 lg:p-12 xl:p-16 lg:overflow-y-auto relative scrollbar-hide">
               <div className="max-w-3xl mx-auto space-y-12">
                 
                 {/* Support Form Design */}

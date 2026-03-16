@@ -8,13 +8,108 @@ import { Heart, Target, Eye, Users, Sparkles, Shield, Zap, Globe } from 'lucide-
 
 const AnimatedBackground = () => {
   return (
-    <div className="absolute inset-0 overflow-hidden pointer-events-none opacity-20">
-      <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(circle_at_50%_50%,#d9770610,transparent_50%)]" />
-      <svg className="absolute w-full h-full">
-        <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
-          <path d="M 40 0 L 0 0 0 40" fill="none" stroke="white" strokeWidth="0.5" strokeOpacity="0.1" />
-        </pattern>
+    <div className="absolute inset-0 overflow-hidden pointer-events-none">
+      {/* Radial amber core */}
+      <div className="absolute inset-0 bg-[radial-gradient(ellipse_60%_50%_at_50%_50%,rgba(217,119,6,0.07),transparent)]" />
+
+      <svg className="absolute w-full h-full" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          {/* Fine crosshatch grid */}
+          <pattern id="grid" width="60" height="60" patternUnits="userSpaceOnUse">
+            <path d="M 60 0 L 0 0 0 60" fill="none" stroke="rgba(255,255,255,0.03)" strokeWidth="0.5" />
+          </pattern>
+          {/* Amber glow filter */}
+          <filter id="amber-glow">
+            <feGaussianBlur stdDeviation="3" result="blur" />
+            <feMerge><feMergeNode in="blur" /><feMergeNode in="SourceGraphic" /></feMerge>
+          </filter>
+        </defs>
+
         <rect width="100%" height="100%" fill="url(#grid)" />
+
+        {/* Rotating outer ring */}
+        <motion.circle
+          cx="50%" cy="50%" r="38%"
+          fill="none" stroke="rgba(217,119,6,0.06)" strokeWidth="1"
+          strokeDasharray="6 14"
+          style={{ originX: '50%', originY: '50%' }}
+          animate={{ rotate: 360 }}
+          transition={{ duration: 80, repeat: Infinity, ease: 'linear' }}
+        />
+
+        {/* Counter-rotating middle ring */}
+        <motion.circle
+          cx="50%" cy="50%" r="26%"
+          fill="none" stroke="rgba(217,119,6,0.09)" strokeWidth="0.5"
+          strokeDasharray="2 8"
+          style={{ originX: '50%', originY: '50%' }}
+          animate={{ rotate: -360 }}
+          transition={{ duration: 50, repeat: Infinity, ease: 'linear' }}
+        />
+
+        {/* Pulsing inner ring */}
+        <motion.circle
+          cx="50%" cy="50%" r="14%"
+          fill="none" stroke="rgba(217,119,6,0.12)" strokeWidth="0.5"
+          animate={{ scale: [1, 1.08, 1], opacity: [0.4, 1, 0.4] }}
+          style={{ originX: '50%', originY: '50%' }}
+          transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' }}
+        />
+
+        {/* Diagonal sweep lines */}
+        {[15, 35, 65, 85].map((x, i) => (
+          <motion.line
+            key={i}
+            x1={`${x}%`} y1="0%" x2={`${x - 10}%`} y2="100%"
+            stroke="rgba(217,119,6,0.04)" strokeWidth="1"
+            initial={{ pathLength: 0, opacity: 0 }}
+            animate={{ pathLength: 1, opacity: 1 }}
+            transition={{ duration: 2.5, delay: i * 0.4, ease: 'easeOut' }}
+          />
+        ))}
+
+        {/* Corner bracket — top-left */}
+        <motion.path
+          d="M 40 80 L 80 80 L 80 40"
+          fill="none" stroke="rgba(217,119,6,0.2)" strokeWidth="1"
+          initial={{ pathLength: 0 }} animate={{ pathLength: 1 }}
+          transition={{ duration: 1.5, delay: 0.5, ease: 'easeOut' }}
+        />
+        {/* Corner bracket — bottom-right (dynamic via viewBox %) */}
+        <motion.path
+          d="M calc(100% - 40px) calc(100% - 80px) L calc(100% - 80px) calc(100% - 80px) L calc(100% - 80px) calc(100% - 40px)"
+          fill="none" stroke="rgba(217,119,6,0.2)" strokeWidth="1"
+          initial={{ pathLength: 0 }} animate={{ pathLength: 1 }}
+          transition={{ duration: 1.5, delay: 0.8, ease: 'easeOut' }}
+        />
+
+        {/* Orbiting amber dot */}
+        <motion.circle
+          r="3" fill="rgba(217,119,6,0.7)" filter="url(#amber-glow)"
+          animate={{
+            cx: ['50%', '88%', '50%', '12%', '50%'],
+            cy: ['12%', '50%', '88%', '50%', '12%'],
+          }}
+          transition={{ duration: 12, repeat: Infinity, ease: 'linear' }}
+        />
+
+        {/* Second orbiting dot — offset phase */}
+        <motion.circle
+          r="1.5" fill="rgba(217,119,6,0.4)"
+          animate={{
+            cx: ['50%', '12%', '50%', '88%', '50%'],
+            cy: ['12%', '50%', '88%', '50%', '12%'],
+          }}
+          transition={{ duration: 18, repeat: Infinity, ease: 'linear' }}
+        />
+
+        {/* Horizontal scan line */}
+        <motion.line
+          x1="0" y1="50%" x2="100%" y2="50%"
+          stroke="rgba(217,119,6,0.05)" strokeWidth="1"
+          animate={{ y1: ['20%', '80%', '20%'], y2: ['20%', '80%', '20%'] }}
+          transition={{ duration: 10, repeat: Infinity, ease: 'easeInOut' }}
+        />
       </svg>
     </div>
   )
@@ -57,6 +152,32 @@ export default function AboutPage() {
       {/* Hero: The Manuscript Cover */}
       <section className="relative h-screen flex flex-col items-center justify-center px-4 overflow-hidden">
         <AnimatedBackground />
+
+        {/* Floating particles */}
+        <div className="absolute inset-0 pointer-events-none overflow-hidden">
+          {[...Array(12)].map((_, i) => (
+            <motion.div
+              key={i}
+              className="absolute w-px h-px rounded-full bg-amber-500"
+              style={{
+                left: `${10 + (i * 7.5) % 80}%`,
+                top: `${15 + (i * 13) % 70}%`,
+                boxShadow: '0 0 4px 1px rgba(217,119,6,0.6)',
+              }}
+              animate={{
+                y: [0, -30, 0],
+                opacity: [0, 0.8, 0],
+                scale: [0, 1.5, 0],
+              }}
+              transition={{
+                duration: 3 + (i % 4),
+                delay: i * 0.5,
+                repeat: Infinity,
+                ease: 'easeInOut',
+              }}
+            />
+          ))}
+        </div>
         
         <div className="relative z-10 text-center space-y-12">
           <motion.div
@@ -88,26 +209,72 @@ export default function AboutPage() {
           </motion.p>
         </div>
 
-      {/* Persistent SVG Animation Path */}
-      <div className="fixed inset-0 pointer-events-none z-0 opacity-20">
-        <svg width="100%" height="100%" viewBox="0 0 100 1000" fill="none" preserveAspectRatio="none">
+      {/* Scroll-driven SVG path */}
+      <div className="fixed inset-0 pointer-events-none z-0">
+        <svg width="100%" height="100%" viewBox="0 0 100 100" preserveAspectRatio="none" fill="none">
+          <defs>
+            <filter id="path-glow">
+              <feGaussianBlur stdDeviation="1.5" result="blur" />
+              <feMerge><feMergeNode in="blur" /><feMergeNode in="SourceGraphic" /></feMerge>
+            </filter>
+          </defs>
+          {/* Glow copy */}
           <motion.path
-            d="M50,0 C60,200 40,400 50,600 C60,800 40,1000 50,1200"
-            stroke="#d97706"
-            strokeWidth="0.5"
+            d="M50,0 C65,15 35,30 50,50 C65,70 35,85 50,100"
+            stroke="rgba(217,119,6,0.15)"
+            strokeWidth="2"
+            filter="url(#path-glow)"
             style={{ pathLength: smoothProgress }}
+          />
+          {/* Sharp line on top */}
+          <motion.path
+            d="M50,0 C65,15 35,30 50,50 C65,70 35,85 50,100"
+            stroke="rgba(217,119,6,0.5)"
+            strokeWidth="0.4"
+            style={{ pathLength: smoothProgress }}
+          />
+          {/* Travelling dot along path */}
+          <motion.circle
+            r="0.8"
+            fill="rgba(217,119,6,0.9)"
+            filter="url(#path-glow)"
+            style={{
+              offsetPath: "path('M50,0 C65,15 35,30 50,50 C65,70 35,85 50,100')",
+              offsetDistance: smoothProgress as any,
+            } as any}
           />
         </svg>
       </div>
 
         {/* Scroll Indicator */}
         <motion.div 
-          animate={{ y: [0, 10, 0] }}
-          transition={{ repeat: Infinity, duration: 2 }}
-          className="absolute bottom-12 flex flex-col items-center gap-4"
+          animate={{ y: [0, 8, 0] }}
+          transition={{ repeat: Infinity, duration: 2.5, ease: 'easeInOut' }}
+          className="absolute bottom-12 flex flex-col items-center gap-3"
         >
-          <div className="w-px h-24 bg-gradient-to-b from-amber-600 to-transparent" />
-          <span className="text-[9px] text-amber-600 font-black uppercase tracking-[0.4em]">Descend</span>
+          <svg width="1" height="60" viewBox="0 0 1 60" className="overflow-visible">
+            <motion.line
+              x1="0.5" y1="0" x2="0.5" y2="60"
+              stroke="url(#scroll-grad)" strokeWidth="1"
+              initial={{ pathLength: 0, opacity: 0 }}
+              animate={{ pathLength: 1, opacity: 1 }}
+              transition={{ duration: 1.2, delay: 2.5 }}
+            />
+            <defs>
+              <linearGradient id="scroll-grad" x1="0" y1="0" x2="0" y2="1" gradientUnits="objectBoundingBox">
+                <stop offset="0%" stopColor="rgba(217,119,6,0.8)" />
+                <stop offset="100%" stopColor="rgba(217,119,6,0)" />
+              </linearGradient>
+            </defs>
+          </svg>
+          <motion.span
+            className="text-[9px] text-amber-600/70 font-black uppercase tracking-[0.5em]"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 3 }}
+          >
+            Descend
+          </motion.span>
         </motion.div>
       </section>
 

@@ -210,7 +210,7 @@ export default function ExhibitionsPage() {
   ]
 
   return (
-    <main className="min-h-screen bg-gradient-to-b from-neutral-950 via-neutral-900 to-neutral-950 overflow-x-hidden">
+    <main className="min-h-screen bg-neutral-950 overflow-x-hidden">
       <Navigation />
       
       {/* Hero Section */}
@@ -275,7 +275,7 @@ export default function ExhibitionsPage() {
 
       {/* CTA Section */}
       <section className="py-64 relative overflow-hidden">
-        <div className="absolute inset-0 bg-neutral-900/20 backdrop-blur-3xl" />
+        <div className="absolute inset-0 bg-neutral-950/60 backdrop-blur-3xl" />
         <div className="relative z-10 max-w-4xl mx-auto text-center px-4 space-y-12">
            <Star className="mx-auto text-amber-600/40" size={48} />
            <h2 className="text-4xl md:text-6xl text-white font-light leading-tight" style={{ fontFamily: 'ForestSmooth, serif' }}>

@@ -131,36 +131,32 @@ export default function VisitPage() {
             </Link>
           </motion.div>
         ) : (
-          <div className="mt-20 flex flex-col md:flex-row gap-6 justify-center">
-             <motion.button
-                whileHover={{ scale: 1.02 }}
-                onClick={requestLocation}
-                disabled={locationLoading}
-                className="group flex items-center gap-6 px-10 py-8 bg-amber-600 rounded-[2.5rem] text-black transition-all"
-             >
-                <div className="w-12 h-12 rounded-2xl bg-black/10 flex items-center justify-center">
-                  <MapPin size={24} />
-                </div>
-                <div className="text-left">
-                  <p className="text-xs font-black tracking-widest uppercase">Nearby Events</p>
-                  <p className="text-[10px] opacity-70 font-medium">Use my live location</p>
-                </div>
-             </motion.button>
+          <div className="mt-16 flex flex-col sm:flex-row gap-3 justify-center">
+            <motion.button
+              whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}
+              onClick={requestLocation}
+              disabled={locationLoading}
+              className="flex items-center gap-3 px-6 py-4 bg-amber-600 hover:bg-amber-500 rounded-2xl text-black transition-all disabled:opacity-50"
+            >
+              {locationLoading ? <Loader2 size={15} className="animate-spin" /> : <MapPin size={15} />}
+              <div className="text-left">
+                <p className="text-xs font-black tracking-widest uppercase leading-none">Nearby Events</p>
+                <p className="text-[10px] opacity-60 font-medium mt-0.5">Use my live location</p>
+              </div>
+            </motion.button>
 
-             <motion.button
-                whileHover={{ scale: 1.02 }}
-                onClick={loadGlobalEvents}
-                disabled={locationLoading}
-                className="group flex items-center gap-6 px-10 py-8 bg-white/5 border border-white/10 rounded-[2.5rem] transition-all"
-             >
-                <div className="w-12 h-12 rounded-2xl bg-white/5 flex items-center justify-center">
-                  <Globe className="text-amber-600" size={24} />
-                </div>
-                <div className="text-left">
-                  <p className="text-xs font-black tracking-widest uppercase">Global Pulse</p>
-                  <p className="text-[10px] text-neutral-500 font-light">Explore exhibitions worldwide</p>
-                </div>
-             </motion.button>
+            <motion.button
+              whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}
+              onClick={loadGlobalEvents}
+              disabled={locationLoading}
+              className="flex items-center gap-3 px-6 py-4 bg-white/5 border border-white/10 hover:bg-white/10 rounded-2xl transition-all disabled:opacity-50"
+            >
+              {locationLoading ? <Loader2 size={15} className="animate-spin" /> : <Globe size={15} className="text-amber-600" />}
+              <div className="text-left">
+                <p className="text-xs font-black tracking-widest uppercase leading-none">Global Pulse</p>
+                <p className="text-[10px] text-neutral-500 font-light mt-0.5">Explore exhibitions worldwide</p>
+              </div>
+            </motion.button>
           </div>
         )}
       </section>
@@ -239,15 +235,30 @@ export default function VisitPage() {
         </AnimatePresence>
 
         {events.length === 0 && !locationLoading && (
-          <div className="py-32 text-center space-y-8 max-w-xl mx-auto border border-dashed border-white/10 rounded-[3rem]">
-             <MapIcon className="mx-auto text-neutral-800" size={64} />
-             <div className="space-y-4">
-               <h3 className="text-xl font-light">No Active Transmissions</h3>
-               <p className="text-xs text-neutral-500 font-light leading-relaxed">
-                 We couldn't detect any live art encounters in this sector. Try expanding your horizon with Global Pulse.
-               </p>
-             </div>
-          </div>
+          <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="max-w-sm mx-auto text-center"
+          >
+            <div className="bg-neutral-900/40 border border-white/5 rounded-3xl py-14 px-8 space-y-5">
+              <div className="w-12 h-12 rounded-2xl bg-amber-600/10 border border-amber-600/20 flex items-center justify-center mx-auto">
+                <MapIcon className="text-amber-600/60" size={22} />
+              </div>
+              <div className="space-y-2">
+                <h3 className="text-base font-light text-white" style={{ fontFamily: 'ForestSmooth, serif' }}>No Active Transmissions</h3>
+                <p className="text-[11px] text-neutral-500 font-light leading-relaxed">
+                  We couldn't detect any live art encounters in this sector. Try expanding your horizon with Global Pulse.
+                </p>
+              </div>
+              <button
+                onClick={loadGlobalEvents}
+                className="inline-flex items-center gap-2 px-5 py-2.5 bg-amber-600/10 border border-amber-600/20 rounded-xl text-amber-600 text-[10px] font-black uppercase tracking-widest hover:bg-amber-600/20 transition-all"
+              >
+                <Globe size={11} />
+                Try Global Pulse
+              </button>
+            </div>
+          </motion.div>
         )}
       </section>
 

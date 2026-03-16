@@ -386,8 +386,8 @@ export function ArtworkModal({ artwork, onClose, onShowAuthPrompt }: ArtworkModa
         }`} 
         onClick={(e) => e.stopPropagation()}
       >
-        {/* Artwork Image — fixed height on mobile, flex-1 on desktop */}
-        <div className={`relative h-56 sm:h-72 md:h-auto md:flex-1 flex items-center justify-center overflow-hidden p-4 md:p-8 shrink-0 transition-all duration-500 ${
+        {/* Artwork Image — static on mobile (no scroll), flex-1 on desktop */}
+        <div className={`relative h-[42vw] min-h-[160px] max-h-56 sm:max-h-72 md:h-auto md:max-h-none md:flex-1 flex items-center justify-center overflow-hidden p-4 md:p-8 shrink-0 transition-all duration-500 ${
           orientation === 'portrait' ? 'bg-neutral-900/40' : 'bg-neutral-900/10'
         }`}>
             <div className="absolute inset-0 bg-neutral-900/20 backdrop-blur-3xl pointer-events-none" />
@@ -401,7 +401,7 @@ export function ArtworkModal({ artwork, onClose, onShowAuthPrompt }: ArtworkModa
                 src={artwork.image} 
                 alt={artwork.title} 
                 onLoad={handleImageLoad}
-                className="max-w-full max-h-full w-auto h-auto object-contain rounded-2xl" 
+                className="max-w-full max-h-full w-auto h-auto object-contain rounded-2xl block" 
                 onError={(e) => {
                   const img = e.target as HTMLImageElement;
                   img.style.display = 'none';
@@ -410,8 +410,8 @@ export function ArtworkModal({ artwork, onClose, onShowAuthPrompt }: ArtworkModa
             </motion.div>
         </div>
 
-        {/* Information Sidepanel */}
-        <div className="w-full md:w-[420px] lg:w-[450px] bg-neutral-950/30 backdrop-blur-3xl border-t md:border-t-0 md:border-l border-white/5 flex flex-col overflow-y-auto scrollbar-hide min-h-0">
+        {/* Information Sidepanel — single scroll on mobile, sidebar on desktop */}
+        <div className="w-full md:w-[420px] lg:w-[450px] bg-neutral-950/30 backdrop-blur-3xl border-t md:border-t-0 md:border-l border-white/5 flex flex-col overflow-y-auto scrollbar-hide flex-1 min-h-0">
           <div className="p-5 md:p-8 lg:p-10 pb-10 space-y-8 md:space-y-12 flex-1">
             
             {/* Scrollable Header Actions */}

@@ -341,11 +341,11 @@ function ArtistPageContent() {
                     <div className="flex items-center gap-8 pt-6 border-t border-white/10 transition-all duration-500">
                        <div className="space-y-1">
                           <p className="text-[14px] font-medium text-white">{artist.followers_count.toLocaleString()}</p>
-                          <p className="text-[8px] text-neutral-500 uppercase tracking-widest font-black">Patrons</p>
+                          <p className="text-[8px] text-neutral-500 uppercase tracking-widest font-black">Followers</p>
                        </div>
                        <div className="space-y-1">
                           <p className="text-[14px] font-medium text-white">{(artist.artwork_count || 0).toLocaleString()}</p>
-                          <p className="text-[8px] text-neutral-500 uppercase tracking-widest font-black">Pieces</p>
+                          <p className="text-[8px] text-neutral-500 uppercase tracking-widest font-black">Views</p>
                        </div>
                        <div className="flex-1 flex justify-end">
                           <div className="h-10 w-10 sm:h-8 sm:w-8 rounded-full border border-white/10 flex items-center justify-center text-white/50 group-hover:border-amber-600/50 group-hover:text-amber-600 transition-colors">
