@@ -16,16 +16,21 @@ export function Footer() {
   ]
 
   return (
-    <footer className="hidden lg:block fixed bottom-0 left-0 right-0 z-40 py-4 md:py-6 px-4 md:px-6 lg:px-12">
-      <div className="flex flex-col sm:flex-row justify-between items-center gap-3 sm:gap-0 border-t border-neutral-800/50 pt-4 md:pt-6">
-        <p className="text-[10px] md:text-xs text-neutral-500 tracking-[0.2em] font-light uppercase" style={{ fontFamily: 'serif' }}>
+    <footer className="hidden lg:block fixed bottom-0 left-0 right-0 z-40 py-6 lg:px-12 bg-neutral-950/20 backdrop-blur-3xl border-t border-white/5 overflow-hidden">
+      {/* Footer Top Shimmer */}
+      <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-white/5 to-transparent" />
+      
+      <div className="flex flex-col sm:flex-row justify-between items-center gap-3 sm:gap-0 relative z-10 px-6">
+        <p className="text-[9px] text-neutral-500 tracking-[0.6em] font-black uppercase">
           Made By Group 1
         </p>
         
-        <ThemeToggleButton variant="circle" start="center" />
+        <div className="flex items-center gap-12">
+          <ThemeToggleButton variant="circle" start="center" />
+        </div>
         
-        <p className="text-[10px] md:text-xs text-neutral-500 tracking-[0.15em] md:tracking-[0.2em] font-light uppercase text-center" style={{ fontFamily: 'serif' }}>
-          © 2026 Gaming Network Studio Media Group
+        <p className="text-[9px] text-neutral-500 tracking-[0.6em] font-black uppercase text-center">
+          © Gaming Network Studio Media Group
         </p>
       </div>
     </footer>

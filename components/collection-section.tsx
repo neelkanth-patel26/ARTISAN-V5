@@ -19,14 +19,14 @@ export function CollectionSection() {
         >
           <div className="space-y-4 md:space-y-6">
             <motion.div 
-              className="flex items-center gap-2 text-amber-600/70 text-xs tracking-[0.3em] font-light"
+              className="flex items-center gap-2 text-amber-500/60 text-[9px] tracking-[0.5em] font-black uppercase"
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: 0.2 }}
             >
-              <Sparkles size={14} strokeWidth={1.5} />
-              CURATED COLLECTION
+              <Sparkles size={12} className="text-amber-500" />
+              Curated Collection
             </motion.div>
             <motion.h2 
               className="text-4xl md:text-6xl font-light text-white/90 leading-tight"
@@ -61,10 +61,9 @@ export function CollectionSection() {
                 transition={{ duration: 0.2, type: "spring", stiffness: 400 }}
                 className="relative will-change-transform"
               >
-                <div className="absolute inset-0 bg-amber-600/10 blur-xl rounded-full" />
                 <div className="relative">
-                  <div className="text-3xl md:text-4xl font-light text-white/90" style={{ fontFamily: 'Oughter, serif' }}>500+</div>
-                  <div className="text-xs text-neutral-500 tracking-wider font-light">ARTWORKS</div>
+                  <div className="text-3xl md:text-5xl font-light text-white/90" style={{ fontFamily: 'ForestSmooth, serif' }}>500+</div>
+                  <div className="text-[9px] text-neutral-500 tracking-[0.3em] font-black uppercase">Artworks</div>
                 </div>
               </motion.div>
               <div className="w-px h-12 bg-gradient-to-b from-transparent via-amber-600/30 to-transparent" />
@@ -73,10 +72,9 @@ export function CollectionSection() {
                 transition={{ duration: 0.2, type: "spring", stiffness: 400 }}
                 className="relative will-change-transform"
               >
-                <div className="absolute inset-0 bg-amber-600/10 blur-xl rounded-full" />
                 <div className="relative">
-                  <div className="text-3xl md:text-4xl font-light text-white/90" style={{ fontFamily: 'Oughter, serif' }}>150+</div>
-                  <div className="text-xs text-neutral-500 tracking-wider font-light">ARTISTS</div>
+                  <div className="text-3xl md:text-5xl font-light text-white/90" style={{ fontFamily: 'ForestSmooth, serif' }}>150+</div>
+                  <div className="text-[9px] text-neutral-500 tracking-[0.3em] font-black uppercase">Artists</div>
                 </div>
               </motion.div>
             </motion.div>
@@ -88,9 +86,9 @@ export function CollectionSection() {
               className="pointer-events-auto"
             >
               <Link href="/collection">
-                <button className="group mt-6 px-8 py-3.5 border border-amber-600/40 text-white/90 text-xs tracking-[0.2em] font-light hover:bg-amber-600/10 hover:border-amber-600/60 transition-all duration-300 flex items-center gap-2 rounded-sm">
-                  BROWSE COLLECTION
-                  <ArrowRight size={14} className="group-hover:translate-x-1 transition-transform" strokeWidth={1.5} />
+                <button className="group mt-8 px-10 py-4 border border-white/5 bg-white/5 text-white/90 text-[10px] tracking-[0.4em] font-black uppercase hover:bg-white/10 hover:border-white/10 transition-all duration-500 flex items-center gap-3 rounded-xl shadow-2xl">
+                  Browse Collection
+                  <ArrowRight size={14} className="group-hover:translate-x-2 transition-transform" />
                 </button>
               </Link>
             </motion.div>
@@ -99,9 +97,9 @@ export function CollectionSection() {
 
         <div className="lg:hidden block">
           <div className="space-y-4 md:space-y-6">
-            <div className="flex items-center gap-2 text-amber-600/70 text-xs tracking-[0.3em] font-light">
-              <Sparkles size={14} strokeWidth={1.5} />
-              CURATED COLLECTION
+            <div className="flex items-center gap-2 text-amber-500/60 text-[9px] tracking-[0.5em] font-black uppercase">
+              <Sparkles size={12} className="text-amber-500" />
+              Curated Collection
             </div>
             <h2 
               className="text-4xl md:text-6xl font-light text-white/90 leading-tight"
@@ -111,31 +109,25 @@ export function CollectionSection() {
               <br />
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-amber-600 to-amber-400">Artworks</span>
             </h2>
-            <p className="text-neutral-400 text-sm md:text-base leading-relaxed font-light">
+            <p className="text-neutral-500 text-sm md:text-base leading-relaxed font-light">
               Browse our carefully curated selection of original paintings, sculptures, and mixed media pieces. Each artwork is created by verified artists and comes with a certificate of authenticity.
             </p>
             <div className="flex gap-8 md:gap-12 pt-4">
               <div className="relative">
-                <div className="absolute inset-0 bg-amber-600/10 blur-xl rounded-full" />
-                <div className="relative">
-                  <div className="text-3xl md:text-4xl font-light text-white/90" style={{ fontFamily: 'Oughter, serif' }}>500+</div>
-                  <div className="text-xs text-neutral-500 tracking-wider font-light">ARTWORKS</div>
-                </div>
+                <div className="text-3xl md:text-5xl font-light text-white/90" style={{ fontFamily: 'ForestSmooth, serif' }}>500+</div>
+                <div className="text-[9px] text-neutral-500 tracking-[0.3em] font-black uppercase">Artworks</div>
               </div>
-              <div className="w-px h-12 bg-gradient-to-b from-transparent via-amber-600/30 to-transparent" />
+              <div className="w-px h-12 bg-gradient-to-b from-transparent via-white/10 to-transparent" />
               <div className="relative">
-                <div className="absolute inset-0 bg-amber-600/10 blur-xl rounded-full" />
-                <div className="relative">
-                  <div className="text-3xl md:text-4xl font-light text-white/90" style={{ fontFamily: 'Oughter, serif' }}>150+</div>
-                  <div className="text-xs text-neutral-500 tracking-wider font-light">ARTISTS</div>
-                </div>
+                <div className="text-3xl md:text-5xl font-light text-white/90" style={{ fontFamily: 'ForestSmooth, serif' }}>150+</div>
+                <div className="text-[9px] text-neutral-500 tracking-[0.3em] font-black uppercase">Artists</div>
               </div>
             </div>
             <div className="pointer-events-auto">
               <Link href="/collection">
-                <button className="group mt-6 px-8 py-3.5 border border-amber-600/40 text-white/90 text-xs tracking-[0.2em] font-light hover:bg-amber-600/10 hover:border-amber-600/60 transition-all duration-300 flex items-center gap-2 rounded-sm">
-                  BROWSE COLLECTION
-                  <ArrowRight size={14} className="group-hover:translate-x-1 transition-transform" strokeWidth={1.5} />
+                <button className="group mt-8 px-10 py-4 border border-white/5 bg-white/5 text-white/90 text-[10px] tracking-[0.4em] font-black uppercase hover:bg-white/10 hover:border-white/10 transition-all duration-500 flex items-center gap-3 rounded-xl shadow-2xl">
+                  Browse Collection
+                  <ArrowRight size={14} className="group-hover:translate-x-2 transition-transform" />
                 </button>
               </Link>
             </div>

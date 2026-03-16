@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation'
 import { getCurrentUser } from '@/lib/auth'
 import { supabase } from '@/lib/supabase'
 import { X, Share2, Download, ShoppingCart, Send, Star, CheckCircle2, XCircle, Edit, UserPlus, UserCheck, Heart, Eye } from 'lucide-react'
+import { motion, AnimatePresence } from 'framer-motion'
 import { toast } from 'sonner'
 
 interface Artwork {
@@ -52,6 +53,7 @@ export function ArtworkModal({ artwork, onClose, onShowAuthPrompt }: ArtworkModa
   const [supportAmount, setSupportAmount] = useState('')
   const [showSupport, setShowSupport] = useState(false)
   const [viewportHeight, setViewportHeight] = useState(0)
+  const [orientation, setOrientation] = useState<'portrait' | 'landscape' | 'square'>('landscape')
   const [activeInput, setActiveInput] = useState<HTMLElement | null>(null)
   const [editForm, setEditForm] = useState({
     title: artwork.title,
@@ -350,7 +352,6 @@ export function ArtworkModal({ artwork, onClose, onShowAuthPrompt }: ArtworkModa
       toast.success('Following')
     }
   }
-
   const handleSupport = () => {
     const user = getCurrentUser()
     if (!user) {
@@ -364,337 +365,192 @@ export function ArtworkModal({ artwork, onClose, onShowAuthPrompt }: ArtworkModa
     router.push(`/checkout?type=support&artistId=${artwork.artist_id}&amount=${supportAmount}`)
   }
 
+  const handleImageLoad = (e: React.SyntheticEvent<HTMLImageElement>) => {
+    const { naturalWidth, naturalHeight } = e.currentTarget
+    const ratio = naturalWidth / naturalHeight
+    if (ratio < 0.8) setOrientation('portrait')
+    else if (ratio > 1.2) setOrientation('landscape')
+    else setOrientation('square')
+  }
+
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/90 backdrop-blur-md p-4" onClick={onClose}>
-      <div style={{ height: viewportHeight ? `${viewportHeight * 0.95}px` : '95vh' }} className="relative bg-gradient-to-b from-neutral-900 to-neutral-950 border border-amber-600/20 rounded-2xl w-full max-w-6xl overflow-hidden shadow-2xl flex flex-col" onClick={(e) => e.stopPropagation()}>
-        <div className="sticky top-0 z-10 flex items-center justify-between px-6 py-4 bg-neutral-900/95 backdrop-blur-xl border-b border-amber-600/20">
-          <div>
-            <h2 className="text-xl font-light text-white mb-1" style={{ fontFamily: 'ForestSmooth, serif' }}>{artwork.title}</h2>
-            <p className="text-amber-600/70 text-xs tracking-wider" style={{ fontFamily: 'Oughter, serif' }}>by {artwork.artist}</p>
-          </div>
-          <div className="flex items-center gap-2">
-            {isOwner && (
-              <button
-                onClick={() => setEditMode(!editMode)}
-                className="p-2 rounded-full bg-amber-600/10 text-amber-600 hover:bg-amber-600/20 transition-all"
-                title="Edit artwork"
-              >
-                <Edit size={18} />
-              </button>
-            )}
-            <button onClick={onClose} className="p-2 rounded-full bg-amber-600/10 text-amber-600 hover:bg-amber-600/20 transition-all">
-              <X size={18} />
-            </button>
-          </div>
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/95 backdrop-blur-2xl" onClick={onClose}>
+      <motion.div 
+        initial={{ opacity: 0, scale: 0.98 }}
+        animate={{ opacity: 1, scale: 1 }}
+        exit={{ opacity: 0, scale: 0.98 }}
+        transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
+        style={{ height: viewportHeight ? `${viewportHeight * 0.9}px` : '90vh' }} 
+        className={`relative bg-neutral-950 border border-white/5 rounded-[3rem] w-full overflow-hidden shadow-[0_50px_100px_-20px_rgba(0,0,0,1)] flex flex-col md:flex-row transition-all duration-500 ${
+            orientation === 'portrait' ? 'max-w-4xl' : 'max-w-7xl'
+        }`} 
+        onClick={(e) => e.stopPropagation()}
+      >
+        {/* Large Scale Artwork Presentation */}
+        <div className={`relative flex-1 flex items-center justify-center overflow-hidden p-6 md:p-8 transition-all duration-500 ${
+          orientation === 'portrait' ? 'bg-neutral-900/40' : 'bg-neutral-900/10'
+        }`}>
+            <div className="absolute inset-0 bg-neutral-900/20 backdrop-blur-3xl pointer-events-none" />
+            <motion.div 
+              initial={{ opacity: 0, scale: 0.98 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ delay: 0.2, duration: 0.8 }}
+              className="relative max-w-full max-h-full flex items-center justify-center shadow-[0_40px_100px_-40px_rgba(0,0,0,0.8)] rounded-2xl overflow-hidden"
+            >
+              <img 
+                src={artwork.image} 
+                alt={artwork.title} 
+                onLoad={handleImageLoad}
+                className="max-w-full max-h-full w-auto h-auto object-contain rounded-2xl" 
+                onError={(e) => {
+                  const img = e.target as HTMLImageElement;
+                  img.style.display = 'none';
+                }} 
+              />
+            </motion.div>
         </div>
 
-        <div className="grid md:grid-cols-[1.5fr,1fr] gap-4 p-4 overflow-y-auto flex-1 scrollbar-hide">
-          <div className="relative rounded-xl overflow-hidden bg-black/40 border border-amber-600/10" style={{ maxHeight: '70vh' }}>
-            <img src={artwork.image} alt="" className="w-full h-full object-contain" onError={(e) => {
-              const img = e.target as HTMLImageElement;
-              img.style.display = 'none';
-            }} />
-          </div>
+        {/* Information Sidepanel - Glassmorphic Luxury */}
+        <div className="w-full md:w-[450px] bg-neutral-950/30 backdrop-blur-3xl border-l border-white/5 flex flex-col overflow-y-auto scrollbar-hide">
+          <div className="p-8 md:p-10 pb-12 space-y-12 flex-1">
+            
+            {/* Scrollable Header Actions */}
+            <div className="flex items-center justify-between pb-8 border-b border-white/5">
+               <div className="flex items-center gap-3">
+                 <button onClick={handleShare} className="p-3.5 rounded-2xl bg-white/5 text-neutral-400 hover:text-white hover:bg-white/10 transition-all border border-white/5">
+                   <Share2 size={16} />
+                 </button>
+                 <button onClick={handleDownload} className="p-3.5 rounded-2xl bg-white/5 text-neutral-400 hover:text-white hover:bg-white/10 transition-all border border-white/5">
+                   <Download size={16} />
+                 </button>
+               </div>
+               <button 
+                onClick={onClose} 
+                className="p-3.5 rounded-2xl bg-white/5 text-neutral-400 hover:text-white hover:bg-white/10 transition-all border border-white/5"
+               >
+                 <X size={18} />
+               </button>
+            </div>
+            
+            {/* Title & Metadata Block */}
+            <div className="space-y-6">
+               <div className="space-y-2">
+                 <p className="text-amber-600/60 text-[10px] tracking-[0.4em] font-black uppercase">Masterpiece</p>
+                 <h2 className="text-5xl font-light text-white tracking-tight leading-[1.1]" style={{ fontFamily: 'ForestSmooth, serif' }}>
+                   {artwork.title}
+                 </h2>
+                 <p className="text-neutral-500 text-xs tracking-[0.2em] font-black uppercase opacity-60">
+                    by {artwork.artist}
+                 </p>
+               </div>
 
-          <div className="flex flex-col gap-4">
-            {editMode ? (
-              <div className="bg-black/40 rounded-xl p-4 border border-amber-600/20 space-y-3">
-                <h3 className="text-white font-light text-base mb-2" style={{ fontFamily: 'ForestSmooth, serif' }}>Edit Artwork</h3>
-                
-                <div>
-                  <label className="block text-xs text-neutral-400 mb-1">Title</label>
-                  <input
-                    type="text"
-                    value={editForm.title}
-                    onChange={(e) => setEditForm({ ...editForm, title: e.target.value })}
-                    className="w-full px-3 py-2 bg-neutral-900/50 border border-amber-600/20 rounded-lg text-white text-sm focus:outline-none focus:border-amber-600/50"
-                  />
-                </div>
-
-                <div className="grid grid-cols-2 gap-3">
-                  <div>
-                    <label className="block text-xs text-neutral-400 mb-1">Price (₹)</label>
-                    <input
-                      type="number"
-                      value={editForm.price}
-                      onChange={(e) => setEditForm({ ...editForm, price: e.target.value })}
-                      className="w-full px-3 py-2 bg-neutral-900/50 border border-amber-600/20 rounded-lg text-white text-sm focus:outline-none focus:border-amber-600/50"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-xs text-neutral-400 mb-1">Category</label>
-                    <select
-                      value={editForm.category_id}
-                      onChange={(e) => setEditForm({ ...editForm, category_id: e.target.value })}
-                      className="w-full px-3 py-2 bg-neutral-900/50 border border-amber-600/20 rounded-lg text-white text-sm focus:outline-none focus:border-amber-600/50"
-                    >
-                      <option value="">Select</option>
-                      {categories.map(cat => (
-                        <option key={cat.id} value={cat.id}>{cat.name}</option>
-                      ))}
-                    </select>
-                  </div>
-                </div>
-
-                <div className="grid grid-cols-2 gap-3">
-                  <div>
-                    <label className="block text-xs text-neutral-400 mb-1">Medium</label>
-                    <input
-                      type="text"
-                      value={editForm.medium}
-                      onChange={(e) => setEditForm({ ...editForm, medium: e.target.value })}
-                      className="w-full px-3 py-2 bg-neutral-900/50 border border-amber-600/20 rounded-lg text-white text-sm focus:outline-none focus:border-amber-600/50"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-xs text-neutral-400 mb-1">Dimensions</label>
-                    <input
-                      type="text"
-                      value={editForm.dimensions}
-                      onChange={(e) => setEditForm({ ...editForm, dimensions: e.target.value })}
-                      className="w-full px-3 py-2 bg-neutral-900/50 border border-amber-600/20 rounded-lg text-white text-sm focus:outline-none focus:border-amber-600/50"
-                    />
-                  </div>
-                </div>
-
-                <div>
-                  <label className="block text-xs text-neutral-400 mb-1">Description</label>
-                  <textarea
-                    value={editForm.description}
-                    onChange={(e) => setEditForm({ ...editForm, description: e.target.value })}
-                    rows={3}
-                    className="w-full px-3 py-2 bg-neutral-900/50 border border-amber-600/20 rounded-lg text-white text-sm focus:outline-none focus:border-amber-600/50 resize-none"
-                  />
-                </div>
-
-                <div className="flex gap-2 pt-2">
-                  <button
-                    onClick={handleSaveEdit}
-                    disabled={loading}
-                    className="flex-1 px-4 py-2 bg-gradient-to-r from-amber-600 to-amber-700 text-white rounded-lg hover:from-amber-500 hover:to-amber-600 transition-all text-sm disabled:opacity-50"
-                  >
-                    Save Changes
-                  </button>
-                  <button
-                    onClick={() => setEditMode(false)}
-                    className="px-4 py-2 bg-black/40 border border-amber-600/20 text-amber-600 rounded-lg hover:bg-amber-600/10 transition-all text-sm"
-                  >
-                    Cancel
-                  </button>
-                </div>
-              </div>
-            ) : (
-              <>
-            {artistInfo && (
-              <div className="bg-black/40 rounded-xl p-4 border border-amber-600/20">
-                <div className="flex items-center gap-3 mb-3">
-                  <div className="w-12 h-12 rounded-full bg-neutral-800 overflow-hidden flex-shrink-0">
-                    {artistInfo.avatar_url ? (
-                      <img src={artistInfo.avatar_url} alt={artistInfo.full_name} className="w-full h-full object-cover" />
-                    ) : (
-                      <div className="w-full h-full flex items-center justify-center text-xl text-amber-600/30">
-                        {artistInfo.full_name.charAt(0).toUpperCase()}
-                      </div>
-                    )}
-                  </div>
-                  <div className="flex-1">
-                    <h4 className="text-white font-light text-sm">{artistInfo.full_name}</h4>
-                    <div className="flex items-center gap-3 text-xs text-neutral-400">
-                      <span className="flex items-center gap-1"><Heart size={12} />{artistInfo.followers_count}</span>
-                      <span className="flex items-center gap-1"><Eye size={12} />{artistInfo.total_views}</span>
-                    </div>
-                  </div>
-                  <button
-                    onClick={toggleFollow}
-                    className={`px-3 py-1.5 rounded-lg text-xs flex items-center gap-1 transition-colors ${
-                      isFollowing
-                        ? 'bg-neutral-800 text-white hover:bg-neutral-700'
-                        : 'bg-amber-600 text-white hover:bg-amber-500'
-                    }`}
-                  >
-                    {isFollowing ? <UserCheck size={14} /> : <UserPlus size={14} />}
-                    {isFollowing ? 'Following' : 'Follow'}
-                  </button>
-                </div>
-                {artistInfo.bio && <p className="text-neutral-400 text-xs mb-3">{artistInfo.bio}</p>}
-                {!showSupport ? (
-                  <button
-                    onClick={() => setShowSupport(true)}
-                    className="w-full px-3 py-2 bg-amber-600/20 border border-amber-600/50 text-amber-600 rounded-lg hover:bg-amber-600/30 transition-all text-xs"
-                  >
-                    Support Artist
-                  </button>
-                ) : (
-                  <div className="space-y-2">
-                    <input
-                      type="number"
-                      value={supportAmount}
-                      onChange={(e) => setSupportAmount(e.target.value)}
-                      placeholder="Enter amount (₹)"
-                      className="w-full px-3 py-2 bg-neutral-900/50 border border-amber-600/20 rounded-lg text-white text-xs focus:outline-none focus:border-amber-600/50"
-                    />
-                    <div className="flex gap-2">
-                      <button
-                        onClick={handleSupport}
-                        className="flex-1 px-3 py-2 bg-amber-600 text-white rounded-lg hover:bg-amber-500 transition-all text-xs"
-                      >
-                        Send Support
-                      </button>
-                      <button
-                        onClick={() => setShowSupport(false)}
-                        className="px-3 py-2 bg-neutral-800 text-neutral-400 rounded-lg hover:bg-neutral-700 transition-all text-xs"
-                      >
-                        Cancel
-                      </button>
-                    </div>
-                  </div>
-                )}
-              </div>
-            )}
-            <div className="bg-black/40 rounded-xl p-4 border border-amber-600/20">
-              <div className="flex items-center justify-between mb-2">
-                <span className="text-amber-600 font-light text-2xl" style={{ fontFamily: 'ForestSmooth, serif' }}>₹{artwork.price.toLocaleString()}</span>
-                <span className="text-xs text-amber-600/70 uppercase tracking-widest px-2 py-1 bg-amber-600/10 rounded-full border border-amber-600/30" style={{ fontFamily: 'Oughter, serif' }}>{artwork.category}</span>
-              </div>
-              {artwork.description && (
-                <p className="text-neutral-300 text-sm leading-relaxed mb-3">{artwork.description}</p>
-              )}
-              {(artwork.medium || artwork.dimensions || artwork.year_created) && (
-                <div className="flex flex-wrap gap-2 text-xs text-neutral-400">
-                  {artwork.medium && <span>• {artwork.medium}</span>}
-                  {artwork.dimensions && <span>• {artwork.dimensions}</span>}
-                  {artwork.year_created && <span>• {artwork.year_created}</span>}
-                </div>
-              )}
+               <div className="flex flex-wrap gap-3">
+                 <span className="px-4 py-1.5 rounded-full bg-white/5 border border-white/10 text-[9px] text-neutral-400 tracking-widest font-black uppercase">
+                   {artwork.category}
+                 </span>
+                 {artwork.year_created && (
+                   <span className="px-4 py-1.5 rounded-full bg-white/5 border border-white/10 text-[9px] text-neutral-400 tracking-widest font-black uppercase">
+                     Circa {artwork.year_created}
+                   </span>
+                 )}
+               </div>
             </div>
 
-            <div className="flex gap-2">
-              <button className="flex-1 px-4 py-2.5 bg-gradient-to-r from-amber-600 to-amber-700 text-white rounded-lg hover:from-amber-500 hover:to-amber-600 transition-all flex items-center justify-center gap-2 text-sm font-light" onClick={handlePurchase}>
-                <ShoppingCart size={16} />
-                Purchase
-              </button>
-              {artistInfo && (
-                <>
-                  <button
-                    onClick={toggleFollow}
-                    className={`px-4 py-2.5 rounded-lg transition-all text-sm flex items-center gap-2 ${
-                      isFollowing
-                        ? 'bg-neutral-800 text-white hover:bg-neutral-700'
-                        : 'bg-amber-600/20 border border-amber-600/50 text-amber-600 hover:bg-amber-600/30'
-                    }`}
-                  >
-                    {isFollowing ? <UserCheck size={16} /> : <UserPlus size={16} />}
-                  </button>
-                  <button
-                    onClick={() => setShowSupport(!showSupport)}
-                    className="px-4 py-2.5 bg-amber-600/20 border border-amber-600/50 text-amber-600 rounded-lg hover:bg-amber-600/30 transition-all text-sm"
-                  >
-                    Support
-                  </button>
-                </>
-              )}
-              <button className="px-3 py-2.5 bg-black/40 border border-amber-600/20 text-amber-600 rounded-lg hover:bg-amber-600/10 transition-all" onClick={handleDownload}>
-                <Download size={16} />
-              </button>
-              <button className="px-3 py-2.5 bg-black/40 border border-amber-600/20 text-amber-600 rounded-lg hover:bg-amber-600/10 transition-all" onClick={handleShare}>
-                <Share2 size={16} />
-              </button>
+            {/* Description & Specs */}
+            <div className="space-y-6">
+               <p className="text-neutral-400 text-sm leading-relaxed font-light tracking-wide italic">
+                 {artwork.description || "A captivating display of artistic vision and technical mastery, evoking deep emotion and contemplation."}
+               </p>
+               
+               <div className="grid grid-cols-2 gap-6 pt-6 border-t border-white/5">
+                 <div className="space-y-1">
+                   <p className="text-[8px] text-neutral-500 tracking-[0.2em] font-black uppercase">Dimensions</p>
+                   <p className="text-xs text-white font-medium">{artwork.dimensions || "N/A"}</p>
+                 </div>
+                 <div className="space-y-1">
+                   <p className="text-[8px] text-neutral-500 tracking-[0.2em] font-black uppercase">Medium</p>
+                   <p className="text-xs text-white font-medium">{artwork.medium || "N/A"}</p>
+                 </div>
+               </div>
             </div>
 
-            {showSupport && artistInfo && (
-              <div className="bg-black/40 rounded-xl p-4 border border-amber-600/20">
-                <h3 className="text-white font-light text-sm mb-3">Support {artistInfo.full_name}</h3>
-                <div className="space-y-3">
-                  <input
-                    type="number"
-                    value={supportAmount}
-                    onChange={(e) => setSupportAmount(e.target.value)}
-                    placeholder="Enter amount (₹)"
-                    className="w-full px-3 py-2 bg-neutral-900/50 border border-amber-600/20 rounded-lg text-white text-sm focus:outline-none focus:border-amber-600/50"
-                  />
-                  <div className="flex gap-2">
-                    <button
-                      onClick={handleSupport}
-                      className="flex-1 px-3 py-2 bg-amber-600 text-white rounded-lg hover:bg-amber-500 transition-all text-sm"
+            {/* Acquisition Block */}
+            <div className="p-8 rounded-[2.5rem] bg-gradient-to-br from-neutral-900/50 to-neutral-900/20 border border-white/5 space-y-8">
+               <div className="flex items-center justify-between">
+                 <div className="space-y-0.5">
+                   <p className="text-[8px] text-amber-600/60 tracking-[0.3em] font-black uppercase">Valuation</p>
+                   <p className="text-3xl font-light text-white">₹{artwork.price.toLocaleString()}</p>
+                 </div>
+                 <div className="h-10 w-10 rounded-2xl bg-amber-600/10 flex items-center justify-center border border-amber-600/20">
+                   <ShoppingCart size={18} className="text-amber-600" />
+                 </div>
+               </div>
+
+               <button 
+                onClick={handlePurchase}
+                className="w-full py-5 rounded-[1.5rem] bg-white text-black text-[10px] font-black uppercase tracking-[0.3em] hover:bg-neutral-200 transition-all shadow-[0_20px_40px_-10px_rgba(255,255,255,0.1)] active:scale-[0.98]"
+               >
+                 Acquire Piece
+               </button>
+            </div>
+
+            {/* Comments Section - Refined */}
+            <div className="space-y-8">
+               <div className="flex items-center justify-between">
+                 <h3 className="text-sm tracking-[0.3em] font-black uppercase text-neutral-500">Dialogue</h3>
+                 <span className="text-[9px] text-neutral-600">{comments.length} Contributions</span>
+               </div>
+
+               <div className="space-y-4">
+                  <div className="relative group">
+                    <input 
+                      type="text" 
+                      value={comment}
+                      onChange={(e) => setComment(e.target.value)}
+                      onKeyPress={(e) => e.key === 'Enter' && !loading && handleAddComment()}
+                      placeholder="Share your perspective..." 
+                      className="w-full bg-white/5 border border-white/5 rounded-2xl pl-6 pr-14 py-4 text-xs text-white placeholder:text-neutral-600 focus:outline-none focus:bg-white/10 transition-all font-light"
+                    />
+                    <button 
+                      onClick={handleAddComment}
+                      disabled={loading}
+                      className="absolute right-3 top-1/2 -translate-y-1/2 h-8 w-8 rounded-xl bg-amber-600/20 text-amber-600 flex items-center justify-center hover:bg-amber-600/40 transition-all disabled:opacity-30"
                     >
-                      Send Support
-                    </button>
-                    <button
-                      onClick={() => setShowSupport(false)}
-                      className="px-3 py-2 bg-neutral-800 text-neutral-400 rounded-lg hover:bg-neutral-700 transition-all text-sm"
-                    >
-                      Cancel
+                      <Send size={14} />
                     </button>
                   </div>
-                </div>
-              </div>
-            )}
 
-            <div className="flex-1 bg-black/40 rounded-xl p-4 border border-amber-600/20 flex flex-col">
-              <h3 className="text-white font-light text-base mb-3" style={{ fontFamily: 'ForestSmooth, serif' }}>Comments</h3>
-              
-              <div className="mb-3 space-y-2">
-                <div className="flex gap-1">
-                  {[1, 2, 3, 4, 5].map(star => (
-                    <button key={star} onClick={() => setRating(star)} className="transition-colors">
-                      <Star size={18} fill={star <= rating ? '#d97706' : 'none'} className={star <= rating ? 'text-amber-600' : 'text-neutral-600'} />
-                    </button>
-                  ))}
-                </div>
-                <div className="flex gap-2">
-                  <input
-                    type="text"
-                    value={comment}
-                    onChange={(e) => setComment(e.target.value)}
-                    onKeyPress={(e) => e.key === 'Enter' && !loading && handleAddComment()}
-                    placeholder="Add a comment..."
-                    disabled={loading}
-                    className="flex-1 bg-neutral-900/50 border border-amber-600/20 rounded-lg px-3 py-2 text-white placeholder:text-neutral-500 focus:outline-none focus:border-amber-600/50 focus:ring-1 focus:ring-amber-600/20 text-sm transition-all"
-                  />
-                  <button onClick={handleAddComment} disabled={loading} className="px-4 py-2 bg-amber-600/20 border border-amber-600/50 text-amber-600 rounded-lg hover:bg-amber-600/30 transition-all disabled:opacity-50">
-                    <Send size={16} />
-                  </button>
-                </div>
-              </div>
-
-              <div className="flex-1 space-y-2 overflow-y-auto">
-                {loadingComments ? (
-                  <div className="space-y-2">
-                    {[1, 2, 3].map((i) => (
-                      <div key={i} className="bg-neutral-900/50 rounded-lg p-3 border border-amber-600/10 animate-pulse">
-                        <div className="flex items-center justify-between mb-2">
-                          <div className="h-3 bg-neutral-800 rounded w-24"></div>
-                          <div className="h-3 bg-neutral-800 rounded w-16"></div>
+                  <div className="space-y-3">
+                    {comments.slice(0, 3).map((c) => (
+                      <div key={c.id} className="p-5 rounded-2xl bg-white/[0.02] border border-white/5 space-y-2">
+                        <div className="flex items-center justify-between">
+                          <span className="text-[10px] font-black text-neutral-400 uppercase tracking-widest">{c.reviewer_name}</span>
                         </div>
-                        <div className="h-3 bg-neutral-800 rounded w-full mb-1"></div>
-                        <div className="h-3 bg-neutral-800 rounded w-3/4"></div>
+                        <p className="text-[11px] text-neutral-500 leading-relaxed font-light">{c.comment}</p>
                       </div>
                     ))}
+                    {comments.length > 3 && (
+                      <button className="w-full py-3 text-[9px] text-neutral-600 font-black uppercase tracking-widest hover:text-neutral-400 transition-colors">
+                        View all discussions
+                      </button>
+                    )}
                   </div>
-                ) : comments.length === 0 ? (
-                  <p className="text-neutral-500 text-xs">No comments yet. Be the first to comment!</p>
-                ) : (
-                  comments.map((c) => (
-                    <div key={c.id} className="bg-neutral-900/50 rounded-lg p-3 border border-amber-600/10">
-                      <div className="flex items-center justify-between mb-1">
-                        <span className="text-neutral-300 text-xs font-medium">{c.reviewer_name}</span>
-                        <div className="flex gap-0.5">
-                          {[1, 2, 3, 4, 5].map(star => (
-                            <Star key={star} size={12} fill={star <= c.rating ? '#d97706' : 'none'} className={star <= c.rating ? 'text-amber-600' : 'text-neutral-700'} />
-                          ))}
-                        </div>
-                      </div>
-                      <p className="text-neutral-400 text-xs">{c.comment}</p>
-                    </div>
-                  ))
-                )}
-              </div>
+               </div>
             </div>
-              </>
-            )}
+          </div>
+
+          {/* Action Row - Minimal Footer */}
+          <div className="p-8 border-t border-white/5 flex items-center justify-end bg-neutral-900/40">
+             {artistInfo && (
+               <button onClick={toggleFollow} className={`px-6 py-4 rounded-2xl text-[9px] font-black uppercase tracking-widest transition-all ${
+                 isFollowing ? 'text-neutral-500 border border-white/5' : 'bg-amber-600/20 text-amber-600 border border-amber-600/30'
+               }`}>
+                 {isFollowing ? 'Following Artist' : 'Follow Artist'}
+               </button>
+             )}
           </div>
         </div>
-      </div>
+      </motion.div>
     </div>
   )
 }

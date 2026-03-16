@@ -17,14 +17,14 @@ export function VisitSection() {
           transition={{ duration: 0.8 }}
         >
           <motion.div 
-            className="flex items-center gap-2 text-amber-600/70 text-xs tracking-[0.3em] font-light mb-6"
+            className="flex items-center gap-2 text-amber-500/60 text-[9px] tracking-[0.5em] font-black uppercase mb-6"
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ delay: 0.2 }}
           >
-            <Compass size={14} strokeWidth={1.5} />
-            START COLLECTING
+            <Compass size={12} className="text-amber-500" />
+            The Genesis
           </motion.div>
           <motion.h2 
             className="text-4xl md:text-6xl font-light text-white/90 mb-6 md:mb-8 leading-tight"
@@ -46,36 +46,31 @@ export function VisitSection() {
             transition={{ delay: 0.4 }}
           >
             <div>
-              <div className="text-white/80 mb-3 text-base" style={{ fontFamily: 'Oughter, serif' }}>How It Works</div>
-              <div className="space-y-2 pl-4 border-l border-amber-600/20">
-                <div className="flex items-start gap-2">
-                  <span className="text-amber-600/60 text-xs mt-0.5">01</span>
-                  <span>Browse our curated collection</span>
-                </div>
-                <div className="flex items-start gap-2">
-                  <span className="text-amber-600/60 text-xs mt-0.5">02</span>
-                  <span>Select your favorite artwork</span>
-                </div>
-                <div className="flex items-start gap-2">
-                  <span className="text-amber-600/60 text-xs mt-0.5">03</span>
-                  <span>Secure checkout & authentication</span>
-                </div>
-                <div className="flex items-start gap-2">
-                  <span className="text-amber-600/60 text-xs mt-0.5">04</span>
-                  <span>Insured delivery to your door</span>
-                </div>
+              <div className="text-neutral-500 mb-4 text-[10px] tracking-[0.4em] font-black uppercase">Consignment Strategy</div>
+              <div className="space-y-4 pl-4 border-l border-white/5">
+                {[
+                  { id: '01', text: 'Browse our curated collection' },
+                  { id: '02', text: 'Select your favorite artwork' },
+                  { id: '03', text: 'Secure checkout & authentication' },
+                  { id: '04', text: 'Insured delivery to your door' }
+                ].map((step, i) => (
+                  <div key={i} className="flex items-start gap-4 hover:translate-x-1 transition-transform cursor-default">
+                    <span className="text-amber-600/40 text-[10px] font-black tracking-widest">{step.id}</span>
+                    <span className="text-neutral-400 group-hover:text-white transition-colors">{step.text}</span>
+                  </div>
+                ))}
               </div>
             </div>
             <div>
-              <div className="text-white/80 mb-3 text-base" style={{ fontFamily: 'Oughter, serif' }}>Support</div>
-              <div className="space-y-2">
-                <div className="flex items-center gap-2">
-                  <Mail size={14} className="text-amber-600/60" strokeWidth={1.5} />
-                  <span>hello@artisan.com</span>
+              <div className="text-neutral-500 mb-4 text-[10px] tracking-[0.4em] font-black uppercase">Direct Liaison</div>
+              <div className="space-y-3">
+                <div className="flex items-center gap-3 group cursor-pointer w-fit">
+                  <Mail size={12} className="text-amber-600/40 group-hover:text-amber-600 transition-colors" />
+                  <span className="text-neutral-400 group-hover:text-white transition-colors">concierge@artisan.com</span>
                 </div>
-                <div className="flex items-center gap-2">
-                  <Phone size={14} className="text-amber-600/60" strokeWidth={1.5} />
-                  <span>+91 1234567890</span>
+                <div className="flex items-center gap-3 group cursor-pointer w-fit">
+                  <Phone size={12} className="text-amber-600/40 group-hover:text-amber-600 transition-colors" />
+                  <span className="text-neutral-400 group-hover:text-white transition-colors">+91 123 456 7890</span>
                 </div>
               </div>
             </div>
@@ -95,30 +90,30 @@ export function VisitSection() {
         >
           <Link href="/signup">
             <motion.button 
-              className="group w-full py-4 bg-gradient-to-r from-amber-600/20 to-amber-500/20 border border-amber-600/40 text-white/90 text-xs md:text-sm tracking-[0.2em] font-light hover:from-amber-600/30 hover:to-amber-500/30 hover:border-amber-600/60 transition-all duration-300 flex items-center justify-center gap-2 rounded-sm"
+              className="group w-full py-5 bg-white/5 border border-white/5 text-white/90 text-[10px] tracking-[0.4em] font-black uppercase hover:bg-white/10 hover:border-white/10 transition-all duration-500 flex items-center justify-center gap-3 rounded-xl shadow-2xl"
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
             >
-              CREATE ACCOUNT
-              <ArrowRight size={14} className="group-hover:translate-x-1 transition-transform" strokeWidth={1.5} />
+              Initiate Membership
+              <ArrowRight size={14} className="group-hover:translate-x-2 transition-transform" />
             </motion.button>
           </Link>
           <Link href="/gallery">
             <motion.button 
-              className="w-full py-4 border border-neutral-700 text-neutral-400 text-xs md:text-sm tracking-[0.2em] font-light hover:bg-neutral-800/30 hover:border-neutral-600 hover:text-white transition-all duration-300 rounded-sm"
+              className="w-full py-5 border border-white/5 text-neutral-500 text-[10px] tracking-[0.4em] font-black uppercase hover:bg-white/5 hover:text-white transition-all duration-500 rounded-xl"
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
             >
-              EXPLORE ARTWORKS
+              Explore Sanctuary
             </motion.button>
           </Link>
           <Link href="/artist-landing">
             <motion.button 
-              className="w-full py-4 border border-neutral-700 text-neutral-400 text-xs md:text-sm tracking-[0.2em] font-light hover:bg-neutral-800/30 hover:border-neutral-600 hover:text-white transition-all duration-300 rounded-sm"
+              className="w-full py-5 border border-white/5 text-neutral-500 text-[10px] tracking-[0.4em] font-black uppercase hover:bg-white/5 hover:text-white transition-all duration-500 rounded-xl"
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
             >
-              SELL YOUR ART
+              Manifest as Creator
             </motion.button>
           </Link>
           

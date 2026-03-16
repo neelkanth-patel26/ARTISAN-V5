@@ -1,6 +1,6 @@
 'use client'
 
-import { motion } from 'framer-motion'
+import { motion, AnimatePresence } from 'framer-motion'
 import { Search, ChevronDown } from 'lucide-react'
 import { useState } from 'react'
 
@@ -18,71 +18,92 @@ export function GalleryFilters({ categories, selectedCategory, setSelectedCatego
   const [showFilters, setShowFilters] = useState(false)
 
   return (
-    <div className="max-w-7xl mx-auto px-4 md:px-8 mb-16">
-      <div className="relative mb-8">
-        <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-neutral-500" size={20} />
+    <div className="max-w-7xl mx-auto px-4 sm:px-8 space-y-12">
+      {/* Immersive Search Container */}
+      <div className="relative group max-w-4xl mx-auto">
+        <div className="absolute inset-x-0 bottom-0 h-px bg-gradient-to-r from-transparent via-amber-600/50 to-transparent scale-x-75 group-focus-within:scale-x-100 transition-transform duration-700" />
+        <Search className="absolute left-6 top-1/2 -translate-y-1/2 text-neutral-500 group-focus-within:text-amber-600 transition-colors" size={22} />
         <input
           type="text"
-          placeholder="Search by artist name or artwork title..."
+          placeholder="Search by artist name or masterpiece title..."
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
-          className="w-full bg-neutral-900/50 border border-neutral-800/50 rounded-xl pl-12 pr-4 py-4 text-white/90 placeholder:text-neutral-500 focus:outline-none focus:border-amber-600/50 transition-colors font-light"
+          className="w-full bg-neutral-900/40 backdrop-blur-xl border border-white/5 rounded-[2rem] pl-16 pr-8 py-6 text-white text-lg placeholder:text-neutral-600 focus:outline-none focus:bg-neutral-900/60 transition-all font-light tracking-wide shadow-2xl"
         />
       </div>
 
-      <div className="flex flex-col sm:flex-row gap-4 items-center justify-between mb-6">
-        <motion.button
-          whileHover={{ scale: 1.02 }}
-          whileTap={{ scale: 0.98 }}
-          onClick={() => setShowLiveOnly(!showLiveOnly)}
-          className={`px-6 py-3 rounded-xl text-sm font-medium transition-all ${
-            showLiveOnly
-              ? 'bg-gradient-to-r from-amber-600 to-amber-500 text-white shadow-lg shadow-amber-600/30'
-              : 'bg-neutral-900/50 border border-neutral-800/50 text-neutral-400 hover:border-amber-600/50 hover:text-neutral-300'
-          }`}
-        >
-          <span className="flex items-center gap-2">
-            <span className={`w-2 h-2 rounded-full ${showLiveOnly ? 'bg-white animate-pulse' : 'bg-neutral-600'}`} />
-            LIVE COLLECTION ONLY
-          </span>
-        </motion.button>
+      <div className="flex flex-col items-center gap-10">
+        {/* Toggleable Category Plaque */}
+        <div className="flex flex-col items-center gap-6">
+           <button
+             onClick={() => setShowFilters(!showFilters)}
+             className={`px-10 py-3 rounded-full text-[10px] tracking-[0.4em] font-black uppercase transition-all duration-500 border ${
+               showFilters 
+                 ? 'bg-white text-black border-white shadow-[0_0_20px_rgba(255,255,255,0.1)]' 
+                 : 'bg-neutral-900/40 backdrop-blur-xl border-white/5 text-neutral-500 hover:text-white hover:border-white/10'
+             }`}
+           >
+             {showFilters ? 'Hide Categories' : 'Explore Categories'}
+           </button>
 
-        <button
-          onClick={() => setShowFilters(!showFilters)}
-          className="flex items-center gap-2 px-4 py-2 rounded-lg bg-neutral-900/50 border border-neutral-800/50 text-neutral-400 hover:border-amber-600/50 hover:text-neutral-300 transition-all text-sm"
-        >
-          <span>Filters</span>
-          <ChevronDown size={16} className={`transition-transform ${showFilters ? 'rotate-180' : ''}`} />
-        </button>
-      </div>
+           <AnimatePresence>
+             {showFilters && (
+               <motion.div 
+                 initial={{ opacity: 0, y: -10, height: 0 }}
+                 animate={{ opacity: 1, y: 0, height: 'auto' }}
+                 exit={{ opacity: 0, y: -10, height: 0 }}
+                 className="flex flex-wrap justify-center gap-3 p-2 bg-neutral-900/30 backdrop-blur-md border border-white/5 rounded-[2.5rem] shadow-inner overflow-hidden"
+               >
+                  {categories.map((category, i) => (
+                   <motion.button
+                     key={category}
+                     initial={{ opacity: 0, scale: 0.9 }}
+                     animate={{ opacity: 1, scale: 1 }}
+                     transition={{ delay: i * 0.05, duration: 0.3 }}
+                     whileHover={{ scale: 1.05 }}
+                     whileTap={{ scale: 0.95 }}
+                     onClick={() => setSelectedCategory(category)}
+                     className={`px-8 py-3 rounded-full text-[10px] tracking-[0.2em] font-black uppercase transition-all duration-500 ${
+                       selectedCategory === category
+                         ? 'bg-amber-600 text-white shadow-[0_0_20px_rgba(217,119,6,0.3)]'
+                         : 'text-neutral-500 hover:text-white hover:bg-white/5'
+                     }`}
+                   >
+                     {category}
+                   </motion.button>
+                 ))}
+               </motion.div>
+             )}
+           </AnimatePresence>
+        </div>
 
-      {showFilters && (
-        <motion.div
-          initial={{ opacity: 0, height: 0 }}
-          animate={{ opacity: 1, height: 'auto' }}
-          exit={{ opacity: 0, height: 0 }}
-          className="flex flex-wrap gap-3 justify-center"
-        >
-          {categories.map((category, i) => (
-            <motion.button
-              key={category}
-              initial={{ opacity: 0, scale: 0.9 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ delay: i * 0.05, duration: 0.3 }}
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-              onClick={() => setSelectedCategory(category)}
-              className={`px-6 py-2.5 rounded-full text-xs tracking-wider transition-all font-light ${
-                selectedCategory === category
-                  ? 'bg-amber-600 border border-amber-600 text-white'
-                  : 'bg-neutral-900/50 border border-neutral-800/50 text-neutral-400 hover:border-amber-600/50 hover:text-neutral-300'
+        {/* Action Toggles */}
+        <div className="flex flex-col items-center gap-6">
+           <motion.button
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
+              onClick={() => setShowLiveOnly(!showLiveOnly)}
+              className={`group relative px-10 py-4 rounded-2xl text-[10px] tracking-[0.4em] font-black uppercase transition-all duration-700 overflow-hidden ${
+                showLiveOnly
+                  ? 'bg-white text-black shadow-[0_0_30px_rgba(255,255,255,0.15)]'
+                  : 'bg-neutral-900/40 backdrop-blur-xl border border-white/5 text-neutral-500 hover:text-white'
               }`}
-            >
-              {category.toUpperCase()}
-            </motion.button>
-          ))}
-        </motion.div>
-      )}
+           >
+              <div className="relative z-10 flex items-center gap-3">
+                 <div className={`w-1.5 h-1.5 rounded-full ${showLiveOnly ? 'bg-black animate-pulse' : 'bg-neutral-800 group-hover:bg-amber-600'} transition-colors`} />
+                 Live Collection Only
+              </div>
+              {/* Luxury hover glow */}
+              {!showLiveOnly && <div className="absolute inset-0 bg-gradient-to-r from-amber-600/0 via-amber-600/5 to-amber-600/0 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-1000" />}
+           </motion.button>
+
+           <div className="flex items-center gap-8 text-[10px] tracking-[0.3em] uppercase font-black text-neutral-500">
+              <div className="h-px w-8 bg-white/5" />
+              <p>Curated Selection</p>
+              <div className="h-px w-8 bg-white/5" />
+           </div>
+        </div>
+      </div>
     </div>
   )
 }

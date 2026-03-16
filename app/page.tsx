@@ -166,7 +166,7 @@ export default function Home() {
         </div>
       )}
       
-      <main className={`bg-black h-screen ${deviceType === 'desktop' || deviceType === 'pwa-desktop' ? 'overflow-hidden' : 'overflow-y-auto'} overscroll-none relative`}>
+      <main className={`bg-gradient-to-b from-neutral-950 via-neutral-900 to-neutral-950 h-screen ${deviceType === 'desktop' || deviceType === 'pwa-desktop' ? 'overflow-hidden' : 'overflow-y-auto'} overscroll-none relative shadow-[inset_0_0_100px_rgba(0,0,0,0.5)]`}>
         <Navigation />
         <div
           className="transition-transform duration-1000 ease-in-out"

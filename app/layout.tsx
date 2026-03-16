@@ -135,7 +135,7 @@ export default function RootLayout({
         }} />
         <style dangerouslySetInnerHTML={{
           __html: `/* Copyright © 2019-2026 Gaming Network Studio Media Group - All Rights Reserved */`
-        }} />
+        }} suppressHydrationWarning={true} />
       </head>
       <body className="bg-black text-white antialiased" style={{ fontFamily: 'var(--font-body, sans-serif)' }}>
         {/* ⚠️ STOP - You are viewing protected source code ⚠️ */}

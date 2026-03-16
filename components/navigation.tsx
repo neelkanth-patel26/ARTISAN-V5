@@ -52,15 +52,18 @@ export function Navigation() {
       initial={pathname === '/' && !isMobile ? { y: -100, opacity: 0 } : false}
       animate={showNav ? { y: 0, opacity: 1 } : { y: -100, opacity: 0 }}
       transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
-      className="fixed top-0 left-0 right-0 z-50 py-3 md:py-5 bg-gradient-to-b from-black/50 via-black/30 to-transparent [.native-mode_&]:bg-gradient-to-r [.native-mode_&]:from-neutral-950 [.native-mode_&]:to-neutral-900 backdrop-blur-sm border-b border-amber-600/10 pt-[max(10px,env(safe-area-inset-top))]"
+      className="fixed top-0 left-0 right-0 z-50 py-3 md:py-6 bg-neutral-950/40 backdrop-blur-3xl border-b border-white/5 pt-[max(10px,env(safe-area-inset-top))] overflow-hidden"
     >
-      <div className="px-6 md:px-12 flex items-center justify-between">
+      {/* Header Top Shimmer */}
+      <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-white/5 to-transparent" />
+      
+      <div className="px-6 md:px-12 flex items-center justify-between relative z-10">
         <div className="flex items-center gap-2 md:gap-3">
-          <Link href="/" className="flex items-center gap-2 md:gap-3 group">
-            <div className="w-6 h-6 md:w-8 md:h-8 border border-amber-600/40 flex items-center justify-center transition-all duration-300 group-hover:border-amber-600/70 group-hover:shadow-lg group-hover:shadow-amber-600/20 lg:hidden">
-              <span className="text-amber-600/70 text-[10px] md:text-xs font-serif group-hover:text-amber-600">A</span>
+          <Link href="/" className="flex items-center gap-2 md:gap-4 group">
+            <div className="w-6 h-6 md:w-8 md:h-10 border border-amber-600/30 flex items-center justify-center transition-all duration-300 group-hover:border-amber-600/60 lg:hidden">
+              <span className="text-amber-600/70 text-[10px] md:text-xs font-serif group-hover:text-amber-600 uppercase">A</span>
             </div>
-            <h2 className="text-sm md:text-lg font-light tracking-[0.2em] md:tracking-[0.3em] text-white/90 transition-colors group-hover:text-white" style={{ fontFamily: 'Oughter, serif' }}>
+            <h2 className="text-sm md:text-2xl font-light tracking-[0.4em] text-white/90 transition-colors group-hover:text-white" style={{ fontFamily: 'ForestSmooth, serif' }}>
               ARTISAN
             </h2>
           </Link>
@@ -105,146 +108,139 @@ export function Navigation() {
               initial={{ x: '100%' }}
               animate={{ x: 0 }}
               exit={{ x: '100%' }}
-              transition={{ duration: 0.3, ease: 'easeInOut' }}
-              className="fixed top-0 right-0 h-screen w-full md:w-[420px] bg-[#050505] border-l border-amber-600/20 shadow-2xl z-[60] overflow-hidden pt-[max(10px,env(safe-area-inset-top))]"
+              transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+              className="fixed top-0 right-0 h-screen w-full md:w-[480px] bg-neutral-950 border-l border-white/5 shadow-2xl z-[60] overflow-hidden flex flex-col pt-[max(10px,env(safe-area-inset-top))]"
             >
-              <div className="h-full flex flex-col">
-                <div className="flex items-center justify-between p-6 md:p-8 border-b border-neutral-800/50">
-                  <div className="flex items-center gap-3">
-                    <div className="w-8 h-8 border border-amber-600/40 flex items-center justify-center lg:hidden">
-                      <span className="text-amber-600/70 text-xs font-serif">A</span>
+              {/* Background Textures */}
+              <div className="absolute inset-0 z-0 pointer-events-none">
+                <div className="absolute inset-0 bg-gradient-to-b from-neutral-900 to-black opacity-50" />
+                <div className="absolute inset-0 opacity-[0.03] bg-[url('https://www.transparenttextures.com/patterns/stardust.png')]" />
+                <div className="absolute top-0 right-0 w-full h-full bg-[radial-gradient(circle_at_100%_0%,rgba(217,119,6,0.05),transparent_50%)]" />
+              </div>
+
+              <div className="relative z-10 flex flex-col h-full">
+                <div className="flex items-center justify-between p-8 md:p-12 border-b border-white/5">
+                  <div className="flex items-center gap-4">
+                    <div className="w-8 h-10 border border-amber-600/20 flex items-center justify-center lg:hidden bg-white/[0.02]">
+                      <span className="text-amber-600/70 text-xs font-serif uppercase">A</span>
                     </div>
-                    <h3 className="text-xl font-light text-white/90 tracking-[0.2em]" style={{ fontFamily: 'Oughter, serif' }}>ARTISAN</h3>
+                    <h3 className="text-2xl font-light text-white tracking-[0.5em] uppercase" style={{ fontFamily: 'ForestSmooth, serif' }}>Artisan</h3>
                   </div>
                   <button
                     type="button"
                     onClick={() => setIsMenuOpen(false)}
-                    className="text-neutral-500 hover:text-white transition-colors p-2 hover:bg-neutral-800/50 rounded-lg touch-manipulation"
-                    style={{ WebkitTapHighlightColor: 'transparent' }}
+                    className="group"
                   >
-                    <X size={22} strokeWidth={1.5} className="pointer-events-none" />
+                    <div className="w-12 h-12 rounded-full border border-white/5 flex items-center justify-center group-hover:border-white/20 group-hover:bg-white/5 transition-all duration-500">
+                      <X size={20} strokeWidth={1} className="text-neutral-500 group-hover:text-white transition-colors" />
+                    </div>
                   </button>
                 </div>
 
-                <div className="flex-1 overflow-y-auto">
-                  <div className="p-6 md:p-8 space-y-1">
+                <div className="flex-1 overflow-y-auto custom-scrollbar">
+                  <div className="p-8 md:p-12 space-y-2">
                     {navItems.map((item, index) => (
                       <motion.div
                         key={item.name}
-                        initial={{ opacity: 0, x: 20 }}
+                        initial={{ opacity: 0, x: 30 }}
                         animate={{ opacity: 1, x: 0 }}
-                        transition={{ delay: index * 0.05 }}
+                        transition={{ delay: 0.1 + index * 0.08, duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
                       >
                         <Link
                           href={item.path}
-                          onClick={(e) => {
-                            setIsMenuOpen(false)
-                          }}
-                          className={`block py-4 px-4 text-base transition-all font-light tracking-wider rounded-lg group ${pathname === item.path
-                            ? 'text-amber-600 bg-amber-600/10 border border-amber-600/30'
-                            : 'text-neutral-400 hover:text-white hover:bg-neutral-800/30'
-                            }`}
+                          onClick={() => setIsMenuOpen(false)}
+                          className={`group flex items-center justify-between py-5 px-6 rounded-2xl transition-all duration-500 ${
+                            pathname === item.path
+                              ? 'bg-white/[0.03] border border-white/5 text-white'
+                              : 'text-neutral-500 hover:text-white hover:bg-white/[0.01]'
+                          }`}
                         >
-                          <span className="flex items-center justify-between">
+                          <span className={`text-xs tracking-[0.3em] font-black uppercase transition-all duration-500 ${
+                            pathname === item.path ? 'translate-x-2' : 'group-hover:translate-x-2'
+                          }`}>
                             {item.name}
-                            {pathname === item.path && (
-                              <motion.span
-                                initial={{ scale: 0 }}
-                                animate={{ scale: 1 }}
-                                className="w-1.5 h-1.5 bg-amber-600 rounded-full"
-                              />
-                            )}
                           </span>
+                          {pathname === item.path && (
+                            <motion.div
+                              layoutId="sidebarActive"
+                              className="w-1 h-4 bg-amber-600 rounded-full shadow-[0_0_10px_rgba(217,119,6,0.5)]"
+                            />
+                          )}
                         </Link>
                       </motion.div>
                     ))}
                   </div>
 
-                  <div className="space-y-4 px-6 pb-8 md:px-8">
-                    <motion.div
-                      initial={{ opacity: 0, y: 20 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{ delay: 0.3 }}
-                      className="space-y-3"
-                    >
-                      {user ? (
-                        <>
-                          <div className="rounded-lg border border-neutral-700/50 bg-neutral-800/30 px-4 py-3">
-                            <p className="text-xs font-medium uppercase tracking-wider text-neutral-500">
-                              Logged in as
-                            </p>
-                            <p className="truncate font-medium text-white">{user.user_name || user.email || 'User'}</p>
+                  <div className="mt-auto p-8 md:p-12 space-y-8">
+                    {user ? (
+                      <motion.div
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: 0.6 }}
+                        className="space-y-6"
+                      >
+                        {/* Elite Identity Card */}
+                        <div className="relative p-8 rounded-[2rem] bg-white/[0.02] border border-white/5 backdrop-blur-3xl overflow-hidden group/card shadow-2xl">
+                          <div className="absolute inset-0 bg-gradient-to-br from-amber-600/[0.05] to-transparent opacity-0 group-hover/card:opacity-100 transition-opacity duration-700" />
+                          <div className="relative z-10 space-y-2">
+                            <p className="text-[9px] tracking-[0.5em] font-black uppercase text-amber-600/60">Verified Identity</p>
+                            <p className="text-xl font-light text-white truncate tracking-tight">{user.user_name || user.email}</p>
+                            <div className="pt-4 flex items-center gap-3">
+                              <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse shadow-[0_0_8px_rgba(16,185,129,0.5)]" />
+                              <span className="text-[8px] tracking-[0.3em] font-black uppercase text-neutral-500">Active Session</span>
+                            </div>
                           </div>
+                        </div>
+
+                        <div className="grid grid-cols-1 gap-4">
                           <Link
                             href="/dashboard"
-                            onClick={(e) => {
-                              setIsMenuOpen(false)
-                            }}
-                            className="flex w-full items-center justify-center gap-2 py-3 px-4 bg-amber-600 text-white font-medium rounded-lg transition-colors hover:bg-amber-500"
+                            onClick={() => setIsMenuOpen(false)}
+                            className="group relative flex items-center justify-center gap-3 py-5 bg-white text-black rounded-2xl text-[10px] font-black tracking-[0.4em] uppercase overflow-hidden active:scale-[0.98] transition-all"
                           >
-                            <LayoutDashboard size={18} />
-                            Dashboard
+                            <div className="absolute inset-0 bg-gradient-to-r from-transparent via-black/5 to-transparent -translate-x-full group-hover:animate-[shimmer_2s_infinite]" />
+                            <LayoutDashboard size={14} />
+                            <span>Dashboard</span>
                           </Link>
+                          
                           <button
                             onClick={async () => {
                               await signOut()
                               setUser(null)
                               setIsMenuOpen(false)
-                              toast.success(
-                                <div className="flex items-center gap-3">
-                                  <div className="w-10 h-10 rounded-full bg-amber-600/20 flex items-center justify-center">
-                                    <CheckCircle2 size={20} className="text-amber-600" />
-                                  </div>
-                                  <div>
-                                    <p className="font-medium text-white">Logged out successfully</p>
-                                    <p className="text-xs text-neutral-400">See you again soon!</p>
-                                  </div>
-                                </div>,
-                                {
-                                  duration: 3000,
-                                  style: {
-                                    background: 'linear-gradient(135deg, #1c1917 0%, #0a0a0a 100%)',
-                                    border: '1px solid rgba(217, 119, 6, 0.3)',
-                                    padding: '16px',
-                                    borderRadius: '12px',
-                                  }
-                                }
-                              )
+                              toast.success('Disconnected successfully')
                               router.push('/')
                             }}
-                            className="flex w-full items-center justify-center gap-2 py-3 px-4 border border-neutral-700 text-neutral-300 font-medium rounded-lg transition-colors hover:bg-neutral-800 hover:text-white"
+                            className="flex items-center justify-center gap-3 py-5 border border-white/5 text-neutral-500 hover:text-amber-600 hover:border-amber-600/30 rounded-2xl text-[10px] font-black tracking-[0.4em] uppercase transition-all duration-500"
                           >
-                            <LogOut size={18} />
-                            Sign Out
+                            <LogOut size={14} />
+                            <span>Terminate Session</span>
                           </button>
-                        </>
-                      ) : (
-                        <>
-                          <Link
-                            href="/login"
-                            onClick={(e) => {
-                              e.preventDefault()
-                              setIsMenuOpen(false)
-                              window.location.href = '/login'
-                            }}
-                            className="block w-full py-3 px-4 bg-amber-600 text-white text-center font-medium rounded-lg transition-colors hover:bg-amber-500"
-                          >
-                            Sign In
-                          </Link>
-                          <Link
-                            href="/signup"
-                            onClick={(e) => {
-                              e.preventDefault()
-                              setIsMenuOpen(false)
-                              window.location.href = '/signup'
-                            }}
-                            className="block w-full py-3 px-4 bg-neutral-800 text-white text-center font-medium rounded-lg transition-colors border border-neutral-700 hover:bg-neutral-700"
-                          >
-                            Sign Up
-                          </Link>
-                        </>
-                      )}
-                    </motion.div>
+                        </div>
+                      </motion.div>
+                    ) : (
+                      <motion.div
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: 0.6 }}
+                        className="grid grid-cols-1 gap-4"
+                      >
+                        <Link
+                          href="/login"
+                          onClick={() => { setIsMenuOpen(false); window.location.href = '/login' }}
+                          className="py-5 bg-white text-black text-center rounded-2xl text-[10px] font-black tracking-[0.4em] uppercase hover:bg-neutral-200 transition-all font-sans"
+                        >
+                          Identity Login
+                        </Link>
+                        <Link
+                          href="/signup"
+                          onClick={() => { setIsMenuOpen(false); window.location.href = '/signup' }}
+                          className="py-5 bg-transparent border border-white/10 text-white text-center rounded-2xl text-[10px] font-black tracking-[0.4em] uppercase hover:bg-white/5 transition-all font-sans"
+                        >
+                          Join Collective
+                        </Link>
+                      </motion.div>
+                    )}
                   </div>
                 </div>
               </div>
@@ -253,14 +249,14 @@ export function Navigation() {
         )}
       </AnimatePresence>
 
-      <div className="hidden lg:flex items-center justify-center gap-8 lg:gap-10 -mt-6">
+      <div className="hidden lg:flex items-center justify-center gap-10 lg:gap-14 -mt-6 relative z-10">
         {navItems.map((item) => (
           <Link
             key={item.name}
             href={item.path}
             className="relative group"
           >
-            <span className="text-xs tracking-[0.2em] text-neutral-400 hover:text-white transition-all duration-300 font-light group-hover:tracking-[0.25em]">
+            <span className="text-[9px] tracking-[0.6em] text-white/40 group-hover:text-white transition-all duration-500 font-black uppercase group-hover:tracking-[0.7em] selection:bg-transparent">
               {item.name}
             </span>
             {pathname === item.path && (

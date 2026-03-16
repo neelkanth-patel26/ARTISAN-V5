@@ -1,14 +1,14 @@
 'use client'
 
-import { useState, useEffect } from 'react'
-import { motion } from 'framer-motion'
+import { useState, useEffect, useRef } from 'react'
+import { motion, useScroll, useTransform, useSpring } from 'framer-motion'
 import { Navigation } from '@/components/navigation'
 import { Footer } from '@/components/footer'
 import { AuthPromptModal } from '@/components/auth-prompt-modal'
 import { BookingModal } from '@/components/booking-modal'
 import { getCurrentUser } from '@/lib/auth'
 import { supabase } from '@/lib/supabase'
-import { Calendar, MapPin, Clock, Users, Ticket } from 'lucide-react'
+import { Calendar, MapPin, Clock, Users, Ticket, ArrowRight, Star } from 'lucide-react'
 
 type ExhibitionItem = {
   id: number | string
@@ -23,77 +23,119 @@ type ExhibitionItem = {
   description: string
 }
 
+const DiscoveryPath = () => {
+  const ref = useRef<SVGSVGElement>(null)
+  const { scrollYProgress } = useScroll({
+    offset: ["start start", "end end"]
+  })
+
+  const pathLength = useSpring(scrollYProgress, {
+    stiffness: 100,
+    damping: 30,
+    restDelta: 0.001
+  })
+
+  return (
+    <div className="absolute left-1/2 -translate-x-1/2 top-0 h-full w-full pointer-events-none z-0 hidden lg:block overflow-visible pt-32">
+      <svg
+        width="100%"
+        height="100%"
+        viewBox="0 0 400 2000"
+        preserveAspectRatio="none"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+        className="opacity-20"
+      >
+        <motion.path
+          d="M200 0 C200 400, 350 600, 200 1000 C50 1400, 200 1600, 200 2000"
+          stroke="url(#pathGradient)"
+          strokeWidth="4"
+          strokeLinecap="round"
+          style={{ pathLength }}
+        />
+        <defs>
+          <linearGradient id="pathGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+            <stop offset="0%" stopColor="#d97706" stopOpacity="0" />
+            <stop offset="20%" stopColor="#d97706" />
+            <stop offset="80%" stopColor="#d97706" />
+            <stop offset="100%" stopColor="#d97706" stopOpacity="0" />
+          </linearGradient>
+        </defs>
+      </svg>
+    </div>
+  )
+}
+
 function ExhibitionCard({ exhibition, index, onBookVisit }: { exhibition: ExhibitionItem; index: number; onBookVisit?: () => void }) {
+  const isEven = index % 2 === 0
+  
   return (
     <motion.div
-      initial={{ opacity: 0, y: 30 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.6, delay: 0.3 + (index % 20) * 0.1 }}
-      whileHover={{ y: -8 }}
-      className="group relative overflow-hidden bg-neutral-900/50 border border-neutral-800/50 rounded-2xl hover:border-amber-600/50 transition-all duration-300 cursor-pointer hover:shadow-xl hover:shadow-amber-600/10"
+      initial={{ opacity: 0, x: isEven ? -50 : 50 }}
+      whileInView={{ opacity: 1, x: 0 }}
+      viewport={{ once: true, margin: "-100px" }}
+      transition={{ duration: 0.8, delay: 0.2 }}
+      className={`relative flex flex-col ${isEven ? 'lg:flex-row' : 'lg:flex-row-reverse'} gap-8 lg:gap-16 items-center mb-32 lg:mb-64`}
     >
-      <div className="relative h-72 overflow-hidden">
-        <img
-          src={exhibition.image}
-          alt={exhibition.title}
-          className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
-        />
-        <div className="absolute inset-0 bg-gradient-to-t from-black/95 via-black/50 to-transparent" />
-        <div className="absolute top-4 right-4 flex gap-2">
-          <span className={`px-4 py-1.5 text-xs tracking-[0.2em] font-light backdrop-blur-md rounded-full ${exhibition.status === 'Current'
-            ? 'bg-amber-600/90 text-white border border-amber-500'
-            : 'bg-neutral-900/80 text-amber-600 border border-amber-600/50'
+      {/* Connector Point */}
+      <div className="absolute left-1/2 -translate-x-1/2 top-0 w-4 h-4 rounded-full bg-amber-600 shadow-[0_0_20px_#d97706] hidden lg:block z-10" />
+
+      {/* Image Side */}
+      <div className="w-full lg:w-1/2 relative group">
+        <div className="absolute -inset-4 bg-amber-600/10 rounded-[2.5rem] blur-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
+        <div className="relative aspect-[4/5] overflow-hidden rounded-[2rem] border border-white/5 shadow-2xl">
+          <img
+            src={exhibition.image}
+            alt={exhibition.title}
+            className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-1000"
+          />
+          <div className="absolute inset-0 bg-gradient-to-t from-neutral-950/80 via-transparent to-transparent" />
+          
+          <div className="absolute top-6 right-6">
+            <span className={`px-4 py-2 rounded-full text-[10px] tracking-widest font-black uppercase backdrop-blur-xl border ${
+              exhibition.status === 'Current' 
+                ? 'bg-amber-600/20 text-amber-500 border-amber-600/30' 
+                : 'bg-white/5 text-neutral-400 border-white/10'
             }`}>
-            {exhibition.status}
-          </span>
-        </div>
-        <div className="absolute bottom-0 left-0 right-0 p-6">
-          <h2 className="text-2xl md:text-3xl font-light text-white mb-2" style={{ fontFamily: 'ForestSmooth, serif' }}>
-            {exhibition.title}
-          </h2>
-          <p className="text-amber-600/80 text-sm tracking-wide font-light">by {exhibition.artist}</p>
+              {exhibition.status}
+            </span>
+          </div>
         </div>
       </div>
 
-      <div className="p-6 space-y-4">
-        <p className="text-neutral-400 text-sm leading-relaxed font-light">
-          {exhibition.description}
-        </p>
-
-        <div className="grid grid-cols-2 gap-3">
-          <div className="bg-neutral-800/30 rounded-xl p-3 border border-neutral-700/30">
-            <div className="flex items-center gap-2 mb-1">
-              <Calendar size={14} className="text-amber-600" />
-              <p className="text-neutral-500 text-[10px] tracking-wider uppercase font-light">Date</p>
-            </div>
-            <p className="text-neutral-300 text-xs font-light">{exhibition.date}</p>
-          </div>
-          <div className="bg-neutral-800/30 rounded-xl p-3 border border-neutral-700/30">
-            <div className="flex items-center gap-2 mb-1">
-              <MapPin size={14} className="text-amber-600" />
-              <p className="text-neutral-500 text-[10px] tracking-wider uppercase font-light">Location</p>
-            </div>
-            <p className="text-neutral-300 text-xs font-light">{exhibition.location}</p>
-          </div>
-          <div className="bg-neutral-800/30 rounded-xl p-3 border border-neutral-700/30">
-            <div className="flex items-center gap-2 mb-1">
-              <Clock size={14} className="text-amber-600" />
-              <p className="text-neutral-500 text-[10px] tracking-wider uppercase font-light">Hours</p>
-            </div>
-            <p className="text-neutral-300 text-xs font-light">{exhibition.time}</p>
-          </div>
-          <div className="bg-neutral-800/30 rounded-xl p-3 border border-neutral-700/30">
-            <div className="flex items-center gap-2 mb-1">
-              <Users size={14} className="text-amber-600" />
-              <p className="text-neutral-500 text-[10px] tracking-wider uppercase font-light">Visitors</p>
-            </div>
-            <p className="text-neutral-300 text-xs font-light">{exhibition.visitors}</p>
-          </div>
+      {/* Content Side */}
+      <div className={`w-full lg:w-1/2 space-y-8 ${isEven ? 'lg:text-left' : 'lg:text-right flex flex-col lg:items-end'}`}>
+        <div className="space-y-4">
+          <p className="text-amber-600/60 text-xs tracking-[0.4em] font-black uppercase">Season Exhibit</p>
+          <h2 className="text-4xl md:text-6xl font-light text-white leading-tight" style={{ fontFamily: 'ForestSmooth, serif' }}>
+            {exhibition.title}
+          </h2>
+          <p className="text-neutral-500 text-sm tracking-widest font-black uppercase">By {exhibition.artist}</p>
         </div>
 
-        <button type="button" onClick={onBookVisit} className="w-full mt-4 py-3 bg-amber-600 border border-amber-600 text-white rounded-xl text-xs tracking-[0.2em] font-light hover:bg-amber-500 transition-all duration-300">
-          BOOK VISIT
-        </button>
+        <p className="text-neutral-400 text-lg font-light leading-relaxed max-w-xl italic">
+          "{exhibition.description}"
+        </p>
+
+        <div className={`grid grid-cols-2 gap-4 w-full max-w-md`}>
+           <div className="space-y-1">
+             <p className="text-[10px] text-neutral-600 tracking-[0.2em] font-black uppercase">Location</p>
+             <p className="text-sm text-white font-medium">{exhibition.location}</p>
+           </div>
+           <div className="space-y-1">
+             <p className="text-[10px] text-neutral-600 tracking-[0.2em] font-black uppercase">Schedule</p>
+             <p className="text-sm text-white font-medium">{exhibition.date}</p>
+           </div>
+        </div>
+
+        <motion.button 
+          whileHover={{ scale: 1.05 }}
+          whileTap={{ scale: 0.95 }}
+          onClick={onBookVisit}
+          className="px-10 py-5 bg-white text-black text-[10px] font-black uppercase tracking-[0.3em] rounded-2xl shadow-[0_20px_40px_-10px_rgba(255,255,255,0.1)] hover:bg-neutral-200 transition-all flex items-center gap-4"
+        >
+          Request Entry <ArrowRight size={14} />
+        </motion.button>
       </div>
     </motion.div>
   )
@@ -118,17 +160,17 @@ export default function ExhibitionsPage() {
       try {
         const { data, error } = await supabase.rpc('get_all_exhibitions')
         if (error) throw error
-        const list = (data || []).map((e: { id: string; title: string; description: string; location: string; image_url: string; start_date: string; end_date: string; status: string; hours?: string; artist?: string }) => ({
+        const list = (data || []).map((e: any) => ({
           id: e.id,
           title: e.title,
-          artist: e.artist ?? '—',
-          image: e.image_url ?? 'https://images.unsplash.com/photo-1541961017774-22349e4a1262?w=800&h=600&fit=crop&q=90',
-          date: [e.start_date, e.end_date].filter(Boolean).map(d => new Date(d).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })).join(' – ') || 'TBA',
-          location: e.location ?? '—',
-          time: e.hours ?? '—',
-          status: e.status === 'active' ? 'Current' : e.status === 'upcoming' ? 'Upcoming' : e.status === 'completed' ? 'Completed' : e.status,
-          visitors: '—',
-          description: e.description ?? '',
+          artist: e.artist ?? 'Selected Masters',
+          image: e.image_url ?? 'https://images.unsplash.com/photo-1541961017774-22349e4a1262?w=800',
+          date: e.start_date ? new Date(e.start_date).toLocaleDateString('en-US', { month: 'long', year: 'numeric' }) : 'TBA',
+          location: e.location ?? 'Main Vault',
+          time: e.hours ?? '10:00 - 18:00',
+          status: e.status === 'active' ? 'Current' : 'Upcoming',
+          visitors: 'Limited Access',
+          description: e.description ?? 'A curated exploration of artistic dialogue.',
         }))
         setRealExhibitions(list)
       } catch {
@@ -140,157 +182,114 @@ export default function ExhibitionsPage() {
     loadRealExhibitions()
   }, [])
 
-  const stats = [
-    { label: 'Active Shows', value: '12', icon: Ticket, color: 'amber' },
-    { label: 'Monthly Visitors', value: '8.5K', icon: Users, color: 'amber' },
-    { label: 'Exhibitions', value: '45+', icon: Calendar, color: 'amber' },
-  ]
-
   const exhibitions = [
     {
       id: 1,
-      title: 'Modern Perspectives',
+      title: 'Digital Dreams',
       artist: 'Neelkanth Patel',
-      image: 'https://images.unsplash.com/photo-1541961017774-22349e4a1262?w=800&h=600&fit=crop&q=90',
-      date: 'Aug 14, 2025',
-      location: 'Main Gallery',
-      time: '07:00 PM',
-      status: 'Completed',
-      visitors: '2.3K',
-      description: 'A collection of contemporary artworks exploring modern themes and perspectives.'
+      image: 'https://images.unsplash.com/photo-1561214115-f2f134cc4912?w=800',
+      date: 'Spring 2024',
+      location: 'East Wing Vault',
+      time: '10:00 - 20:00',
+      status: 'Current',
+      visitors: '1.8K',
+      description: 'Immersive digital art installations pushing the boundaries of technology and human creativity.'
     },
     {
       id: 2,
-      title: 'Digital Dreams',
-      artist: 'Neelkanth Patel',
-      image: 'https://images.unsplash.com/photo-1561214115-f2f134cc4912?w=800&h=600&fit=crop&q=90',
-      date: 'Feb 1 - Apr 15, 2024',
-      location: 'East Wing',
-      time: '10:00 AM - 8:00 PM',
-      status: 'Current',
-      visitors: '1.8K',
-      description: 'Immersive digital art installations pushing the boundaries of technology and creativity.'
-    },
-    {
-      id: 3,
       title: 'Sculptural Forms',
       artist: 'Urmi Thakkar',
-      image: 'https://images.unsplash.com/photo-1564951434112-64d74cc2a2d7?w=800&h=600&fit=crop&q=90',
-      date: 'Mar 10 - May 20, 2024',
+      image: 'https://images.unsplash.com/photo-1564951434112-64d74cc2a2d7?w=800',
+      date: 'Summer 2024',
       location: 'Sculpture Garden',
-      time: '9:00 AM - 7:00 PM',
+      time: '09:00 - 19:00',
       status: 'Upcoming',
       visitors: 'TBA',
-      description: 'Exploring three-dimensional art through innovative sculptural techniques.'
-    },
-    {
-      id: 4,
-      title: 'Abstract Expressions',
-      artist: 'Jay Shah',
-      image: 'https://images.unsplash.com/photo-1547826039-bfc35e0f1ea8?w=800&h=600&fit=crop&q=90',
-      date: 'Apr 5 - Jun 30, 2024',
-      location: 'West Gallery',
-      time: '10:00 AM - 6:00 PM',
-      status: 'Upcoming',
-      visitors: 'TBA',
-      description: 'Bold abstract paintings that challenge perception and evoke emotion.'
-    },
-    {
-      id: 5,
-      title: 'Street Stories',
-      artist: 'Urban Collective',
-      image: 'https://images.unsplash.com/photo-1460661419201-fd4cecdf8a8b?w=800&h=600&fit=crop&q=90',
-      date: 'May 1 - Jul 15, 2024',
-      location: 'Lower Level',
-      time: '11:00 AM - 9:00 PM',
-      status: 'Upcoming',
-      visitors: 'TBA',
-      description: 'Street art and graffiti culture brought into the gallery space.'
-    },
-    {
-      id: 6,
-      title: 'Portrait Series',
-      artist: 'James Wilson',
-      image: 'https://images.unsplash.com/photo-1515378960530-7c0da6231fb1?w=800&h=600&fit=crop&q=90',
-      date: 'Jun 10 - Aug 25, 2024',
-      location: 'Portrait Hall',
-      time: '10:00 AM - 6:00 PM',
-      status: 'Upcoming',
-      visitors: 'TBA',
-      description: 'Intimate portraits capturing the essence of human emotion and character.'
-    },
+      description: 'Exploring three-dimensional art through innovative sculptural techniques and organic materials.'
+    }
   ]
 
   return (
-    <main className="min-h-screen bg-gradient-to-b from-neutral-950 via-neutral-900 to-neutral-950">
+    <main className="min-h-screen bg-gradient-to-b from-neutral-950 via-neutral-900 to-neutral-950 overflow-x-hidden">
       <Navigation />
-      <div className="absolute inset-0 opacity-5 fixed" style={{ backgroundImage: 'url("data:image/svg+xml,%3Csvg width=\"60\" height=\"60\" viewBox=\"0 0 60 60\" xmlns=\"http://www.w3.org/2000/svg\"%3E%3Cg fill=\"none\" fill-rule=\"evenodd\"%3E%3Cg fill=\"%23ffffff\" fill-opacity=\"1\"%3E%3Cpath d=\"M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z\"/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")' }} />
-
-      <div className="relative z-10 px-4 sm:px-6 md:px-12 pt-20 md:pt-32 pb-32">
-        <motion.div
-          initial={{ opacity: 0, y: -20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8 }}
-          className="text-center mb-12"
-        >
-          <div className="text-amber-600/60 text-xs tracking-[0.3em] font-light mb-4">CURRENT & UPCOMING</div>
-          <h1 className="text-5xl sm:text-6xl md:text-8xl font-light text-white/90 mb-6" style={{ fontFamily: 'ForestSmooth, serif' }}>
-            Exhibitions
-          </h1>
-          <p className="text-neutral-400 max-w-2xl mx-auto font-light mb-12">Experience world-class art exhibitions featuring renowned and emerging artists</p>
-
-          <div className="max-w-4xl mx-auto grid grid-cols-3 gap-4">
-            {stats.map((stat, i) => {
-              const Icon = stat.icon
-              return (
-                <motion.div
-                  key={stat.label}
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: i * 0.1, duration: 0.5 }}
-                  whileHover={{ y: -4 }}
-                  className="bg-neutral-900/50 border border-neutral-800/50 rounded-2xl p-5 backdrop-blur-sm hover:border-amber-600/50 transition-all duration-300"
-                >
-                  <div className="w-12 h-12 rounded-xl bg-amber-600/10 flex items-center justify-center mx-auto mb-3">
-                    <Icon size={24} className="text-amber-600" strokeWidth={1.5} />
-                  </div>
-                  <p className="text-2xl md:text-3xl font-light text-white/90 mb-1" style={{ fontFamily: 'ForestSmooth, serif' }}>{stat.value}</p>
-                  <p className="text-xs text-neutral-500 uppercase tracking-wider font-light">{stat.label}</p>
-                </motion.div>
-              )
-            })}
-          </div>
-        </motion.div>
-
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 max-w-7xl mx-auto">
-          {exhibitions.map((exhibition, index) => (
-            <ExhibitionCard key={exhibition.id} exhibition={exhibition} index={index} onBookVisit={() => handleBookVisit(exhibition)} />
-          ))}
+      
+      {/* Hero Section */}
+      <section className="relative h-[80vh] flex items-center justify-center pt-20">
+        <div className="absolute inset-0 z-0">
+          <div className="absolute inset-0 bg-gradient-to-b from-transparent via-neutral-950/50 to-neutral-950 z-10" />
+          <motion.img 
+            initial={{ scale: 1.1, opacity: 0 }}
+            animate={{ scale: 1, opacity: 0.4 }}
+            transition={{ duration: 2 }}
+            src="https://images.unsplash.com/photo-1518998053574-53ee7536a909?w=1600&h=900&fit=crop" 
+            className="w-full h-full object-cover"
+          />
         </div>
 
-        {realExhibitions.length > 0 && (
-          <div className="border-t border-neutral-800/80 pt-16 mt-16 max-w-7xl mx-auto">
-            <p className="text-amber-600/60 text-xs tracking-[0.3em] font-light mb-2">FROM OUR PROGRAM</p>
-            <h2 className="text-3xl md:text-4xl font-light text-white/90 mb-6" style={{ fontFamily: 'ForestSmooth, serif' }}>
-              Live exhibitions
-            </h2>
-            <p className="text-neutral-400 text-sm font-light mb-8 max-w-2xl">
-              Current and upcoming exhibitions from the museum.
-            </p>
-            {realLoading ? (
-              <div className="flex justify-center py-16">
-                <div className="animate-spin rounded-full h-10 w-10 border-t-2 border-b-2 border-amber-600/60" />
-              </div>
-            ) : (
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                {realExhibitions.map((exhibition, index) => (
-                  <ExhibitionCard key={exhibition.id} exhibition={exhibition} index={index + 100} onBookVisit={() => handleBookVisit(exhibition)} />
-                ))}
-              </div>
-            )}
-          </div>
-        )}
-      </div>
+        <motion.div 
+          initial={{ opacity: 0, y: 30 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 1, delay: 0.5 }}
+          className="relative z-20 text-center space-y-6 px-4"
+        >
+          <p className="text-amber-600 text-xs tracking-[0.5em] font-black uppercase">The Program</p>
+          <h1 className="text-6xl md:text-9xl font-light text-white tracking-tighter" style={{ fontFamily: 'ForestSmooth, serif' }}>
+            Curated <br /> Seasons
+          </h1>
+          <p className="text-neutral-500 text-sm md:text-base max-w-xl mx-auto font-light leading-relaxed tracking-wide mt-8">
+            A chronological journey through our most prestigious exhibitions and upcoming artistic encounters.
+          </p>
+        </motion.div>
+      </section>
+
+      {/* Discovery Path Section */}
+      <section className="relative max-w-7xl mx-auto px-4 md:px-12 py-32">
+        <DiscoveryPath />
+        
+        <div className="relative z-10">
+          {exhibitions.map((exhibition, index) => (
+            <ExhibitionCard 
+              key={exhibition.id} 
+              exhibition={exhibition} 
+              index={index} 
+              onBookVisit={() => handleBookVisit(exhibition)} 
+            />
+          ))}
+
+          {realLoading ? (
+            <div className="flex justify-center py-32">
+              <div className="w-12 h-12 border-2 border-amber-600/20 border-t-amber-600 rounded-full animate-spin" />
+            </div>
+          ) : (
+            realExhibitions.map((exhibition, index) => (
+              <ExhibitionCard 
+                key={exhibition.id} 
+                exhibition={exhibition} 
+                index={index + 2} 
+                onBookVisit={() => handleBookVisit(exhibition)} 
+              />
+            ))
+          )}
+        </div>
+      </section>
+
+      {/* CTA Section */}
+      <section className="py-64 relative overflow-hidden">
+        <div className="absolute inset-0 bg-neutral-900/20 backdrop-blur-3xl" />
+        <div className="relative z-10 max-w-4xl mx-auto text-center px-4 space-y-12">
+           <Star className="mx-auto text-amber-600/40" size={48} />
+           <h2 className="text-4xl md:text-6xl text-white font-light leading-tight" style={{ fontFamily: 'ForestSmooth, serif' }}>
+             Private Viewings <br /> & Masterclasses
+           </h2>
+           <p className="text-neutral-500 font-light max-w-xl mx-auto italic">
+             "Art is not what you see, but what you make others see. Join our inner circle for exclusive encounters with art."
+           </p>
+           <button className="px-12 py-6 border border-white/10 rounded-2xl text-[10px] font-black uppercase tracking-[0.4em] text-white hover:bg-white/5 transition-all">
+             Inquire Membership
+           </button>
+        </div>
+      </section>
+
       <AuthPromptModal open={showAuthPrompt} onClose={() => setShowAuthPrompt(false)} message="Sign in to book a visit to this exhibition." />
       {selectedExhibition && (
         <BookingModal

@@ -48,7 +48,8 @@ export function HeroSection() {
         <NeonRing />
       </div>
 
-      <div className="absolute inset-0 z-20 opacity-50" style={{ backgroundImage: 'url("D:/museum-landing-page/back.png")', backgroundSize: 'cover', backgroundPosition: 'center' }} />
+      <div className="absolute inset-0 z-20 opacity-30 mix-blend-overlay grayscale pointer-events-none" style={{ backgroundImage: 'url("https://images.unsplash.com/photo-1547891269-05520f836692?w=1600&q=80")', backgroundSize: 'cover', backgroundPosition: 'center' }} />
+      <div className="absolute inset-0 z-21 bg-gradient-to-b from-neutral-950/80 via-transparent to-neutral-950/80 pointer-events-none" />
 
       <div className="absolute inset-0 flex items-center justify-center z-30 px-4">
         <motion.div
@@ -89,21 +90,21 @@ export function HeroSection() {
             transition={{ duration: 0.8, delay: 0.8 }}
           >
             <motion.div 
-              className="h-px w-12 md:w-20 bg-gradient-to-r from-transparent via-amber-600/60 to-transparent hidden md:block"
+              className="h-px w-12 md:w-20 bg-gradient-to-r from-transparent via-amber-600/30 to-transparent hidden md:block"
               initial={isMobile ? false : { width: 0, opacity: 0 }}
               animate={showContent ? { width: '5rem', opacity: 1 } : { width: 0, opacity: 0 }}
               transition={{ duration: 1.2, delay: 1.2 }}
             />
             <motion.p 
-              className="text-[10px] md:text-sm tracking-[0.25em] md:tracking-[0.35em] text-amber-600/80 font-light leading-[0.9] lg:leading-normal"
+              className="text-[9px] md:text-[10px] tracking-[0.5em] text-amber-500/60 font-black uppercase leading-none"
               initial={isMobile ? false : { opacity: 0 }}
               animate={showContent ? { opacity: 1 } : { opacity: 0 }}
               transition={{ duration: 0.8, delay: 1.4 }}
             >
-              CURATED ART MARKETPLACE
+              Curated Art Sanctuary
             </motion.p>
             <motion.div 
-              className="h-px w-12 md:w-20 bg-gradient-to-r from-transparent via-amber-600/60 to-transparent hidden md:block"
+              className="h-px w-12 md:w-20 bg-gradient-to-r from-transparent via-amber-600/30 to-transparent hidden md:block"
               initial={isMobile ? false : { width: 0, opacity: 0 }}
               animate={showContent ? { width: '5rem', opacity: 1 } : { width: 0, opacity: 0 }}
               transition={{ duration: 1.2, delay: 1.2 }}
@@ -120,13 +121,13 @@ export function HeroSection() {
         transition={{ duration: 1, delay: 1.2 }}
       >
         <motion.p 
-          className="text-xs md:text-sm text-neutral-400 leading-relaxed font-light" 
+          className="text-xs md:text-sm text-neutral-500 leading-relaxed font-light italic" 
           style={{ fontFamily: 'serif' }}
           initial={isMobile ? false : { opacity: 0 }}
           animate={showContent ? { opacity: 1 } : { opacity: 0 }}
           transition={{ duration: 1, delay: 1.5 }}
         >
-          Discover and acquire exceptional artworks directly from talented artists worldwide.
+          "The most beautiful thing we can experience is the mysterious. It is the source of all true art."
         </motion.p>
       </motion.div>
 
@@ -145,12 +146,12 @@ export function HeroSection() {
             transition={{ duration: 0.8, delay: 1.5 }}
           />
           <motion.div 
-            className="text-amber-600/70 text-[10px] md:text-xs tracking-[0.3em] font-light"
+            className="text-amber-600/50 text-[9px] tracking-[0.5em] font-black uppercase"
             initial={isMobile ? false : { opacity: 0 }}
             animate={showContent ? { opacity: 1 } : { opacity: 0 }}
             transition={{ duration: 0.8, delay: 1.7 }}
           >
-            SINCE 2024
+            Est. 2024
           </motion.div>
         </div>
       </motion.div>

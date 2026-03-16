@@ -39,14 +39,14 @@ export function FeaturedArtistsSection() {
           className="text-center mb-8 md:mb-16"
         >
           <motion.div
-            className="flex items-center justify-center gap-2 text-amber-600/70 text-xs tracking-[0.3em] font-light mb-4"
+            className="flex items-center justify-center gap-2 text-amber-500/60 text-[9px] tracking-[0.5em] font-black uppercase mb-4"
             initial={{ opacity: 0, scale: 0.8 }}
             whileInView={{ opacity: 1, scale: 1 }}
             viewport={{ once: true }}
             transition={{ delay: 0.2 }}
           >
-            <Users size={14} strokeWidth={1.5} />
-            FEATURING
+            <Users size={12} className="text-amber-500" />
+            Spotlight
           </motion.div>
           <motion.h2
             className="text-3xl md:text-7xl font-light text-white/90 mb-3 md:mb-4"
@@ -59,13 +59,13 @@ export function FeaturedArtistsSection() {
             Featured <span className="text-transparent bg-clip-text bg-gradient-to-r from-amber-600 to-amber-400">Artists</span>
           </motion.h2>
           <motion.p
-            className="text-neutral-400 text-xs md:text-sm font-light"
+            className="text-neutral-500 text-xs md:text-sm font-light italic"
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ delay: 0.4 }}
           >
-            Discover exceptional works from our top-selling artists
+            "Creativity takes courage." — Henri Matisse
           </motion.p>
         </motion.div>
 
@@ -105,8 +105,8 @@ export function FeaturedArtistsSection() {
                 <div className="absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-black via-black/80 to-transparent z-20" />
                 <div className="absolute bottom-0 left-0 right-0 p-8 z-30">
                   <div className="flex items-center gap-2 mb-3">
-                    <div className="w-10 h-px bg-amber-600/40" />
-                    <span className="text-[9px] text-amber-600/60 tracking-[0.3em] font-medium uppercase">{artist.works} PIECES</span>
+                    <div className="w-10 h-px bg-amber-600/20" />
+                    <span className="text-[9px] text-amber-600/50 tracking-[0.4em] font-black uppercase">{artist.works} Pieces</span>
                   </div>
                   <h3 className="text-2xl md:text-3xl font-light text-white/95 mb-1" style={{ fontFamily: 'ForestSmooth, serif' }}>{artist.name}</h3>
                   <p className="text-[10px] text-neutral-500 tracking-[0.2em] font-light uppercase">{artist.specialty}</p>
@@ -116,10 +116,10 @@ export function FeaturedArtistsSection() {
                 <motion.button
                   whileHover={{ x: 5 }}
                   transition={{ duration: 0.2 }}
-                  className="group/btn flex items-center gap-2 text-xs text-amber-600/70 hover:text-amber-600 transition-all duration-300 tracking-wider font-light"
+                  className="group/btn flex items-center gap-3 text-[9px] text-white/40 hover:text-white transition-all duration-500 tracking-[0.4em] font-black uppercase"
                 >
-                  VIEW WORKS
-                  <ArrowRight size={12} className="group-hover/btn:translate-x-1 transition-transform" strokeWidth={1.5} />
+                  View Works
+                  <ArrowRight size={12} className="group-hover/btn:translate-x-2 transition-transform" />
                 </motion.button>
               </Link>
             </motion.div>

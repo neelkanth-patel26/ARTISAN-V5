@@ -29,6 +29,17 @@ export type RealArtwork = {
   year_created?: number
 }
 
+const demoArtworks = [
+  { id: 'd1', title: 'Abstract Dreams', artist: 'Sarah Johnson', category: 'abstract', image: 'https://images.unsplash.com/photo-1579783483458-83d02161294e?w=600&h=800&fit=crop&q=90', price: 1200, likes: 45 },
+  { id: 'd2', title: 'Mountain Vista', artist: 'Michael Chen', category: 'landscape', image: 'https://images.unsplash.com/photo-1564951434112-64d74cc2a2d7?w=600&h=800&fit=crop&q=90', price: 850, likes: 32 },
+  { id: 'd3', title: 'Urban Portrait', artist: 'Emma Davis', category: 'portrait', image: 'https://images.unsplash.com/photo-1561214115-f2f134cc4912?w=600&h=800&fit=crop&q=90', price: 950, likes: 67 },
+  { id: 'd4', title: 'Modern Sculpture', artist: 'David Lee', category: 'sculpture', image: 'https://images.unsplash.com/photo-1452587925148-ce544e77e70d?w=600&h=800&fit=crop&q=90', price: 2100, likes: 28 },
+  { id: 'd5', title: 'Digital Waves', artist: 'Lisa Wang', category: 'digital', image: 'https://images.unsplash.com/photo-1536924430914-91f9e2041b83?w=600&h=800&fit=crop&q=90', price: 650, likes: 89 },
+  { id: 'd6', title: 'City Lights', artist: 'James Brown', category: 'photography', image: 'https://images.unsplash.com/photo-1547826039-bfc35e0f1ea8?w=600&h=800&fit=crop&q=90', price: 450, likes: 54 },
+  { id: 'd7', title: 'Color Burst', artist: 'Martinez', category: 'abstract', image: 'https://images.unsplash.com/photo-1541961017774-22349e4a1262?w=600&h=800&fit=crop&q=90', price: 1100, likes: 76 },
+  { id: 'd8', title: 'Sunset Valley', artist: 'Robert Taylor', category: 'landscape', image: 'https://images.unsplash.com/photo-1460661419201-fd4cecdf8a8b?w=600&h=800&fit=crop&q=90', price: 780, likes: 41 },
+]
+
 function GalleryContent() {
   const searchParams = useSearchParams()
   const artworkParam = searchParams.get('artwork')
@@ -39,7 +50,7 @@ function GalleryContent() {
   const [showLiveOnly, setShowLiveOnly] = useState(false)
   const [realArtworks, setRealArtworks] = useState<RealArtwork[]>([])
   const [filteredArtworks, setFilteredArtworks] = useState<RealArtwork[]>([])
-  const [realLoading, setRealLoading] = useState(true)
+  const [loading, setLoading] = useState(true)
   const [likedArtworkIds, setLikedArtworkIds] = useState<Set<string>>(new Set())
   const [selectedArtwork, setSelectedArtwork] = useState<RealArtwork | null>(null)
 
@@ -60,69 +71,65 @@ function GalleryContent() {
     loadCategories()
   }, [])
 
-  useEffect(() => {
-    async function loadRealArtworks() {
-      try {
-        // Query artworks directly to ensure we get description
-        const { data: artworksData, error } = await supabase
-          .from('artworks')
-          .select('id, title, image_url, price, likes_count, description, medium, dimensions, year_created, artist_id, category_id, categories(name)')
-          .eq('status', 'approved')
-          .order('created_at', { ascending: false })
-        
-        if (error) throw error
-        
-        // Get artist names
-        const artistIds = [...new Set(artworksData?.map(a => a.artist_id).filter(Boolean) || [])]
-        const artistMap: Record<string, string> = {}
-        if (artistIds.length > 0) {
-          const { data: users } = await supabase.from('users').select('id, full_name').in('id', artistIds)
-          users?.forEach((u: { id: string; full_name: string }) => { artistMap[u.id] = u.full_name ?? 'Artist' })
-        }
-        
-        const list = (artworksData || []).map((a) => ({
-          id: a.id,
-          title: a.title,
-          artist: artistMap[a.artist_id] ?? 'Artist',
-          artistId: a.artist_id,
-          category: (a.categories as any)?.name || 'Artwork',
-          image: a.image_url ?? '',
-          price: Number(a.price) ?? 0,
-          likes: Number(a.likes_count ?? 0),
-          description: a.description,
-          medium: a.medium,
-          dimensions: a.dimensions,
-          year_created: a.year_created,
-        }))
-        setRealArtworks(list)
-        setFilteredArtworks(list)
-        
-        if (artworkParam) {
-          const found = list.find((a: RealArtwork) => a.id === artworkParam)
-          if (found) setSelectedArtwork(found)
-        }
-      } catch {
-        setRealArtworks([])
-      } finally {
-        setRealLoading(false)
+  const fetchArtworks = useCallback(async () => {
+    try {
+      const { data: artworksData, error } = await supabase
+        .from('artworks')
+        .select('id, title, image_url, price, likes_count, description, medium, dimensions, year_created, artist_id, category_id, categories(name)')
+        .eq('status', 'approved')
+        .order('created_at', { ascending: false })
+      
+      if (error) throw error
+      
+      const artistIds = [...new Set(artworksData?.map(a => a.artist_id).filter(Boolean) || [])]
+      const artistMap: Record<string, string> = {}
+      if (artistIds.length > 0) {
+        const { data: users } = await supabase.from('users').select('id, full_name').in('id', artistIds)
+        users?.forEach((u: { id: string; full_name: string }) => { artistMap[u.id] = u.full_name ?? 'Artist' })
       }
+      
+      const list = (artworksData || []).map((a) => ({
+        id: a.id,
+        title: a.title,
+        artist: artistMap[a.artist_id] ?? 'Artist',
+        artistId: a.artist_id,
+        category: (a.categories as any)?.name || 'Artwork',
+        image: a.image_url ?? '',
+        price: Number(a.price) ?? 0,
+        likes: Number(a.likes_count ?? 0),
+        description: a.description,
+        medium: a.medium,
+        dimensions: a.dimensions,
+        year_created: a.year_created,
+      }))
+      setRealArtworks(list)
+      
+      if (artworkParam) {
+        const found = list.find((a: RealArtwork) => a.id === artworkParam)
+        if (found) setSelectedArtwork(found)
+      }
+    } catch (err) {
+      console.error('Error loading artworks:', err)
+      setRealArtworks([])
+    } finally {
+      setLoading(false)
     }
-    loadRealArtworks()
-    
-    // Real-time subscription for artworks
-    const channel = supabase
-      .channel('artworks-changes')
-      .on('postgres_changes',
-        { event: '*', schema: 'public', table: 'artworks' },
-        () => loadRealArtworks()
-      )
-      .subscribe()
-    
-    return () => { supabase.removeChannel(channel) }
   }, [artworkParam])
 
   useEffect(() => {
-    let filtered = realArtworks
+    fetchArtworks()
+    const channel = supabase
+      .channel('artworks-changes')
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'artworks' }, () => fetchArtworks())
+      .subscribe()
+    return () => { supabase.removeChannel(channel) }
+  }, [fetchArtworks])
+
+  useEffect(() => {
+    // Combine real and demo artworks
+    const allItems = showLiveOnly ? realArtworks : [...realArtworks, ...demoArtworks as RealArtwork[]]
+    
+    let filtered = allItems
     if (selectedCategory !== 'all') {
       filtered = filtered.filter(a => a.category.toLowerCase() === selectedCategory.toLowerCase())
     }
@@ -133,7 +140,7 @@ function GalleryContent() {
       )
     }
     setFilteredArtworks(filtered)
-  }, [selectedCategory, searchQuery, realArtworks])
+  }, [selectedCategory, searchQuery, realArtworks, showLiveOnly])
 
   useEffect(() => {
     loadLikedIds()
@@ -161,119 +168,130 @@ function GalleryContent() {
     }
   }, [])
 
-  const stats = [
-    { label: 'Total Artworks', value: '2,450+', icon: TrendingUp },
-    { label: 'Artists', value: '350+', icon: Users },
-    { label: 'Total Views', value: '1.2M+', icon: Eye },
-    { label: 'Favorites', value: '45K+', icon: Heart },
-  ]
-
   return (
-    <main className="min-h-screen bg-gradient-to-b from-neutral-950 via-neutral-900 to-neutral-950">
+    <main className="min-h-screen bg-neutral-950 relative overflow-hidden">
       <Navigation />
       
-      <div className="relative pt-32 pb-12 text-center px-4">
-        <div className="text-amber-600/60 text-xs tracking-[0.3em] font-light mb-4">EXPLORE ART</div>
-        <h1 className="text-5xl md:text-7xl lg:text-8xl font-light text-white/90 mb-4" style={{ fontFamily: 'ForestSmooth, serif' }}>
-          Gallery
-        </h1>
-        <p className="text-neutral-400 max-w-2xl mx-auto font-light mb-12">Discover exceptional artworks from talented artists worldwide</p>
-        
-        <motion.div 
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
-          className="max-w-5xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-4 px-4"
-        >
-          {stats.map((stat, i) => {
-            const Icon = stat.icon
-            return (
-              <motion.div 
-                key={stat.label}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: i * 0.1, duration: 0.5 }}
-                whileHover={{ y: -4 }}
-                className="bg-neutral-900/50 border border-neutral-800/50 rounded-2xl p-5 backdrop-blur-sm hover:border-amber-600/50 transition-all duration-300"
-              >
-                <div className="w-12 h-12 rounded-xl bg-amber-600/10 flex items-center justify-center mx-auto mb-3">
-                  <Icon size={24} className="text-amber-600" strokeWidth={1.5} />
-                </div>
-                <p className="text-2xl md:text-3xl font-light text-white/90 mb-1" style={{ fontFamily: 'ForestSmooth, serif' }}>{stat.value}</p>
-                <p className="text-xs text-neutral-500 uppercase tracking-wider font-light">{stat.label}</p>
-              </motion.div>
-            )
-          })}
-        </motion.div>
+      {/* Decorative Background Mesh */}
+      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-full pointer-events-none opacity-20 z-0">
+         <div className="absolute top-[-10%] left-[-20%] w-[60%] h-[60%] bg-amber-600/10 blur-[160px] rounded-full animate-pulse" />
+         <div className="absolute bottom-[20%] right-[-10%] w-[50%] h-[50%] bg-amber-600/5 blur-[120px] rounded-full" />
       </div>
 
-      <GalleryFilters 
-        categories={categories}
-        selectedCategory={selectedCategory}
-        setSelectedCategory={setSelectedCategory}
-        searchQuery={searchQuery}
-        setSearchQuery={setSearchQuery}
-        showLiveOnly={showLiveOnly}
-        setShowLiveOnly={setShowLiveOnly}
-      />
-
-      <GalleryGrid 
-        selectedCategory={selectedCategory}
-        searchQuery={searchQuery}
-        hidden={showLiveOnly}
-      />
-
-      {realArtworks.length > 0 && (
-        <div className="max-w-7xl mx-auto px-4 md:px-8 pb-24">
-          <div className="border-t border-neutral-800/80 pt-16 mt-8">
-            <p className="text-amber-600/60 text-xs tracking-[0.3em] font-light mb-2">FROM OUR COLLECTION</p>
-            <h2 className="text-3xl md:text-4xl font-light text-white/90 mb-6" style={{ fontFamily: 'ForestSmooth, serif' }}>
-              Live collection
-            </h2>
-            <p className="text-neutral-400 text-sm font-light mb-8 max-w-2xl">
-              Approved artworks from our artists. Like any artwork here to add it to your Favorites in the dashboard.
-            </p>
-            {realLoading ? (
-              <div className="flex justify-center py-16">
-                <div className="animate-spin rounded-full h-10 w-10 border-t-2 border-b-2 border-amber-600/60" />
-              </div>
-            ) : (
-              <>
-                <div className="flex items-center justify-between mb-6">
-                  <p className="text-neutral-400 text-sm font-light">
-                    Showing {filteredArtworks.length} {filteredArtworks.length === 1 ? 'artwork' : 'artworks'}
-                  </p>
-                </div>
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-                  {filteredArtworks.map((artwork, i) => (
-                    <motion.div
-                      key={artwork.id}
-                      initial={{ opacity: 0, y: 20 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{ delay: i * 0.05, duration: 0.5 }}
-                      onClick={() => {
-                        if (!getCurrentUser() && typeof window !== 'undefined') {
-                          localStorage.setItem('auth_redirect', `/gallery?artwork=${artwork.id}`)
-                        }
-                        // Increment view count
-                        supabase.from('artworks').update({ views_count: (artwork as any).views_count + 1 }).eq('id', artwork.id)
-                        setSelectedArtwork(artwork)
-                      }}
-                      className="cursor-pointer"
-                    >
-                      <ArtworkCard
-                        artwork={artwork}
-                        initialLiked={likedArtworkIds.has(artwork.id)}
-                        onLike={handleLike}
-                      />
-                    </motion.div>
-                  ))}
-                </div>
-              </>
-            )}
+      <div className="max-w-7xl mx-auto relative z-10 px-4 pt-32 pb-40">
+        {/* Elite Hero Header */}
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 1, ease: [0.16, 1, 0.3, 1] }}
+          className="text-center mb-32 space-y-8"
+        >
+          <div className="flex items-center justify-center gap-4 mb-4">
+             <div className="h-px w-12 bg-amber-600/30" />
+             <span className="text-[10px] text-amber-600 uppercase tracking-[0.5em] font-black">Digital Sanctuary</span>
+             <div className="h-px w-12 bg-amber-600/30" />
           </div>
+          
+          <h1 className="text-7xl md:text-9xl lg:text-[11rem] font-light text-white leading-none tracking-tight" style={{ fontFamily: 'ForestSmooth, serif' }}>
+            The <span className="text-neutral-500 italic">Curated</span> Archive
+          </h1>
+          
+          <div className="max-w-xl mx-auto">
+             <p className="text-neutral-500 text-sm md:text-lg font-light leading-relaxed tracking-wide opacity-80">
+               Discover an unparalleled collection of original masterpieces, curated for the discerning eye.
+             </p>
+          </div>
+        </motion.div>
+
+        {/* Premium Tools Bar */}
+        <div className="mb-20">
+          <GalleryFilters 
+            categories={categories}
+            selectedCategory={selectedCategory}
+            setSelectedCategory={setSelectedCategory}
+            searchQuery={searchQuery}
+            setSearchQuery={setSearchQuery}
+            showLiveOnly={showLiveOnly}
+            setShowLiveOnly={setShowLiveOnly} 
+          />
         </div>
-      )}
+
+        {/* High-Fidelity Collection Grid */}
+        <div className="space-y-16">
+          <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 pb-8 border-b border-white/5">
+            <div className="space-y-1">
+              <p className="text-amber-600/60 text-[10px] tracking-[0.4em] font-black uppercase">Refined Selection</p>
+              <h2 className="text-4xl md:text-5xl font-light text-white" style={{ fontFamily: 'ForestSmooth, serif' }}>
+                Masterpieces
+              </h2>
+            </div>
+            <p className="text-neutral-500 text-sm font-medium tracking-tight">
+              Showing <span className="text-white">{filteredArtworks.length}</span> individual works
+            </p>
+          </div>
+
+          {loading ? (
+             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
+               {[1, 2, 3, 4, 5, 6, 7, 8].map((i) => (
+                 <div key={i} className="aspect-[3/4] rounded-[2rem] bg-neutral-900 animate-pulse" />
+               ))}
+             </div>
+          ) : filteredArtworks.length === 0 ? (
+             <motion.div 
+               initial={{ opacity: 0 }}
+               animate={{ opacity: 1 }}
+               className="text-center py-40 bg-neutral-900/10 rounded-[3rem] border border-dashed border-white/5"
+             >
+               <p className="text-neutral-600 text-[10px] tracking-[0.5em] uppercase font-black">No Matches Found</p>
+               <h2 className="text-4xl font-light text-white/20 mt-4" style={{ fontFamily: 'ForestSmooth, serif' }}>Expanding Search...</h2>
+             </motion.div>
+          ) : (
+             <motion.div 
+               initial="hidden"
+               animate="show"
+               variants={{
+                 hidden: { opacity: 0 },
+                 show: {
+                   opacity: 1,
+                   transition: {
+                     staggerChildren: 0.1
+                   }
+                 }
+               }}
+               className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8 sm:gap-10"
+             >
+               {filteredArtworks.map((artwork, i) => (
+                 <motion.div
+                   key={artwork.id}
+                   variants={{
+                     hidden: { opacity: 0, y: 40 },
+                     show: { opacity: 1, y: 0, transition: { duration: 0.8, ease: [0.16, 1, 0.3, 1] } }
+                   }}
+                   className="cursor-pointer"
+                 >
+                   <ArtworkCard
+                     artwork={artwork}
+                     initialLiked={likedArtworkIds.has(artwork.id)}
+                     onLike={handleLike}
+                     onOpen={(selected) => {
+                        if (!getCurrentUser() && typeof window !== 'undefined') {
+                          localStorage.setItem('auth_redirect', `/gallery?artwork=${selected.id}`)
+                        }
+                        // Non-blocking update for view count
+                        if (selected.id.toString().startsWith('d')) {
+                          // Skip db update for demo items
+                        } else {
+                          supabase.from('artworks').update({ views_count: (selected as any).views_count + 1 }).eq('id', selected.id)
+                        }
+                        setSelectedArtwork(selected as RealArtwork)
+                     }}
+                   />
+                 </motion.div>
+               ))}
+             </motion.div>
+          )}
+        </div>
+      </div>
 
       {selectedArtwork && (
         <ArtworkModal

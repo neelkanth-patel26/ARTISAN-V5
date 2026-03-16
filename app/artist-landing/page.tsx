@@ -1,359 +1,226 @@
 'use client'
 
-import { ArrowRight, Sparkles, TrendingUp, Users, Shield, Zap, DollarSign, CheckCircle, Star, Award, Palette, BarChart3 } from 'lucide-react'
+import { ArrowRight, Sparkles, TrendingUp, Users, Shield, Zap, DollarSign, CheckCircle, Star, Award, Palette, BarChart3, Globe, Zap as ZapIcon, ShieldCheck, PieChart, PenTool, Image as ImageIcon } from 'lucide-react'
 import Link from 'next/link'
-import { motion, AnimatePresence } from 'framer-motion'
-import { useState, useEffect } from 'react'
+import { motion, AnimatePresence, useScroll, useTransform, useSpring } from 'framer-motion'
+import { useState, useEffect, useRef } from 'react'
 import ArtistPreloader from '@/components/artist-preloader'
+import { Navigation } from '@/components/navigation'
+import { Footer } from '@/components/footer'
+
+const FloatingArt = ({ src, delay = 0, x = 0, y = 0, scale = 1 }: any) => (
+  <motion.div
+    initial={{ opacity: 0, scale: 0.8 }}
+    animate={{ 
+      opacity: [0.4, 0.7, 0.4],
+      y: [y, y - 20, y],
+      rotate: [0, 2, 0]
+    }}
+    transition={{ 
+      duration: 8, 
+      delay, 
+      repeat: Infinity, 
+      ease: "easeInOut" 
+    }}
+    style={{ left: `${x}%`, top: `${y}%`, scale }}
+    className="absolute w-48 h-64 md:w-64 md:h-80 rounded-[2rem] overflow-hidden border border-white/5 shadow-2xl z-0 blur-[2px] hover:blur-0 transition-all duration-700"
+  >
+    <img src={src} className="w-full h-full object-cover opacity-50 hover:opacity-100 transition-opacity duration-700" />
+    <div className="absolute inset-0 bg-neutral-950/20" />
+  </motion.div>
+)
 
 export default function ArtistLanding() {
   const [loading, setLoading] = useState(true)
-  const [activeFeature, setActiveFeature] = useState(0)
-  const [currentSection, setCurrentSection] = useState(0)
-  const [isScrolling, setIsScrolling] = useState(false)
-  const [deviceType, setDeviceType] = useState<'desktop' | 'mobile' | 'pwa-desktop' | 'pwa-mobile'>('desktop')
+  const containerRef = useRef<HTMLDivElement>(null)
+  const { scrollYProgress } = useScroll({
+    target: containerRef,
+    offset: ["start start", "end end"]
+  })
 
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setActiveFeature(prev => (prev + 1) % 3)
-    }, 4000)
-    return () => clearInterval(interval)
-  }, [])
-
-  useEffect(() => {
-    const checkDevice = () => {
-      const isMobile = window.innerWidth < 1024
-      const isPWA = window.matchMedia('(display-mode: standalone)').matches || (window.navigator as any).standalone === true
-      
-      if (isPWA && isMobile) {
-        setDeviceType('pwa-mobile')
-      } else if (isPWA && !isMobile) {
-        setDeviceType('pwa-desktop')
-      } else if (isMobile) {
-        setDeviceType('mobile')
-      } else {
-        setDeviceType('desktop')
-      }
-    }
-
-    checkDevice()
-    window.addEventListener('resize', checkDevice)
-
-    const handleWheel = (e: WheelEvent) => {
-      if (deviceType !== 'desktop' && deviceType !== 'pwa-desktop') return
-      if (isScrolling || loading) return
-      
-      e.preventDefault()
-      e.stopPropagation()
-      setIsScrolling(true)
-      
-      if (e.deltaY > 0 && currentSection < 3) {
-        setCurrentSection(prev => prev + 1)
-      } else if (e.deltaY < 0 && currentSection > 0) {
-        setCurrentSection(prev => prev - 1)
-      }
-      
-      setTimeout(() => setIsScrolling(false), 1000)
-    }
-
-    if (deviceType === 'desktop' || deviceType === 'pwa-desktop') {
-      document.body.style.overflow = 'hidden'
-      window.addEventListener('wheel', handleWheel, { passive: false })
-    } else {
-      document.body.style.overflow = 'auto'
-    }
-
-    return () => {
-      window.removeEventListener('resize', checkDevice)
-      window.removeEventListener('wheel', handleWheel as any)
-    }
-  }, [isScrolling, loading, deviceType, currentSection])
+  const smoothProgress = useSpring(scrollYProgress, { stiffness: 100, damping: 30 })
 
   return (
-    <>
+    <main ref={containerRef} className="bg-gradient-to-b from-neutral-950 via-neutral-900 to-neutral-950 min-h-screen selection:bg-amber-600/30 overflow-x-hidden">
       <AnimatePresence>
         {loading && <ArtistPreloader onComplete={() => setLoading(false)} />}
       </AnimatePresence>
       
       {!loading && (
-        <div className={`min-h-screen bg-gradient-to-b from-neutral-950 via-neutral-900 to-neutral-950 overflow-x-hidden ${deviceType === 'desktop' || deviceType === 'pwa-desktop' ? 'overflow-y-hidden h-screen' : 'overflow-y-auto'}`}>
-          {/* Navigation */}
-          <motion.nav 
-            initial={{ y: -100 }}
-            animate={{ y: 0 }}
-            className="fixed top-0 left-0 right-0 z-50 py-6 px-6 md:px-12 bg-gradient-to-b from-black/50 via-black/30 to-transparent backdrop-blur-sm border-b border-amber-600/10"
-          >
-            <div className="max-w-7xl mx-auto flex items-center justify-between">
-              <Link href="/" className="group">
-                <span className="text-xl font-light tracking-[0.3em] text-white transition-colors group-hover:text-amber-500" style={{ fontFamily: 'ForestSmooth, serif' }}>ARTISAN</span>
-              </Link>
-              
-              <Link href="/login">
-                <motion.button 
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
-                  className="px-6 py-2.5 bg-gradient-to-r from-amber-600 to-amber-500 text-white text-sm tracking-wider rounded-lg font-medium"
-                >
-                  SIGN IN
-                </motion.button>
-              </Link>
+        <>
+          <Navigation />
+
+          {/* Master Creator Hero */}
+          <section className="relative h-screen flex items-center justify-center overflow-hidden border-b border-white/5">
+            <div className="absolute inset-0 z-0">
+               <FloatingArt src="https://images.unsplash.com/photo-1579783902614-a3fb3927b6a5?w=500" x={10} y={15} delay={0} scale={0.8} />
+               <FloatingArt src="https://images.unsplash.com/photo-1541961017774-22349e4a1262?w=500" x={75} y={10} delay={2} scale={0.9} />
+               <FloatingArt src="https://images.unsplash.com/photo-1561214115-f2f134cc4912?w=500" x={5} y={65} delay={4} scale={1.1} />
+               <FloatingArt src="https://images.unsplash.com/photo-1494438639946-1ebd1d20bf85?w=500" x={80} y={60} delay={6} scale={0.7} />
             </div>
-          </motion.nav>
 
-          <div
-            className="transition-transform duration-1000 ease-in-out"
-            style={{
-              transform: deviceType === 'desktop' || deviceType === 'pwa-desktop' ? `translateY(-${currentSection * 100}vh)` : 'none'
-            }}
-          >
-          {/* Hero Section */}
-          <section className="relative min-h-screen lg:h-screen flex items-center justify-center px-4 sm:px-6 py-24 lg:py-20 overflow-hidden">
-            <div className="absolute inset-0 opacity-5 pointer-events-none" style={{ backgroundImage: 'url("data:image/svg+xml,%3Csvg width="60" height="60" viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg"%3E%3Cg fill="none" fill-rule="evenodd"%3E%3Cg fill="%23ffffff" fill-opacity="1"%3E%3Cpath d="M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z"/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")' }} />
-            <motion.div
-              className="absolute top-20 left-10 w-72 h-72 bg-amber-600/10 rounded-full blur-3xl pointer-events-none"
-              animate={{ x: [0, 100, 0], y: [0, 50, 0], scale: [1, 1.3, 1], opacity: [0.3, 0.6, 0.3] }}
-              transition={{ duration: 10, repeat: Infinity, ease: "easeInOut" }}
-            />
-            <motion.div
-              className="absolute bottom-20 right-10 w-96 h-96 bg-amber-500/10 rounded-full blur-3xl pointer-events-none"
-              animate={{ x: [0, -50, 0], y: [0, -80, 0], scale: [1, 1.4, 1], opacity: [0.3, 0.5, 0.3] }}
-              transition={{ duration: 12, repeat: Infinity, ease: "easeInOut" }}
-            />
-
-            <div className="max-w-7xl mx-auto w-full relative z-10">
+            <div className="relative z-10 text-center space-y-12 max-w-5xl px-4">
               <motion.div
-                initial={{ opacity: 0, x: -50 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ duration: 1, ease: [0.16, 1, 0.3, 1] }}
-                className="text-center lg:text-left max-w-4xl mx-auto lg:mx-0"
+                initial={{ opacity: 0, y: 30 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 1 }}
+                className="space-y-6"
               >
-                <motion.div
-                  initial={{ opacity: 0, scale: 0.9 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  transition={{ delay: 0.2 }}
-                  className="inline-flex items-center gap-2 px-4 py-2 mb-8 bg-amber-600/10 border border-amber-600/30 rounded-full backdrop-blur-sm"
-                >
-                  <Sparkles size={16} className="text-amber-500" />
-                  <span className="text-xs sm:text-sm tracking-wider text-amber-500 font-medium">FOR CREATORS</span>
-                </motion.div>
-
-                <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-8xl font-light text-white mb-6 leading-[1.1]" style={{ fontFamily: 'ForestSmooth, serif' }}>
-                  <motion.span
-                    initial={{ opacity: 0, y: 30 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 0.3, duration: 0.8 }}
-                    className="block mb-2"
-                  >
-                    Turn Your
-                  </motion.span>
-                  <motion.span
-                    initial={{ opacity: 0, y: 30 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 0.5, duration: 0.8 }}
-                    className="block text-transparent bg-clip-text bg-gradient-to-r from-amber-600 via-amber-500 to-amber-400"
-                  >
-                    Art Into Income
-                  </motion.span>
+                <div className="inline-flex items-center gap-3 px-6 py-2 bg-amber-600/10 border border-amber-600/20 rounded-full backdrop-blur-3xl">
+                  <Sparkles size={14} className="text-amber-600" />
+                  <span className="text-[10px] tracking-[0.4em] text-amber-600 font-black uppercase">Creator Collective</span>
+                </div>
+                
+                <h1 className="text-6xl md:text-[10rem] font-light text-white tracking-tighter leading-none" style={{ fontFamily: 'ForestSmooth, serif' }}>
+                  The Artist's <br /> Sanctuary
                 </h1>
-
-                <motion.p
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.7 }}
-                  className="text-base sm:text-lg md:text-xl lg:text-2xl text-neutral-300 mb-8 leading-relaxed max-w-2xl mx-auto lg:mx-0"
-                >
-                  Join 5,000+ artists earning from their passion. Upload, showcase, and sell your artwork to a global audience.
-                </motion.p>
-
-                <motion.div
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.9 }}
-                  className="flex flex-col sm:flex-row gap-3 mb-10 justify-center lg:justify-start"
-                >
-                  <Link href="/artist" className="w-full sm:w-auto">
-                    <motion.button
-                      whileHover={{ scale: 1.05, boxShadow: '0 20px 40px rgba(217, 119, 6, 0.4)' }}
-                      whileTap={{ scale: 0.95 }}
-                      className="group w-full px-6 py-3.5 bg-gradient-to-r from-amber-600 to-amber-500 text-white text-sm sm:text-base tracking-wider rounded-xl font-medium flex items-center justify-center gap-2 shadow-xl shadow-amber-600/30"
-                    >
-                      START SELLING
-                      <ArrowRight size={16} className="group-hover:translate-x-1 transition-transform" />
-                    </motion.button>
-                  </Link>
-                  <Link href="/gallery" className="w-full sm:w-auto">
-                    <motion.button
-                      whileHover={{ scale: 1.05 }}
-                      whileTap={{ scale: 0.95 }}
-                      className="w-full px-6 py-3.5 border-2 border-neutral-700 text-neutral-300 text-sm sm:text-base tracking-wider rounded-xl font-medium hover:border-amber-600/50 hover:bg-amber-600/5 transition-all"
-                    >
-                      VIEW GALLERY
-                    </motion.button>
-                  </Link>
-                </motion.div>
-
-                <motion.div
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  transition={{ delay: 1.1 }}
-                  className="flex items-center justify-center lg:justify-start gap-6 sm:gap-10"
-                >
-                  {[
-                    { value: '₹2M+', label: 'Paid Out' },
-                    { value: '50K+', label: 'Artworks' },
-                    { value: '4.9★', label: 'Rating' }
-                  ].map((stat, i) => (
-                    <motion.div
-                      key={i}
-                      whileHover={{ scale: 1.1, y: -5 }}
-                      className="text-center"
-                    >
-                      <p className="text-2xl sm:text-3xl font-light text-amber-500 mb-1" style={{ fontFamily: 'ForestSmooth, serif' }}>{stat.value}</p>
-                      <p className="text-xs text-neutral-500 tracking-wider">{stat.label}</p>
-                    </motion.div>
-                  ))}
-                </motion.div>
+                
+                <p className="text-neutral-500 text-sm md:text-2xl font-light max-w-3xl mx-auto leading-relaxed italic">
+                  "Where your vision meets its destiny. A digital pedestal crafted for the world's most exceptional creators."
+                </p>
               </motion.div>
+
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 0.8 }}
+                className="flex flex-col md:flex-row gap-6 justify-center items-center"
+              >
+                <Link href="/artist/signup">
+                  <motion.button
+                    whileHover={{ scale: 1.05 }}
+                    className="px-12 py-6 bg-amber-600 text-black text-xs font-black tracking-[0.4em] uppercase rounded-2xl shadow-[0_20px_40px_-10px_rgba(217,119,6,0.5)]"
+                  >
+                    Open Studio
+                  </motion.button>
+                </Link>
+                <Link href="/gallery">
+                  <motion.button
+                    whileHover={{ scale: 1.05 }}
+                    className="px-12 py-6 bg-white/5 border border-white/10 text-white text-xs font-black tracking-[0.4em] uppercase rounded-2xl hover:bg-white/10 transition-all"
+                  >
+                    Curate First
+                  </motion.button>
+                </Link>
+              </motion.div>
+            </div>
+
+            {/* Scroll Indicator */}
+            <div className="absolute bottom-12 left-1/2 -translate-x-1/2 flex flex-col items-center gap-4">
+              <div className="w-px h-24 bg-gradient-to-b from-transparent via-amber-600/50 to-transparent" />
+              <span className="text-[9px] text-amber-600/60 font-black tracking-widest uppercase">Ascend</span>
             </div>
           </section>
 
-          {/* Features Section */}
-          <section className="min-h-screen lg:h-screen flex items-center py-16 lg:py-32 px-4 sm:px-6 bg-gradient-to-b from-transparent via-neutral-950/50 to-transparent relative">
-            <div className="absolute inset-0 opacity-5" style={{ backgroundImage: 'url("data:image/svg+xml,%3Csvg width="60" height="60" viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg"%3E%3Cg fill="none" fill-rule="evenodd"%3E%3Cg fill="%23ffffff" fill-opacity="1"%3E%3Cpath d="M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z"/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")' }} />
-            <div className="max-w-7xl mx-auto w-full">
-              <motion.div
-                initial={{ opacity: 0, y: 30 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                className="text-center mb-12 sm:mb-20"
-              >
-                <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-7xl font-light text-white mb-4" style={{ fontFamily: 'ForestSmooth, serif' }}>
-                  Everything You Need to <span className="text-transparent bg-clip-text bg-gradient-to-r from-amber-600 to-amber-400">Succeed</span>
-                </h2>
-                <p className="text-base sm:text-lg md:text-xl lg:text-2xl text-neutral-400 max-w-3xl mx-auto">Powerful tools designed for modern artists</p>
-              </motion.div>
+          {/* Creator DNA: The Features */}
+          <section className="py-44 px-4 md:px-12 max-w-7xl mx-auto border-b border-white/5">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-32 items-center">
+              <div className="space-y-12">
+                <div className="space-y-4">
+                  <p className="text-amber-600 text-[10px] tracking-[0.6em] font-black uppercase">Infrastructure</p>
+                  <h2 className="text-4xl md:text-7xl font-light text-white leading-tight" style={{ fontFamily: 'ForestSmooth, serif' }}>Architected for <br /> Masterpieces</h2>
+                </div>
+                
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                  {[
+                    { title: 'Global Echo', desc: 'Sync your portfolio across every continent instantly.', icon: Globe },
+                    { title: 'Purity Engine', desc: 'Preserves the soul of your art with ultra-high fidelity.', icon: ZapIcon },
+                    { title: 'Safe Vault', desc: 'Bank-grade protection for every transaction.', icon: ShieldCheck },
+                    { title: 'Pulse Analytics', desc: 'Understand how the world feels about your vision.', icon: PieChart }
+                  ].map((f, i) => (
+                    <div key={i} className="space-y-4 group">
+                      <div className="w-12 h-12 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center group-hover:border-amber-600/40 transition-all">
+                        <f.icon className="text-neutral-500 group-hover:text-amber-600" size={20} />
+                      </div>
+                      <h3 className="text-white text-sm font-black tracking-widest uppercase">{f.title}</h3>
+                      <p className="text-neutral-500 text-xs font-light leading-relaxed">{f.desc}</p>
+                    </div>
+                  ))}
+                </div>
+              </div>
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5 md:gap-6">
+              <div className="relative aspect-square">
+                <div className="absolute inset-0 bg-gradient-to-br from-amber-600/20 to-transparent rounded-[4rem] blur-3xl" />
+                <motion.div 
+                  initial={{ opacity: 0, scale: 0.9 }}
+                  whileInView={{ opacity: 1, scale: 1 }}
+                  viewport={{ once: true }}
+                  className="relative h-full border border-white/10 rounded-[4rem] overflow-hidden bg-neutral-950 shadow-2xl p-4"
+                >
+                  <div className="h-full w-full rounded-[3rem] border border-white/5 bg-[url('https://images.unsplash.com/photo-1579783483458-83d02161294e?w=800')] bg-cover bg-center">
+                    <div className="absolute inset-x-8 bottom-8 p-10 bg-neutral-950/40 backdrop-blur-3xl border border-white/10 rounded-[2.5rem] space-y-4">
+                      <div className="flex justify-between items-end">
+                        <div className="space-y-1">
+                          <p className="text-[10px] text-amber-600 font-black uppercase tracking-widest">Selected Artist</p>
+                          <p className="text-2xl text-white font-light" style={{ fontFamily: 'serif' }}>The Creator's Canvas</p>
+                        </div>
+                        <PenTool className="text-amber-600" size={24} />
+                      </div>
+                    </div>
+                  </div>
+                </motion.div>
+              </div>
+            </div>
+          </section>
+
+          {/* Elite Stats: The Proof */}
+          <section className="py-44 px-4 md:px-12 max-w-7xl mx-auto">
+             <div className="text-center mb-32 space-y-4">
+                <p className="text-amber-600 text-[10px] tracking-[1em] font-black uppercase">The Proof</p>
+                <h2 className="text-5xl md:text-9xl font-light text-white" style={{ fontFamily: 'ForestSmooth, serif' }}>Global Impact</h2>
+             </div>
+
+             <div className="grid grid-cols-1 md:grid-cols-3 gap-24">
                 {[
-                  { icon: Palette, title: 'Easy Upload', desc: 'Upload and manage your artwork with our intuitive dashboard', color: 'from-amber-600 to-orange-500' },
-                  { icon: BarChart3, title: 'Analytics', desc: 'Track views, engagement, and sales with real-time insights', color: 'from-blue-600 to-cyan-500' },
-                  { icon: DollarSign, title: 'Fair Pricing', desc: 'Keep 85% of every sale with transparent, artist-friendly fees', color: 'from-green-600 to-emerald-500' },
-                  { icon: Shield, title: 'Secure Platform', desc: 'Your artwork is protected with advanced security measures', color: 'from-purple-600 to-pink-500' },
-                  { icon: Zap, title: 'Instant Payouts', desc: 'Receive your earnings quickly with multiple payment options', color: 'from-yellow-600 to-amber-500' },
-                  { icon: Users, title: 'Global Reach', desc: 'Connect with collectors and artists from around the world', color: 'from-red-600 to-rose-500' }
-                ].map((feature, i) => (
+                  { label: 'Royalties Paid', val: '₹2M+', sub: 'Empowering creators' },
+                  { label: 'Global Artists', val: '5k+', sub: 'Vibrant community' },
+                  { label: 'Exhibitions', val: '150+', sub: 'World-class events' }
+                ].map((s, i) => (
                   <motion.div
                     key={i}
                     initial={{ opacity: 0, y: 30 }}
                     whileInView={{ opacity: 1, y: 0 }}
                     viewport={{ once: true }}
-                    transition={{ delay: i * 0.1 }}
-                    whileHover={{ y: -10, scale: 1.02 }}
-                    className="group relative p-5 sm:p-6 bg-neutral-900/50 border border-neutral-800 hover:border-amber-600/30 rounded-2xl transition-all cursor-pointer overflow-hidden"
+                    transition={{ delay: i * 0.2 }}
+                    className="text-center space-y-4"
                   >
-                    <div className="absolute inset-0 bg-gradient-to-br from-amber-600/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
-                    <div className={`w-12 h-12 sm:w-14 sm:h-14 rounded-xl bg-gradient-to-br ${feature.color} p-0.5 mb-4`}>
-                      <div className="w-full h-full bg-neutral-900 rounded-xl flex items-center justify-center">
-                        <feature.icon className="w-6 h-6 sm:w-7 sm:h-7 text-amber-500" />
-                      </div>
+                    <div className="h-px bg-gradient-to-r from-transparent via-white/10 to-transparent w-full mb-8" />
+                    <p className="text-6xl md:text-8xl font-light text-white" style={{ fontFamily: 'serif' }}>{s.val}</p>
+                    <div className="space-y-1">
+                      <p className="text-[10px] text-amber-600 font-black uppercase tracking-[0.4em]">{s.label}</p>
+                      <p className="text-xs text-neutral-500 font-light">{s.sub}</p>
                     </div>
-                    <h3 className="text-lg sm:text-xl font-light text-white mb-2" style={{ fontFamily: 'ForestSmooth, serif' }}>{feature.title}</h3>
-                    <p className="text-sm sm:text-base text-neutral-400 leading-relaxed">{feature.desc}</p>
                   </motion.div>
                 ))}
-              </div>
-            </div>
+             </div>
           </section>
 
-          {/* CTA Section */}
-          <section className="min-h-screen lg:h-screen flex items-center py-16 lg:py-32 px-4 sm:px-6 relative overflow-hidden">
-            <div className="absolute inset-0 opacity-5" style={{ backgroundImage: 'url("data:image/svg+xml,%3Csvg width="60" height="60" viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg"%3E%3Cg fill="none" fill-rule="evenodd"%3E%3Cg fill="%23ffffff" fill-opacity="1"%3E%3Cpath d="M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z"/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")' }} />
-            <div className="absolute inset-0 bg-gradient-to-b from-transparent via-amber-600/5 to-transparent" />
-            <motion.div
-              animate={{ x: [0, 50, 0], y: [0, 30, 0], scale: [1, 1.2, 1] }}
-              transition={{ duration: 10, repeat: Infinity, ease: "easeInOut" }}
-              className="absolute top-20 left-10 w-72 h-72 bg-amber-600/10 rounded-full blur-3xl"
-            />
-            <motion.div
-              animate={{ x: [0, -30, 0], y: [0, -50, 0], scale: [1, 1.3, 1] }}
-              transition={{ duration: 12, repeat: Infinity, ease: "easeInOut" }}
-              className="absolute bottom-20 right-10 w-96 h-96 bg-amber-500/10 rounded-full blur-3xl"
-            />
-
-            <div className="max-w-4xl mx-auto text-center relative z-10 w-full">
-              <motion.div
-                initial={{ opacity: 0, scale: 0.9 }}
-                whileInView={{ opacity: 1, scale: 1 }}
-                viewport={{ once: true }}
-              >
-                <div className="inline-flex items-center justify-center w-14 h-14 sm:w-20 sm:h-20 rounded-full bg-gradient-to-br from-amber-600 to-amber-500 mb-6 sm:mb-8">
-                  <Award className="w-7 h-7 sm:w-10 sm:h-10 text-white" />
-                </div>
-                <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-7xl font-light text-white mb-6 leading-[1.1] px-4" style={{ fontFamily: 'ForestSmooth, serif' }}>
-                  Ready to Start Your Journey?
+          {/* Final Call */}
+          <section className="py-64 relative overflow-hidden border-t border-white/5">
+             <div className="absolute inset-0 bg-amber-600/[0.02] pointer-events-none" />
+             <div className="max-w-4xl mx-auto text-center px-4 space-y-12 relative z-10">
+                <h2 className="text-5xl md:text-9xl font-light text-white leading-none" style={{ fontFamily: 'ForestSmooth, serif' }}>
+                  Write Your <br /> Narrative
                 </h2>
-                <p className="text-base sm:text-lg md:text-xl lg:text-2xl text-neutral-300 mb-10 leading-relaxed px-4 max-w-3xl mx-auto">
-                  Join thousands of artists already building their careers on Artisan
+                <p className="text-neutral-500 text-lg md:text-2xl font-light italic">
+                  "The world is waiting for your vision. Don't let it remain unheard."
                 </p>
-                <Link href="/signup">
-                  <motion.button
-                    whileHover={{ scale: 1.05, boxShadow: '0 25px 50px rgba(217, 119, 6, 0.5)' }}
-                    whileTap={{ scale: 0.95 }}
-                    className="group px-8 sm:px-12 py-4 sm:py-5 bg-gradient-to-r from-amber-600 to-amber-500 text-white text-sm sm:text-base tracking-wider rounded-xl font-medium inline-flex items-center gap-2 shadow-2xl shadow-amber-600/40"
-                  >
-                    GET STARTED NOW
-                    <ArrowRight size={18} className="group-hover:translate-x-2 transition-transform" />
-                  </motion.button>
-                </Link>
-              </motion.div>
-            </div>
+                <div className="pt-8">
+                  <Link href="/artist/signup">
+                    <motion.button
+                      whileHover={{ scale: 1.05 }}
+                      className="px-16 py-8 bg-white text-black text-xs font-black tracking-[0.5em] uppercase rounded-2xl shadow-[0_30px_60px_-15px_rgba(255,255,255,0.3)]"
+                    >
+                      Join the Elite
+                    </motion.button>
+                  </Link>
+                </div>
+             </div>
           </section>
 
-          {/* Footer */}
-          <footer className="min-h-fit lg:min-h-screen lg:h-screen flex items-center py-12 lg:py-20 px-4 sm:px-6 border-t border-neutral-800/50 bg-neutral-950/50">
-            <div className="max-w-7xl mx-auto w-full">
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-8 sm:gap-10 mb-8 sm:mb-12">
-                <div className="col-span-2 md:col-span-1">
-                  <span className="text-lg sm:text-xl font-light tracking-[0.3em] text-white mb-3 block" style={{ fontFamily: 'ForestSmooth, serif' }}>ARTISAN</span>
-                  <p className="text-xs sm:text-sm text-neutral-400 leading-relaxed">Empowering artists to turn their passion into income.</p>
-                </div>
-                <div>
-                  <h4 className="text-xs tracking-[0.2em] text-amber-600/70 font-light mb-3 uppercase">Platform</h4>
-                  <ul className="space-y-2">
-                    <li><Link href="/" className="text-xs sm:text-sm text-neutral-400 hover:text-white transition-colors">Home</Link></li>
-                    <li><Link href="/gallery" className="text-xs sm:text-sm text-neutral-400 hover:text-white transition-colors">Gallery</Link></li>
-                    <li><Link href="/artist" className="text-xs sm:text-sm text-neutral-400 hover:text-white transition-colors">Artists</Link></li>
-                    <li><Link href="/exhibitions" className="text-xs sm:text-sm text-neutral-400 hover:text-white transition-colors">Exhibitions</Link></li>
-                  </ul>
-                </div>
-                <div>
-                  <h4 className="text-xs tracking-[0.2em] text-amber-600/70 font-light mb-3 uppercase">For Artists</h4>
-                  <ul className="space-y-2">
-                    <li><Link href="/artist-landing" className="text-xs sm:text-sm text-neutral-400 hover:text-white transition-colors">Why Join</Link></li>
-                    <li><Link href="/signup" className="text-xs sm:text-sm text-neutral-400 hover:text-white transition-colors">Sign Up</Link></li>
-                    <li><Link href="/login" className="text-xs sm:text-sm text-neutral-400 hover:text-white transition-colors">Login</Link></li>
-                    <li><Link href="/dashboard/artist" className="text-xs sm:text-sm text-neutral-400 hover:text-white transition-colors">Dashboard</Link></li>
-                  </ul>
-                </div>
-                <div>
-                  <h4 className="text-xs tracking-[0.2em] text-amber-600/70 font-light mb-3 uppercase">Support</h4>
-                  <ul className="space-y-2">
-                    <li><Link href="/about" className="text-xs sm:text-sm text-neutral-400 hover:text-white transition-colors">About Us</Link></li>
-                    <li><Link href="/contact" className="text-xs sm:text-sm text-neutral-400 hover:text-white transition-colors">Contact</Link></li>
-                    <li><Link href="/help" className="text-xs sm:text-sm text-neutral-400 hover:text-white transition-colors">Help Center</Link></li>
-                    <li><Link href="/terms" className="text-xs sm:text-sm text-neutral-400 hover:text-white transition-colors">Terms</Link></li>
-                  </ul>
-                </div>
-              </div>
-              <div className="pt-6 border-t border-neutral-800/30 flex flex-col md:flex-row justify-between items-center gap-3">
-                <p className="text-neutral-500 text-xs sm:text-sm text-center md:text-left">© 2026 Gaming Network Studio Media Group</p>
-                <p className="text-neutral-600 text-xs">Made By Group 1</p>
-              </div>
-            </div>
-          </footer>
-          </div>
-        </div>
+          <Footer />
+        </>
       )}
-    </>
+    </main>
   )
 }

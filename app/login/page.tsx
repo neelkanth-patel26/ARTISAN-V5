@@ -100,146 +100,118 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="relative min-h-screen bg-gradient-to-b from-neutral-950 via-neutral-900 to-neutral-950 overflow-hidden">
-      <motion.div 
-        className="absolute top-20 left-10 w-72 h-72 bg-amber-600/10 rounded-full blur-3xl lg:block hidden"
-        animate={{ x: [0, 100, 0], y: [0, 50, 0], scale: [1, 1.3, 1], opacity: [0.3, 0.6, 0.3] }}
-        transition={{ duration: 10, repeat: Infinity, ease: "easeInOut" }}
-      />
-      <motion.div 
-        className="absolute bottom-20 right-10 w-96 h-96 bg-amber-500/10 rounded-full blur-3xl lg:block hidden"
-        animate={{ x: [0, -50, 0], y: [0, -80, 0], scale: [1, 1.4, 1], opacity: [0.3, 0.5, 0.3] }}
-        transition={{ duration: 12, repeat: Infinity, ease: "easeInOut" }}
-      />
+    <div className="relative min-h-screen bg-gradient-to-b from-neutral-950 via-neutral-900 to-neutral-950 overflow-hidden flex items-center justify-center p-6">
+      {/* Immersive Background Elements */}
+      <div className="absolute inset-0 z-0 text-white">
+        <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(circle_at_50%_0%,rgba(217,119,6,0.05),transparent_50%)]" />
+        <div className="absolute bottom-0 right-0 w-full h-full bg-[radial-gradient(circle_at_100%_100%,rgba(217,119,6,0.02),transparent_40%)]" />
+        <div className="absolute inset-0 opacity-[0.03] pointer-events-none bg-[url('https://www.transparenttextures.com/patterns/stardust.png')]" />
+      </div>
 
-      <button onClick={() => {
-        if (window.history.length > 1) {
-          router.back()
-        } else {
-          router.push('/')
-        }
-      }} className="absolute top-8 left-8 z-50 group">
-        <motion.div 
-          className="flex items-center gap-2 text-neutral-400 hover:text-amber-600 transition-colors"
-          whileHover={!isMobile ? { x: -5 } : undefined}
-        >
-          <ArrowLeft size={20} />
-          <span className="text-sm tracking-wider" style={{ fontFamily: 'Oughter, serif' }}>BACK</span>
-        </motion.div>
+      <button onClick={() => window.history.length > 1 ? router.back() : router.push('/')} className="absolute top-8 left-8 md:top-12 md:left-12 z-50 group">
+        <div className="flex items-center gap-4 text-neutral-500 hover:text-white transition-all duration-500">
+          <div className="w-10 h-10 rounded-full border border-white/5 flex items-center justify-center group-hover:border-white/20 group-hover:bg-white/5 transition-all">
+            <ArrowLeft size={16} />
+          </div>
+          <span className="hidden md:block text-[9px] tracking-[0.5em] font-black uppercase">Escape</span>
+        </div>
       </button>
 
-      <div className="flex min-h-screen items-center justify-center px-4 py-12 relative z-10">
-        <motion.div
-          initial={isMobile ? false : { opacity: 0, y: 30 }}
-          animate={isMobile ? false : { opacity: 1, y: 0 }}
-          transition={isMobile ? undefined : { duration: 0.8 }}
-          className="w-full max-w-md"
-        >
-          <motion.div 
-            className="mb-12 text-center"
-            initial={isMobile ? false : { opacity: 0, y: 20 }}
-            animate={isMobile ? false : { opacity: 1, y: 0 }}
-            transition={isMobile ? undefined : { duration: 0.6, delay: 0.2 }}
-          >
-            <motion.h1 
-              className="text-6xl font-light tracking-[0.2em] text-white/90 mb-6"
-              style={{ fontFamily: 'ForestSmooth, serif' }}
-            >
-              ARTISAN
-            </motion.h1>
-            <div className="flex items-center justify-center gap-4 mb-6">
-              <div className="h-px w-16 bg-gradient-to-r from-transparent via-amber-600/60 to-transparent" />
-              <p className="text-xs tracking-[0.3em] text-amber-600/80 font-light">WELCOME BACK</p>
-              <div className="h-px w-16 bg-gradient-to-r from-transparent via-amber-600/60 to-transparent" />
-            </div>
-          </motion.div>
-
+      <motion.div
+        initial={{ opacity: 0, scale: 0.95 }}
+        animate={{ opacity: 1, scale: 1 }}
+        transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1] }}
+        className="relative z-10 w-full max-w-xl"
+      >
+        <div className="text-center mb-12 md:mb-16 space-y-6">
           <motion.div
-            initial={isMobile ? false : { opacity: 0, y: 20 }}
-            animate={isMobile ? false : { opacity: 1, y: 0 }}
-            transition={isMobile ? undefined : { duration: 0.6, delay: 0.3 }}
-            className="rounded-2xl border border-amber-600/20 bg-neutral-900/60 p-8 backdrop-blur-xl shadow-2xl"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.2 }}
+            className="space-y-4"
           >
-            <form onSubmit={handleLogin} className="space-y-6">
-              <motion.div
-                initial={isMobile ? false : { opacity: 0, x: -20 }}
-                animate={isMobile ? false : { opacity: 1, x: 0 }}
-                transition={isMobile ? undefined : { duration: 0.5, delay: 0.4 }}
-              >
-                <label className="mb-2 block text-sm font-light tracking-wider text-amber-600/70" style={{ fontFamily: 'Oughter, serif' }}>EMAIL</label>
-                <input
-                  type="email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  className="w-full rounded-lg border border-amber-600/20 bg-black/40 px-4 py-3 text-white placeholder-neutral-600 transition-all focus:border-amber-600/50 focus:outline-none focus:ring-2 focus:ring-amber-600/20"
-                  placeholder="your@email.com"
-                  required
-                />
-              </motion.div>
+            <p className="text-amber-600/60 text-[9px] tracking-[0.6em] font-black uppercase">Identity Verification</p>
+            <h1 className="text-5xl md:text-8xl font-light text-white tracking-tighter" style={{ fontFamily: 'ForestSmooth, serif' }}>
+              Welcome back
+            </h1>
+          </motion.div>
+        </div>
 
-              <motion.div
-                initial={isMobile ? false : { opacity: 0, x: -20 }}
-                animate={isMobile ? false : { opacity: 1, x: 0 }}
-                transition={isMobile ? undefined : { duration: 0.5, delay: 0.5 }}
-              >
-                <label className="mb-2 block text-sm font-light tracking-wider text-amber-600/70" style={{ fontFamily: 'Oughter, serif' }}>PASSWORD</label>
-                <div className="relative">
+        <div className="bg-neutral-900/40 backdrop-blur-3xl border border-white/5 rounded-[2.5rem] md:rounded-[3rem] p-8 md:p-16 shadow-2xl relative overflow-hidden group">
+          <div className="absolute inset-0 bg-gradient-to-br from-white/[0.02] to-transparent pointer-events-none" />
+          
+          <form onSubmit={handleLogin} className="space-y-10 relative z-10">
+            <div className="space-y-8">
+              <div className="space-y-3">
+                <label className="text-[9px] tracking-[0.4em] font-black uppercase text-neutral-500 ml-1">Email Address</label>
+                <div className="relative group/input">
+                  <input
+                    type="email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    className="w-full bg-white/[0.03] border border-white/5 rounded-2xl px-6 py-5 text-white placeholder-neutral-700 transition-all duration-500 focus:outline-none focus:border-amber-600/30 focus:bg-white/[0.05] focus:ring-4 focus:ring-amber-600/5"
+                    placeholder="name@artisan.com"
+                    required
+                  />
+                </div>
+              </div>
+
+              <div className="space-y-3">
+                <div className="flex justify-between items-center ml-1">
+                  <label className="text-[9px] tracking-[0.4em] font-black uppercase text-neutral-500">Secret Key</label>
+                  <button type="button" className="text-[9px] tracking-[0.3em] font-black uppercase text-amber-600/60 hover:text-amber-600 transition-colors">Recover</button>
+                </div>
+                <div className="relative group/input">
                   <input
                     type={showPassword ? 'text' : 'password'}
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
-                    className="w-full rounded-lg border border-amber-600/20 bg-black/40 px-4 py-3 pr-12 text-white placeholder-neutral-600 transition-all focus:border-amber-600/50 focus:outline-none focus:ring-2 focus:ring-amber-600/20"
+                    className="w-full bg-white/[0.03] border border-white/5 rounded-2xl px-6 py-5 text-white placeholder-neutral-700 transition-all duration-500 focus:outline-none focus:border-amber-600/30 focus:bg-white/[0.05] focus:ring-4 focus:ring-amber-600/5 pr-14"
                     placeholder="••••••••"
                     required
                   />
                   <button
                     type="button"
                     onClick={() => setShowPassword(!showPassword)}
-                    className="absolute right-3 top-1/2 -translate-y-1/2 text-neutral-500 transition-colors hover:text-amber-600"
+                    className="absolute right-5 top-1/2 -translate-y-1/2 text-neutral-600 hover:text-amber-600 transition-colors"
                   >
-                    {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+                    {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
                   </button>
                 </div>
-              </motion.div>
+              </div>
+            </div>
 
-              <motion.button
-                type="submit"
-                disabled={loading}
-                className="relative w-full overflow-hidden rounded-lg bg-gradient-to-r from-amber-600 to-amber-700 py-3.5 font-light tracking-wider text-white transition-all hover:from-amber-500 hover:to-amber-600 disabled:cursor-not-allowed disabled:opacity-50"
-                whileHover={!isMobile ? { scale: 1.02 } : undefined}
-                whileTap={!isMobile ? { scale: 0.98 } : undefined}
-                initial={isMobile ? false : { opacity: 0, y: 20 }}
-                animate={isMobile ? false : { opacity: 1, y: 0 }}
-                transition={isMobile ? undefined : { duration: 0.5, delay: 0.6 }}
-              >
-                {loading ? (
-                  <span className="flex items-center justify-center gap-2">
-                    <Loader2 className="animate-spin" size={20} />
-                    SIGNING IN...
-                  </span>
-                ) : (
-                  'SIGN IN'
-                )}
-              </motion.button>
-            </form>
-
-            <motion.div 
-              className="mt-8 text-center"
-              initial={isMobile ? false : { opacity: 0 }}
-              animate={isMobile ? false : { opacity: 1 }}
-              transition={isMobile ? undefined : { duration: 0.5, delay: 0.7 }}
+            <motion.button
+              type="submit"
+              disabled={loading}
+              whileHover={{ scale: 1.01 }}
+              whileTap={{ scale: 0.99 }}
+              className="w-full bg-white text-black py-6 rounded-2xl text-[10px] font-black tracking-[0.5em] uppercase shadow-[0_20px_40px_-15px_rgba(255,255,255,0.2)] hover:bg-neutral-200 transition-all duration-500 disabled:opacity-50 disabled:cursor-not-allowed group/btn overflow-hidden relative"
             >
-              <div className="h-px w-full bg-gradient-to-r from-transparent via-amber-600/20 to-transparent mb-6" />
-              <p className="text-sm font-light tracking-wide text-neutral-400" style={{ fontFamily: 'Oughter, serif' }}>
-                Don&apos;t have an account?{' '}
-                <Link href="/signup" className="font-medium text-amber-600 transition-colors hover:text-amber-500">
-                  Sign up
-                </Link>
-              </p>
-            </motion.div>
-          </motion.div>
-        </motion.div>
-      </div>
+              <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full group-hover/btn:animate-[shimmer_2s_infinite]" />
+              {loading ? (
+                <div className="flex items-center justify-center gap-3">
+                  <Loader2 className="animate-spin" size={16} />
+                  <span>Synchronizing...</span>
+                </div>
+              ) : (
+                'Initialize Session'
+              )}
+            </motion.button>
+          </form>
+
+          <div className="mt-12 pt-10 border-t border-white/5 text-center relative z-10">
+            <p className="text-[10px] tracking-widest text-neutral-500 uppercase font-light">
+              New to the sanctuary?{' '}
+              <Link href="/signup" className="text-amber-600/80 hover:text-amber-600 font-black ml-2 transition-colors">Join the Elite</Link>
+            </p>
+          </div>
+        </div>
+
+        <p className="text-center mt-12 text-[8px] tracking-[0.6em] text-neutral-600 uppercase font-black">
+          Encrypted &middot; Protected &middot; Artisan Protocol
+        </p>
+      </motion.div>
     </div>
   )
 }

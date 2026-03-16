@@ -37,8 +37,27 @@ export default function ArtistPage() {
         <div className="min-h-screen bg-gradient-to-b from-neutral-950 via-neutral-900 to-neutral-950 pt-32 pb-20 px-6">
           <div className="max-w-7xl mx-auto">
             <div className="text-center mb-16">
-              <div className="h-12 bg-neutral-800/50 rounded w-64 mx-auto mb-4 animate-pulse" />
-              <div className="h-6 bg-neutral-800/50 rounded w-96 mx-auto animate-pulse" />
+              <div className="h-16 bg-neutral-900/50 rounded-2xl w-80 mx-auto mb-6 relative overflow-hidden">
+                <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent -translate-x-full animate-[shimmer_2s_infinite]" />
+              </div>
+              <div className="h-6 bg-neutral-900/50 rounded-xl w-[30rem] mx-auto relative overflow-hidden">
+                <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent -translate-x-full animate-[shimmer_2s_infinite]" />
+              </div>
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10 lg:gap-14">
+              {[1, 2, 3].map((i) => (
+                <div key={i} className="aspect-[4/5] rounded-[2.5rem] bg-neutral-900/50 border border-white/5 relative overflow-hidden">
+                  <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent -translate-x-full animate-[shimmer_2.5s_infinite]" />
+                  <div className="absolute inset-x-0 bottom-0 p-10 space-y-4">
+                    <div className="h-10 bg-neutral-800/50 rounded-2xl w-3/4 relative overflow-hidden">
+                       <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent -translate-x-full animate-[shimmer_2s_infinite]" />
+                    </div>
+                    <div className="h-4 bg-neutral-800/50 rounded-lg w-1/2 relative overflow-hidden">
+                       <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent -translate-x-full animate-[shimmer_2s_infinite]" />
+                    </div>
+                  </div>
+                </div>
+              ))}
             </div>
           </div>
         </div>
@@ -154,21 +173,65 @@ function ArtistPageContent() {
         <div className="min-h-screen bg-gradient-to-b from-neutral-950 via-neutral-900 to-neutral-950 pt-32 pb-20 px-6">
           <div className="max-w-7xl mx-auto">
             <div className="text-center mb-16">
-              <div className="h-12 bg-neutral-800/50 rounded w-64 mx-auto mb-4 animate-pulse" />
-              <div className="h-6 bg-neutral-800/50 rounded w-96 mx-auto animate-pulse" />
+              <div className="h-16 bg-neutral-900/50 rounded-2xl w-80 mx-auto mb-6 relative overflow-hidden">
+                <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent -translate-x-full animate-[shimmer_2s_infinite]" />
+              </div>
+              <div className="h-6 bg-neutral-900/50 rounded-xl w-[30rem] mx-auto relative overflow-hidden">
+                <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent -translate-x-full animate-[shimmer_2s_infinite]" />
+              </div>
             </div>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            
+            <motion.div 
+              initial="hidden"
+              animate="visible"
+              variants={{
+                hidden: { opacity: 0 },
+                visible: {
+                  opacity: 1,
+                  transition: { staggerChildren: 0.1 }
+                }
+              }}
+              className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10 lg:gap-14"
+            >
               {[1, 2, 3, 4, 5, 6].map((i) => (
-                <div key={i} className="bg-neutral-900/50 border border-amber-600/20 rounded-lg overflow-hidden">
-                  <div className="h-64 bg-neutral-800 animate-pulse" />
-                  <div className="p-6 space-y-3">
-                    <div className="h-6 bg-neutral-800/50 rounded w-3/4 animate-pulse" />
-                    <div className="h-4 bg-neutral-800/50 rounded w-1/2 animate-pulse" />
-                    <div className="h-16 bg-neutral-800/50 rounded animate-pulse" />
+                <motion.div 
+                  key={i}
+                  variants={{
+                    hidden: { opacity: 0, y: 20 },
+                    visible: { opacity: 1, y: 0 }
+                  }}
+                  className="aspect-[4/5] rounded-[2.5rem] bg-neutral-900/50 border border-white/5 relative overflow-hidden"
+                >
+                  <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent -translate-x-full animate-[shimmer_2.5s_infinite]" />
+                  
+                  {/* Logo Placeholder */}
+                  <div className="absolute inset-0 flex items-center justify-center">
+                    <div className="w-16 h-16 border border-white/5 flex items-center justify-center opacity-20">
+                      <span className="text-xs font-serif text-white/50 tracking-widest">A</span>
+                    </div>
                   </div>
-                </div>
+
+                  <div className="absolute inset-x-0 bottom-0 p-10 space-y-6">
+                    <div className="space-y-3">
+                      <div className="h-10 bg-neutral-800/40 rounded-2xl w-3/4 relative overflow-hidden">
+                        <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent -translate-x-full animate-[shimmer_2s_infinite]" />
+                      </div>
+                      <div className="h-4 bg-neutral-800/40 rounded-lg w-1/2 relative overflow-hidden">
+                        <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent -translate-x-full animate-[shimmer_2s_infinite]" />
+                      </div>
+                    </div>
+                    <div className="flex gap-8 pt-6 border-t border-white/5">
+                      <div className="h-8 w-16 bg-neutral-800/40 rounded-lg relative overflow-hidden">
+                        <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent -translate-x-full animate-[shimmer_2s_infinite]" />
+                      </div>
+                      <div className="h-8 w-16 bg-neutral-800/40 rounded-lg relative overflow-hidden">
+                        <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent -translate-x-full animate-[shimmer_2s_infinite]" />
+                      </div>
+                    </div>
+                  </div>
+                </motion.div>
               ))}
-            </div>
+            </motion.div>
           </div>
         </div>
       </>

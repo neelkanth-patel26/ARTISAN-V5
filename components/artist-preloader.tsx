@@ -7,24 +7,14 @@ interface ArtistPreloaderProps {
 }
 
 export default function ArtistPreloader({ onComplete }: ArtistPreloaderProps) {
-  const [progress, setProgress] = useState(0);
   const [show, setShow] = useState(true);
 
   useEffect(() => {
-    const interval = setInterval(() => {
-      setProgress(prev => {
-        if (prev >= 100) {
-          clearInterval(interval);
-          setTimeout(() => {
-            setShow(false);
-            setTimeout(() => onComplete?.(), 500);
-          }, 300);
-          return 100;
-        }
-        return prev + 1;
-      });
-    }, 40);
-    return () => clearInterval(interval);
+    const timer = setTimeout(() => {
+      setShow(false);
+      setTimeout(() => onComplete?.(), 1000);
+    }, 2800);
+    return () => clearTimeout(timer);
   }, [onComplete]);
 
   return (
@@ -32,92 +22,60 @@ export default function ArtistPreloader({ onComplete }: ArtistPreloaderProps) {
       {show && (
         <motion.div
           initial={{ opacity: 1 }}
-          exit={{ opacity: 0, scale: 1.1 }}
-          transition={{ duration: 0.5 }}
-          className="fixed inset-0 z-[100] bg-black flex items-center justify-center overflow-hidden"
+          exit={{ 
+            opacity: 0,
+            scale: 1.1,
+            filter: "blur(20px)",
+            transition: { duration: 1, ease: [0.16, 1, 0.3, 1] }
+          }}
+          className="fixed inset-0 z-[100] bg-neutral-950 flex items-center justify-center overflow-hidden"
         >
-          <div className="absolute inset-0 bg-gradient-to-br from-neutral-950 via-neutral-900 to-black" />
-          
-          <motion.div
-            animate={{ 
-              scale: [1, 1.3, 1],
-              opacity: [0.2, 0.4, 0.2]
-            }}
-            transition={{ duration: 4, repeat: Infinity }}
-            className="absolute w-[600px] h-[600px] bg-amber-600/20 rounded-full blur-3xl"
-          />
+          {/* Subtle Background Depth */}
+          <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(217,119,6,0.03),transparent_70%)]" />
+          <div className="absolute inset-0 opacity-[0.02] bg-[url('https://www.transparenttextures.com/patterns/stardust.png')]" />
 
-          <div className="relative z-10 text-center px-6">
-            <motion.div
-              initial={{ scale: 0.5, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              transition={{ duration: 0.6, ease: [0.34, 1.56, 0.64, 1] }}
-              className="mb-12"
-            >
-              <div className="relative mx-auto w-32 h-32">
-                <motion.div
-                  className="absolute inset-0 rounded-full border-2 border-amber-600/20"
-                  animate={{ rotate: 360 }}
-                  transition={{ duration: 3, repeat: Infinity, ease: "linear" }}
-                />
-                <motion.div
-                  className="absolute inset-2 rounded-full border-2 border-amber-500/30"
-                  animate={{ rotate: -360 }}
-                  transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
-                />
-                <svg width="120" height="120" viewBox="0 0 120 120" className="absolute inset-0">
-                  <defs>
-                    <linearGradient id="loaderGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-                      <stop offset="0%" stopColor="#d97706" />
-                      <stop offset="100%" stopColor="#fbbf24" />
-                    </linearGradient>
-                  </defs>
-                  <motion.path
-                    d="M36 84 L60 36 L84 84 M45 66 L75 66"
-                    stroke="url(#loaderGradient)"
-                    strokeWidth="3"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    fill="none"
-                    initial={{ pathLength: 0 }}
-                    animate={{ pathLength: 1 }}
-                    transition={{ duration: 1.5, ease: "easeInOut" }}
-                  />
-                </svg>
-              </div>
-            </motion.div>
-
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, delay: 0.3 }}
-            >
-              <motion.h2 
-                className="text-5xl md:text-6xl font-light tracking-[0.3em] mb-4 text-white"
+          <div className="relative flex flex-col items-center gap-12">
+            {/* Branding Logo */}
+            <div className="relative">
+              <motion.h2
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1] }}
+                className="text-6xl md:text-8xl font-light tracking-[0.3em] text-white"
                 style={{ fontFamily: 'ForestSmooth, serif' }}
-                animate={{ opacity: [0.7, 1, 0.7] }}
-                transition={{ duration: 2, repeat: Infinity }}
               >
                 ARTISAN
               </motion.h2>
-              
-              <div className="relative w-64 h-1 mx-auto bg-neutral-800 rounded-full overflow-hidden mb-4">
-                <motion.div
-                  className="absolute inset-y-0 left-0 bg-gradient-to-r from-amber-600 via-amber-500 to-amber-400 rounded-full"
-                  initial={{ width: '0%' }}
-                  animate={{ width: `${progress}%` }}
-                  transition={{ duration: 0.3 }}
-                />
-              </div>
-              
-              <motion.p 
-                className="text-amber-600/70 text-sm tracking-[0.2em] font-light"
-                style={{ fontFamily: 'Oughter, serif' }}
-              >
-                {progress}%
-              </motion.p>
+
+              {/* Light Sweep Effect */}
+              <motion.div
+                initial={{ x: '-100%' }}
+                animate={{ x: '200%' }}
+                transition={{ duration: 2, repeat: Infinity, ease: "linear", repeatDelay: 1 }}
+                className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent skew-x-12"
+              />
+            </div>
+
+            {/* Context Label */}
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.6, duration: 1 }}
+              className="flex items-center gap-6"
+            >
+              <div className="h-px w-12 bg-gradient-to-r from-transparent via-amber-600/40 to-transparent" />
+              <p className="text-[9px] tracking-[0.6em] font-black uppercase text-amber-600/60">Creator Sanctuary</p>
+              <div className="h-px w-12 bg-gradient-to-r from-transparent via-amber-600/40 to-transparent" />
             </motion.div>
           </div>
+
+          {/* Iris Reveal Elements */}
+          <motion.div
+            initial={{ scale: 0 }}
+            exit={{ scale: 50 }}
+            transition={{ duration: 1.5, ease: [0.16, 1, 0.3, 1] }}
+            className="absolute inset-0 border-[0.5px] border-white/5 rounded-full pointer-events-none"
+          />
         </motion.div>
       )}
     </AnimatePresence>

@@ -106,9 +106,9 @@ export function PWASection() {
               viewport={{ once: true }}
               transition={{ delay: 0.2 }}
             >
-              <div className="flex items-center gap-2 text-amber-600/70 text-xs tracking-[0.3em] font-light mb-6">
-                <Zap size={14} strokeWidth={1.5} />
-                MOBILE ACCESS
+              <div className="flex items-center gap-2 text-amber-500/60 text-[9px] tracking-[0.5em] font-black uppercase mb-6">
+                <Zap size={12} className="text-amber-500" />
+                Connectivity
               </div>
               
               <h2 
@@ -131,27 +131,27 @@ export function PWASection() {
               viewport={{ once: true }}
               transition={{ delay: 0.4 }}
             >
-              <div className="flex items-start gap-4">
-                <div className="w-8 h-8 rounded-full border border-amber-600/30 flex items-center justify-center text-amber-600/70 text-sm font-light flex-shrink-0">1</div>
+              <div className="flex items-start gap-4 hover:translate-x-1 transition-transform cursor-default">
+                <div className="w-8 h-8 rounded-full border border-white/5 flex items-center justify-center text-amber-600/40 text-[10px] font-black tracking-widest flex-shrink-0">01</div>
                 <div>
-                  <h3 className="text-white/80 font-light mb-1">Scan QR Code</h3>
-                  <p className="text-neutral-500 text-sm font-light">Open your phone camera and point it at the QR code</p>
+                  <h3 className="text-neutral-500 text-[10px] tracking-[0.3em] font-black uppercase mb-1">Scan Art Matrix</h3>
+                  <p className="text-neutral-400 text-xs font-light">Open your vision device and point it at the genesis code</p>
                 </div>
               </div>
               
-              <div className="flex items-start gap-4">
-                <div className="w-8 h-8 rounded-full border border-amber-600/30 flex items-center justify-center text-amber-600/70 text-sm font-light flex-shrink-0">2</div>
+              <div className="flex items-start gap-4 hover:translate-x-1 transition-transform cursor-default">
+                <div className="w-8 h-8 rounded-full border border-white/5 flex items-center justify-center text-amber-600/40 text-[10px] font-black tracking-widest flex-shrink-0">02</div>
                 <div>
-                  <h3 className="text-white/80 font-light mb-1">Add to Home Screen</h3>
-                  <p className="text-neutral-500 text-sm font-light">Tap the notification and select "Add to Home Screen"</p>
+                  <h3 className="text-neutral-500 text-[10px] tracking-[0.3em] font-black uppercase mb-1">Initiate Interface</h3>
+                  <p className="text-neutral-400 text-xs font-light">Select "Add to Home Screen" for a seamless terminal experience</p>
                 </div>
               </div>
               
-              <div className="flex items-start gap-4">
-                <div className="w-8 h-8 rounded-full border border-amber-600/30 flex items-center justify-center text-amber-600/70 text-sm font-light flex-shrink-0">3</div>
+              <div className="flex items-start gap-4 hover:translate-x-1 transition-transform cursor-default">
+                <div className="w-8 h-8 rounded-full border border-white/5 flex items-center justify-center text-amber-600/40 text-[10px] font-black tracking-widest flex-shrink-0">03</div>
                 <div>
-                  <h3 className="text-white/80 font-light mb-1">Enjoy Offline Access</h3>
-                  <p className="text-neutral-500 text-sm font-light">Works like a native app with offline capabilities</p>
+                  <h3 className="text-neutral-500 text-[10px] tracking-[0.3em] font-black uppercase mb-1">Persistent Link</h3>
+                  <p className="text-neutral-400 text-xs font-light">Direct sanctuary access with full offline autonomy</p>
                 </div>
               </div>
             </motion.div>
@@ -159,14 +159,14 @@ export function PWASection() {
             {showInstallButton && (
               <motion.button
                 onClick={handleInstall}
-                className="px-8 py-3.5 bg-gradient-to-r from-amber-600/20 to-amber-500/20 border border-amber-600/50 text-amber-600 rounded-sm flex items-center gap-2 transition-all hover:from-amber-600/30 hover:to-amber-500/30 hover:border-amber-600/70 text-sm tracking-wider font-light shadow-lg shadow-amber-600/10"
+                className="px-10 py-5 bg-white/5 border border-white/5 text-white/90 text-[10px] tracking-[0.4em] font-black uppercase hover:bg-white/10 hover:border-white/10 transition-all duration-500 flex items-center gap-3 rounded-xl shadow-2xl"
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
               >
-                <Download size={18} strokeWidth={1.5} />
-                INSTALL NOW
+                <Download size={14} />
+                Manifest Locally
               </motion.button>
             )}
 
@@ -193,17 +193,17 @@ export function PWASection() {
             {qrCode ? (
               <div className="relative group">
                 <div className="absolute inset-0 bg-gradient-to-br from-neutral-900/50 to-transparent blur-3xl opacity-60" />
-                <div className="relative bg-white p-8 rounded-2xl shadow-2xl border border-neutral-800/50 group-hover:border-neutral-600/70 transition-all duration-500 group-hover:shadow-neutral-900/50" style={{ transform: 'translateZ(0)' }}>
+                <div className="relative bg-white p-10 rounded-[2rem] shadow-2xl border border-white/10 group-hover:border-white/20 transition-all duration-700 group-hover:shadow-white/5" style={{ transform: 'translateZ(0)' }}>
                   <img 
                     src={qrCode}
                     alt="Scan to install PWA"
-                    className="w-64 h-64 rounded-lg"
+                    className="w-64 h-64 grayscale contrast-125"
                     loading="lazy"
                   />
-                  <div className="absolute inset-4 border-2 border-neutral-200/30 rounded-lg pointer-events-none" />
+                  <div className="absolute inset-6 border-[3px] border-neutral-900/5 rounded-2xl pointer-events-none" />
                 </div>
-                <div className="absolute -bottom-4 left-1/2 -translate-x-1/2 bg-neutral-900/90 backdrop-blur-sm border border-neutral-700/50 rounded-lg px-4 py-2 shadow-lg">
-                  <p className="text-neutral-300 text-xs font-light tracking-wider whitespace-nowrap">SCAN TO INSTALL</p>
+                <div className="absolute -bottom-6 left-1/2 -translate-x-1/2 bg-black/80 backdrop-blur-xl border border-white/5 rounded-full px-8 py-3 shadow-2xl">
+                  <p className="text-neutral-400 text-[9px] font-black tracking-[0.5em] uppercase whitespace-nowrap">Scan Matrix</p>
                 </div>
               </div>
             ) : isLoading ? (

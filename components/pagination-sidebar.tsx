@@ -54,12 +54,12 @@ export function PaginationSidebar({ currentSection, onSectionChange, totalSectio
             />
           )}
           <motion.span 
-            className={`text-xs font-light tracking-wider transition-all duration-300 ${
+            className={`text-[10px] tracking-[0.4em] font-black uppercase transition-all duration-300 ${
               index === currentSection 
                 ? 'text-amber-600 opacity-100' 
                 : 'text-neutral-600 opacity-0 group-hover:opacity-100 group-hover:text-amber-600/70'
             }`}
-            style={{ fontFamily: 'Oughter, serif' }}
+            style={{ fontFamily: 'ForestSmooth, serif' }}
           >
             {page.label}
           </motion.span>
