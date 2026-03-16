@@ -55,7 +55,7 @@ export function Navigation() {
       <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-amber-600/20 to-transparent" />
 
       {/* ── single bar: logo | nav links | user | menu ── */}
-      <div className="px-5 md:px-12 py-3.5 md:py-5 grid grid-cols-[1fr_auto_1fr] items-center gap-4 relative z-10">
+      <div className="px-5 md:px-12 py-3.5 md:py-5 flex md:grid md:grid-cols-[1fr_auto_1fr] items-center justify-between md:justify-normal gap-4 relative z-10">
 
         {/* Logo */}
         <Link href="/" className="group shrink-0">
