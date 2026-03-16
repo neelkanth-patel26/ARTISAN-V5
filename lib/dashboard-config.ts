@@ -16,6 +16,14 @@ import {
   FileText,
   Ticket,
   HardDrive,
+  LayoutDashboard,
+  Package,
+  Bookmark,
+  UserCheck,
+  Gift,
+  MessagesSquare,
+  CalendarCheck,
+  SlidersHorizontal,
   type LucideIcon,
 } from 'lucide-react'
 
@@ -51,14 +59,14 @@ export const DASHBOARD_NAV: Record<'artist' | 'admin' | 'collector', NavItem[]> 
     { icon: Settings, label: 'Settings', href: '/dashboard/admin/settings' },
   ],
   collector: [
-    { icon: Home, label: 'Dashboard', href: '/dashboard/collector' },
-    { icon: ShoppingBag, label: 'Purchases', href: '/dashboard/collector/purchases' },
-    { icon: Heart, label: 'Favorites', href: '/dashboard/collector/favorites' },
-    { icon: UserPlus, label: 'Following', href: '/dashboard/collector/following' },
-    { icon: HandHeart, label: 'Support', href: '/dashboard/collector/support' },
-    { icon: MessageSquare, label: 'Comments', href: '/dashboard/collector/comments' },
-    { icon: Ticket, label: 'Bookings', href: '/dashboard/collector/bookings' },
-    { icon: Settings, label: 'Settings', href: '/dashboard/collector/settings' },
+    { icon: LayoutDashboard, label: 'Dashboard', href: '/dashboard/collector' },
+    { icon: Package,         label: 'Purchases', href: '/dashboard/collector/purchases' },
+    { icon: Bookmark,        label: 'Favorites', href: '/dashboard/collector/favorites' },
+    { icon: UserCheck,       label: 'Following', href: '/dashboard/collector/following' },
+    { icon: Gift,            label: 'Support',   href: '/dashboard/collector/support' },
+    { icon: MessagesSquare,  label: 'Comments',  href: '/dashboard/collector/comments' },
+    { icon: CalendarCheck,   label: 'Bookings',  href: '/dashboard/collector/bookings' },
+    { icon: SlidersHorizontal, label: 'Settings', href: '/dashboard/collector/settings' },
   ],
 }
 

@@ -54,17 +54,25 @@ export async function GET(request: NextRequest) {
     const previousSalesCount = previousTxns?.length || 0
     const salesTrend = previousSalesCount > 0 ? Math.round(((currentSales - previousSalesCount) / previousSalesCount) * 100) : 0
 
-    // Get artworks for category distribution and top performers
+    // Get categories lookup
+    const { data: categoriesData } = await supabase
+      .from('categories')
+      .select('id, name')
+
+    const categoryNameMap = new Map<string, string>()
+    categoriesData?.forEach(c => categoryNameMap.set(c.id, c.name))
+
+    // Get artworks for category distribution and top performers (all statuses)
     const { data: artworks } = await supabase
       .from('artworks')
-      .select('id, title, category, views, price')
+      .select('id, title, views, views_count, price, category_id')
       .eq('artist_id', userId)
-      .eq('status', 'approved')
 
     // Category distribution
     const categoryMap = new Map<string, number>()
     artworks?.forEach(a => {
-      categoryMap.set(a.category, (categoryMap.get(a.category) || 0) + 1)
+      const name = categoryNameMap.get(a.category_id) || 'Uncategorized'
+      categoryMap.set(name, (categoryMap.get(name) || 0) + 1)
     })
 
     // Revenue chart data (group by day)
@@ -101,15 +109,15 @@ export async function GET(request: NextRequest) {
         data: Array.from(categoryMap.values())
       },
       topArtworks: artworks
-        ?.sort((a, b) => b.views - a.views)
-        .slice(0, 5)
-        .map(a => ({
+        ?.map(a => ({
           id: a.id,
           title: a.title,
-          views: a.views,
+          views: Number(a.views || a.views_count || 0),
           sales: artworkSales.get(a.id) || 0,
           revenue: Number(a.price) * (artworkSales.get(a.id) || 0)
-        })) || []
+        }))
+        .sort((a, b) => b.revenue !== a.revenue ? b.revenue - a.revenue : b.views - a.views)
+        .slice(0, 5) || []
     }
 
     return NextResponse.json(data)

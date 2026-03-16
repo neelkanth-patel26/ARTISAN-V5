@@ -89,7 +89,7 @@ export function getCurrentUser(): UserSession | null {
 export async function getProfile(userId: string) {
   const { data, error } = await supabase
     .from('users')
-    .select('id, email, full_name, phone, location, avatar_url, role, status, bio, website, followers_count, following_count, total_views, created_at, updated_at, last_active_at')
+    .select('id, email, full_name, phone, location, avatar_url, role, status, bio, website, upi_id, upi_qr_code, followers_count, following_count, total_views, created_at, updated_at, last_active_at')
     .eq('id', userId)
     .maybeSingle()
 

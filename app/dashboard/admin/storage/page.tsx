@@ -6,6 +6,7 @@ import { DASHBOARD_NAV } from '@/lib/dashboard-config'
 import { useState, useEffect } from 'react'
 import { HardDrive, Trash2, Download, Eye, Search, Filter, Image, FileText, Film } from 'lucide-react'
 import { toast } from 'sonner'
+import { motion, AnimatePresence } from 'framer-motion'
 
 interface StorageFile {
   name: string
@@ -134,284 +135,242 @@ export default function StorageManagement() {
 
   return (
     <DashboardLayout navItems={DASHBOARD_NAV.admin} role="admin">
-      <div className="p-6 lg:p-8 space-y-6">
-        <div>
-          <h1 className="text-3xl font-bold text-white mb-2">Cloud Storage</h1>
-          <p className="text-neutral-400">Manage uploaded files and storage</p>
+      <div className="relative min-h-screen">
+        {/* ── Atmospheric Sentinel ── */}
+        <div className="pointer-events-none fixed inset-0 overflow-hidden">
+          <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-orange-600/[0.03] rounded-full blur-[120px]" />
+          <div className="absolute bottom-[10%] right-[-5%] w-[30%] h-[30%] bg-orange-700/[0.02] rounded-full blur-[100px]" />
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <div className="bg-neutral-900 rounded-xl border border-neutral-800 p-6">
-            <div className="flex items-center gap-4">
-              <div className="w-12 h-12 rounded-lg bg-blue-500/10 flex items-center justify-center">
-                <HardDrive size={24} className="text-blue-500" />
+        <div className="relative z-10 p-6 lg:p-12 space-y-12 max-w-[1600px] mx-auto">
+          {/* ── Registry Header ── */}
+          <div className="flex flex-col md:flex-row md:items-end justify-between gap-8">
+            <div className="space-y-2">
+              <div className="flex items-center gap-3">
+                <div className="px-3 py-1 rounded-full bg-orange-500/10 border border-orange-500/20">
+                  <span className="text-[10px] tracking-[0.4em] uppercase font-black text-orange-400">Vault Protocol</span>
+                </div>
+                <HardDrive size={14} className="text-neutral-700" />
               </div>
-              <div>
-                <div className="text-2xl font-bold text-white">{files.length}</div>
-                <div className="text-sm text-neutral-400">Total Files</div>
-              </div>
+              <h1 className="text-4xl md:text-5xl font-light text-white tracking-tight" style={{ fontFamily: 'ForestSmooth, serif' }}>
+                Asset <span className="text-neutral-500">Registry</span>
+              </h1>
+              <p className="text-[14px] text-neutral-500 font-light tracking-wide max-w-md">
+                Overseeing the digital inventory and orchestrating cloud resource distribution.
+              </p>
             </div>
+
+            {/* Metrics Nucleus */}
+            {!loading && (
+              <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+                {[
+                  { label: 'Total Assets', value: files.length, icon: HardDrive, glow: 'bg-blue-500/10' },
+                  { label: 'Cloud Saturation', value: formatSize(totalSize), icon: HardDrive, glow: 'bg-purple-500/10' },
+                  { label: 'Visual Archives', value: files.filter(f => f.type.startsWith('image/')).length, icon: Image, glow: 'bg-green-500/10' }
+                ].map((stat, i) => (
+                  <motion.div
+                    key={stat.label}
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: i * 0.1 }}
+                    className="px-6 py-4 rounded-3xl bg-white/[0.02] border border-white/[0.05] backdrop-blur-xl group hover:border-orange-500/20 transition-all duration-500"
+                  >
+                    <div className="flex items-center gap-3 mb-1">
+                      <p className="text-[9px] tracking-[0.3em] uppercase font-black text-neutral-600 group-hover:text-neutral-400 transition-colors">
+                        {stat.label}
+                      </p>
+                    </div>
+                    <p className="text-2xl font-light text-white" style={{ fontFamily: 'ForestSmooth, serif' }}>
+                      {stat.value}
+                    </p>
+                  </motion.div>
+                ))}
+              </div>
+            )}
           </div>
 
-          <div className="bg-neutral-900 rounded-xl border border-neutral-800 p-6">
-            <div className="flex items-center gap-4">
-              <div className="w-12 h-12 rounded-lg bg-purple-500/10 flex items-center justify-center">
-                <HardDrive size={24} className="text-purple-500" />
-              </div>
-              <div>
-                <div className="text-2xl font-bold text-white">{formatSize(totalSize)}</div>
-                <div className="text-sm text-neutral-400">Storage Used</div>
-              </div>
-            </div>
-          </div>
-
-          <div className="bg-neutral-900 rounded-xl border border-neutral-800 p-6">
-            <div className="flex items-center gap-4">
-              <div className="w-12 h-12 rounded-lg bg-green-500/10 flex items-center justify-center">
-                <Image size={24} className="text-green-500" />
-              </div>
-              <div>
-                <div className="text-2xl font-bold text-white">{files.filter(f => f.type.startsWith('image/')).length}</div>
-                <div className="text-sm text-neutral-400">Images</div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div className="bg-neutral-900 rounded-xl border border-neutral-800 overflow-hidden">
-          <div className="p-6 border-b border-neutral-800">
-            <div className="flex flex-col gap-4">
-              <div className="flex flex-col md:flex-row gap-4">
-                <div className="flex-1 relative">
-                  <Search size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-neutral-500" />
+          <div className="space-y-10">
+            {/* Protocol Controls */}
+            <div className="p-8 rounded-[2.5rem] bg-neutral-900/40 border border-white/[0.05] backdrop-blur-3xl space-y-6">
+              <div className="flex flex-col xl:flex-row gap-6">
+                <div className="flex-1 relative group">
+                  <Search size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-neutral-600 group-focus-within:text-orange-500 transition-colors" />
                   <input
                     type="text"
                     value={search}
                     onChange={(e) => setSearch(e.target.value)}
-                    placeholder="Search by filename or uploader..."
-                    className="w-full pl-10 pr-4 py-2.5 bg-neutral-800 border border-neutral-700 rounded-lg text-white placeholder:text-neutral-500 focus:border-amber-600 focus:outline-none transition-colors"
+                    placeholder="Scan asset nomenclature..."
+                    className="w-full pl-12 pr-4 py-4 bg-white/[0.02] border border-white/[0.05] rounded-2xl text-white text-[13px] placeholder:text-neutral-700 focus:outline-none focus:border-orange-500/30 transition-all"
                   />
                 </div>
-                <div className="flex gap-2">
-                  {(['all', 'images', 'documents', 'videos'] as const).map(f => (
+                
+                <div className="flex flex-wrap items-center gap-4">
+                  <div className="flex p-1 rounded-2xl bg-white/[0.02] border border-white/[0.05]">
+                    {(['all', 'images', 'documents', 'videos'] as const).map(f => (
+                      <button
+                        key={f}
+                        onClick={() => setFilter(f)}
+                        className={`px-6 py-2.5 rounded-xl text-[11px] font-light tracking-[0.2em] uppercase transition-all duration-500 ${
+                          filter === f ? 'bg-orange-500/10 text-orange-400 shadow-[0_0_20px_rgba(234,88,12,0.1)]' : 'text-neutral-600 hover:text-neutral-300'
+                        }`}
+                        style={{ fontFamily: 'Oughter, serif' }}
+                      >
+                        {f}
+                      </button>
+                    ))}
+                  </div>
+
+                  <div className="flex p-1 rounded-2xl bg-white/[0.02] border border-white/[0.05]">
+                    {(['all', 'supabase'] as const).map(s => (
+                      <button
+                        key={s}
+                        onClick={() => setSourceFilter(s)}
+                        className={`px-5 py-2.5 rounded-xl text-[10px] font-light tracking-[0.15em] uppercase transition-all duration-500 ${
+                          sourceFilter === s ? 'bg-white/10 text-white' : 'text-neutral-600 hover:text-neutral-300'
+                        }`}
+                        style={{ fontFamily: 'Oughter, serif' }}
+                      >
+                        {s}
+                      </button>
+                    ))}
+                  </div>
+
+                  {(search || filter !== 'all' || sourceFilter !== 'all') && (
                     <button
-                      key={f}
-                      onClick={() => setFilter(f)}
-                      className={`px-4 py-2.5 rounded-lg text-sm font-medium transition-colors ${
-                        filter === f ? 'bg-amber-600 text-white' : 'bg-neutral-800 text-neutral-400 hover:text-white'
-                      }`}
+                      onClick={() => { setSearch(''); setFilter('all'); setSourceFilter('all') }}
+                      className="px-4 py-2 text-[10px] text-neutral-600 hover:text-white uppercase tracking-widest font-black transition-colors"
                     >
-                      {f.charAt(0).toUpperCase() + f.slice(1)}
+                      Reset Protocol
                     </button>
-                  ))}
+                  )}
                 </div>
               </div>
-              <div className="flex items-center gap-2">
-                <span className="text-sm text-neutral-400">Source:</span>
-                {(['all', 'local', 'supabase'] as const).map(s => (
-                  <button
-                    key={s}
-                    onClick={() => setSourceFilter(s)}
-                    className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ${
-                      sourceFilter === s ? 'bg-neutral-700 text-white' : 'bg-neutral-800/50 text-neutral-500 hover:text-white'
-                    }`}
-                  >
-                    {s.charAt(0).toUpperCase() + s.slice(1)}
-                  </button>
-                ))}
-                {(search || filter !== 'all' || sourceFilter !== 'all') && (
-                  <button
-                    onClick={() => { setSearch(''); setFilter('all'); setSourceFilter('all') }}
-                    className="ml-auto px-3 py-1.5 text-xs text-neutral-400 hover:text-white transition-colors"
-                  >
-                    Clear filters
-                  </button>
-                )}
-              </div>
             </div>
-          </div>
 
-          <div className="p-6">
             {loading ? (
-              <div className="text-center py-16">
-                <div className="w-12 h-12 border-3 border-amber-600 border-t-transparent rounded-full animate-spin mx-auto mb-4" />
-                <p className="text-neutral-400">Loading files...</p>
-              </div>
-            ) : filteredFiles.length === 0 ? (
-              <div className="text-center py-16">
-                <HardDrive size={48} className="text-neutral-600 mx-auto mb-4" />
-                <p className="text-neutral-400 text-lg">No files found</p>
-              </div>
+               <div className="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                 {[1, 2, 3, 4].map(i => <div key={i} className="aspect-square rounded-[2rem] bg-white/[0.02] border border-white/[0.05] animate-pulse" />)}
+               </div>
             ) : (
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-                {filteredFiles.map((file) => (
-                  <div key={file.name} className="group relative flex flex-col shadow-xl bg-neutral-800/40 hover:bg-neutral-800 rounded-2xl border border-neutral-800/50 hover:border-amber-500/30 transition-all duration-300 overflow-hidden">
-                    {/* Preview Area */}
-                    <div className="aspect-square relative overflow-hidden bg-neutral-900/50 border-b border-neutral-800/30">
-                      {file.type.startsWith('image/') ? (
-                        <img src={file.url} alt={file.name} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" />
-                      ) : (
-                        <div className="w-full h-full flex items-center justify-center">
-                          <div className="scale-150 opacity-40 group-hover:opacity-60 transition-opacity duration-300">
-                            {getFileIcon(file.type)}
+                <AnimatePresence mode="popLayout">
+                  {filteredFiles.map((file, i) => (
+                    <motion.div
+                      key={file.name}
+                      layout
+                      initial={{ opacity: 0, scale: 0.9 }}
+                      animate={{ opacity: 1, scale: 1 }}
+                      exit={{ opacity: 0, scale: 0.9 }}
+                      transition={{ duration: 0.6, ease: [0.19, 1, 0.22, 1] }}
+                      className="group relative flex flex-col rounded-[2.5rem] bg-neutral-900/40 border border-white/[0.05] backdrop-blur-3xl overflow-hidden hover:bg-neutral-900/60 hover:border-white/[0.1] transition-all duration-700 hover:translate-y-[-4px]"
+                    >
+                      {/* Asset Visual Domain */}
+                      <div className="aspect-square relative overflow-hidden bg-black/40 border-b border-white/[0.05]">
+                        {file.type.startsWith('image/') ? (
+                          <img src={file.url} alt={file.name} className="w-full h-full object-cover grayscale-[0.5] group-hover:grayscale-0 transition-all duration-1000 group-hover:scale-105" />
+                        ) : (
+                          <div className="w-full h-full flex items-center justify-center">
+                            <div className="p-8 rounded-full bg-white/[0.02] border border-white/[0.05] opacity-20 group-hover:opacity-40 transition-opacity duration-700">
+                              {getFileIcon(file.type)}
+                            </div>
                           </div>
-                        </div>
-                      )}
-                      
-                      {/* Action Overlay (Desktop Hover) */}
-                      <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center gap-2 backdrop-blur-[2px]">
-                        {file.type.startsWith('image/') && (
+                        )}
+                        
+                        {/* Intelligence Actions Overlay */}
+                        <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-all duration-700 flex items-center justify-center gap-4 backdrop-blur-md">
+                          {file.type.startsWith('image/') && (
+                            <button
+                              onClick={() => {
+                                const modal = document.createElement('div')
+                                modal.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.95);display:flex;align-items:center;justify-content:center;z-index:9999;backdrop-filter:blur(40px);padding:40px'
+                                modal.innerHTML = `
+                                  <div style="width:100%;max-width:1400px;display:flex;flex-direction:column;gap:32px;animation:artisanFadeIn 0.8s ease">
+                                    <style>
+                                      @keyframes artisanFadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+                                    </style>
+                                    <div style="display:flex;justify-content:space-between;align-items:flex-end">
+                                      <div style="space-y-1">
+                                        <p style="color:rgba(234,88,12,0.6);font-size:10px;text-transform:uppercase;letter-spacing:0.5em;font-weight:900">Asset Inspection</p>
+                                        <h2 style="color:#fff;font-size:32px;font-family:ForestSmooth, serif;font-weight:100;letter-spacing:-0.03em">${file.name}</h2>
+                                      </div>
+                                      <button id="close" style="padding:12px;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:#fff;border-radius:16px;cursor:pointer">✕</button>
+                                    </div>
+                                    <div style="position:relative;background:rgba(0,0,0,0.4);border:1px solid rgba(255,255,255,0.08);border-radius:40px;overflow:hidden;box-shadow:0 60px 100px rgba(0,0,0,0.8)">
+                                      <img src="${file.url}" style="width:100%;max-height:75vh;object-fit:contain;padding:16px" />
+                                    </div>
+                                  </div>
+                                `
+                                document.body.appendChild(modal)
+                                const close = () => { modal.style.opacity = '0'; modal.style.transition = 'opacity 0.4s ease'; setTimeout(() => document.body.removeChild(modal), 400) }
+                                modal.addEventListener('click', (e) => { if (e.target === modal) close() })
+                                modal.querySelector('#close')?.addEventListener('click', close)
+                              }}
+                              className="w-12 h-12 bg-orange-600/20 border border-orange-500/30 rounded-2xl flex items-center justify-center text-orange-400 shadow-2xl hover:bg-orange-600/30 transition-all hover:scale-110"
+                              title="Inspect Essence"
+                            >
+                              <Eye size={20} strokeWidth={1.5} />
+                            </button>
+                          )}
                           <button
-                            onClick={() => {
-                              const modal = document.createElement('div')
-                              modal.style.cssText = 'position:fixed;inset:0;background:radial-gradient(circle at center, rgba(15,15,15,0.95) 0%, rgba(0,0,0,0.98) 100%);display:flex;align-items:center;justify-content:center;z-index:9999;backdrop-filter:blur(24px);animation:premiumFadeIn 0.4s cubic-bezier(0.16,1,0.3,1);padding:max(20px, 4vw)'
-                              modal.innerHTML = `
-                                <style>
-                                  @keyframes premiumFadeIn{from{opacity:0;backdrop-filter:blur(0px)}to{opacity:1;backdrop-filter:blur(24px)}}
-                                  @keyframes premiumScaleIn{from{transform:scale(0.9) translateY(20px);opacity:0}to{transform:scale(1) translateY(0);opacity:1}}
-                                  @keyframes premiumFadeOut{from{opacity:1;backdrop-filter:blur(24px)}to{opacity:0;backdrop-filter:blur(0px)}}
-                                  .viewer{animation:premiumScaleIn 0.5s cubic-bezier(0.16,1,0.3,1);will-change:transform, opacity}
-                                  .premium-btn{background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:#fff;border-radius:12px;cursor:pointer;transition:all 0.3s cubic-bezier(0.4,0,0.2,1);display:flex;align-items:center;justify-content:center;backdrop-filter:blur(8px)}
-                                  .premium-btn:hover{background:rgba(255,255,255,0.12);border-color:rgba(255,255,255,0.3);transform:translateY(-2px);box-shadow:0 10px 20px rgba(0,0,0,0.3)}
-                                  .premium-btn:active{transform:translateY(0);scale:0.95}
-                                  .download-btn{background:linear-gradient(135deg, #d97706, #b45309);border:none;color:#fff;border-radius:12px;padding:0 24px;height:48px;font-weight:700;font-size:15px;cursor:pointer;transition:all 0.3s cubic-bezier(0.4,0,0.2,1);box-shadow:0 10px 25px rgba(180,83,9,0.3)}
-                                  .download-btn:hover{transform:translateY(-2px);box-shadow:0 15px 30px rgba(180,83,9,0.5);filter:brightness(1.1)}
-                                  .download-btn:active{transform:translateY(0);scale:0.95}
-                                  .glass-container{background:rgba(10,10,10,0.6);border:1px solid rgba(255,255,255,0.08);border-radius:24px;overflow:hidden;box-shadow:0 100px 100px rgba(0,0,0,0.8);backdrop-filter:blur(16px)}
-                                  .meta-tag{padding:4px 10px;border-radius:8px;font-size:11px;font-weight:700;letter-spacing:0.05em;text-transform:uppercase}
-                                  @media (max-width: 640px) {
-                                    .viewer-header { flex-direction: column; gap: 16px; align-items: flex-start !important; }
-                                    .viewer-footer { padding: 20px !important; flex-direction: column-reverse; gap: 16px; align-items: stretch !important; }
-                                    .zoom-controls { justify-content: center; }
-                                    .download-btn { width: 100%; height: 52px; }
-                                  }
-                                </style>
-                                <div class="viewer" style="width:100%;max-width:1300px;display:flex;flex-direction:column;gap:24px">
-                                  <div class="viewer-header" style="display:flex;justify-content:space-between;align-items:center;padding:0 8px">
-                                    <div style="flex:1;min-width:0">
-                                      <h2 style="color:#fff;font-size:24px;font-weight:800;margin:0 0 8px 0;letter-spacing:-0.02em;word-break:break-all">${file.name}</h2>
-                                      <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap">
-                                        <span style="color:#888;font-size:14px;font-weight:500">${formatSize(file.size)}</span>
-                                        <span style="color:rgba(255,255,255,0.1)">•</span>
-                                        <span style="color:#888;font-size:14px;font-weight:500">${new Date(file.lastModified).toLocaleDateString()}</span>
-                                        ${file.uploadedBy ? `<span style="color:rgba(255,255,255,0.1)">•</span><span style="color:#888;font-size:14px;font-weight:500">by <span style="color:#fff;font-weight:600">${file.uploadedBy}</span></span>` : ''}
-                                        <span class="meta-tag" style="background:${file.source === 'supabase' ? 'rgba(59,130,246,0.15)' : 'rgba(34,197,94,0.15)'};color:${file.source === 'supabase' ? '#60a5fa' : '#4ade80'}">${file.source}</span>
-                                      </div>
-                                    </div>
-                                    <button id="close" class="premium-btn" style="width:48px;height:48px;border-radius:14px;font-size:20px;flex-shrink:0">✕</button>
-                                  </div>
-                                  
-                                  <div class="glass-container" style="position:relative">
-                                    <div style="display:flex;align-items:center;justify-content:center;min-height:350px;max-height:calc(85vh - 220px);overflow:auto;background:radial-gradient(circle at center, #111, #050505);padding:8px">
-                                      <img id="img" src="${file.url}" style="max-width:100%;max-height:calc(85vh - 220px);object-fit:contain;transition:transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);user-select:none;filter:drop-shadow(0 20px 40px rgba(0,0,0,0.5))" draggable="false" />
-                                    </div>
-                                    
-                                    <div class="viewer-footer" style="padding:24px 32px;display:flex;justify-content:space-between;align-items:center;background:rgba(255,255,255,0.02);border-top:1px solid rgba(255,255,255,0.05)">
-                                      <div class="zoom-controls" style="display:flex;gap:12px">
-                                        <button id="zoom-out" class="premium-btn" style="width:44px;height:44px" title="Zoom Out">
-                                          <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M5 10h10"/></svg>
-                                        </button>
-                                        <button id="zoom-reset" class="premium-btn" style="padding:0 16px;font-size:13px;font-weight:700" title="Reset Zoom">Fit View</button>
-                                        <button id="zoom-in" class="premium-btn" style="width:44px;height:44px" title="Zoom In">
-                                          <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M10 5v10M5 10h10"/></svg>
-                                        </button>
-                                      </div>
-                                      <button id="download-btn" class="download-btn">
-                                        <div style="display:flex;align-items:center;gap:12px">
-                                          <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>
-                                          <span>Download Artwork</span>
-                                        </div>
-                                      </button>
-                                    </div>
-                                  </div>
-                                </div>
-                              `
-                              document.body.appendChild(modal)
-                              
-                              const img = modal.querySelector('#img') as HTMLImageElement
-                              let scale = 1
-                              
-                              const updateScale = (delta: number) => {
-                                scale = Math.max(0.1, Math.min(10, scale * delta))
-                                img.style.transform = `scale(${scale})`
-                              }
-
-                              modal.querySelector('#zoom-in')?.addEventListener('click', () => updateScale(1.4))
-                              modal.querySelector('#zoom-out')?.addEventListener('click', () => updateScale(0.7))
-                              modal.querySelector('#zoom-reset')?.addEventListener('click', () => { scale = 1; img.style.transform = 'scale(1)' })
-                              modal.querySelector('#download-btn')?.addEventListener('click', () => handleDownload(file.url, file.name))
-                              
-                              const close = () => {
-                                  modal.querySelector('.viewer')?.setAttribute('style', 'animation: premiumFadeOut 0.3s forwards cubic-bezier(0.16,1,0.3,1);')
-                                  modal.style.opacity = '0'
-                                  modal.style.transition = 'opacity 0.3s ease'
-                                  setTimeout(() => document.body.removeChild(modal), 300)
-                              }
-                              
-                              modal.addEventListener('click', (e) => { if (e.target === modal) close() })
-                              modal.querySelector('#close')?.addEventListener('click', close)
-                              const escHandler = (e: KeyboardEvent) => { if (e.key === 'Escape') { close(); document.removeEventListener('keydown', escHandler) } }
-                              document.addEventListener('keydown', escHandler)
-                            }}
-                            className="w-10 h-10 bg-amber-600 rounded-full flex items-center justify-center text-white shadow-lg hover:scale-110 transition-transform"
-                            title="View"
+                            onClick={() => handleDownload(file.url, file.name)}
+                            className="w-12 h-12 bg-white/5 border border-white/10 rounded-2xl flex items-center justify-center text-white shadow-2xl hover:bg-white/10 transition-all hover:scale-110"
+                            title="Harvest Artifact"
                           >
-                            <Eye size={18} />
+                            <Download size={20} strokeWidth={1.5} />
                           </button>
-                        )}
-                        <button
-                          onClick={() => handleDownload(file.url, file.name)}
-                          className="w-10 h-10 bg-neutral-800 rounded-full flex items-center justify-center text-white shadow-lg hover:scale-110 transition-transform"
-                          title="Download"
-                        >
-                          <Download size={18} />
-                        </button>
-                        <button
-                          onClick={() => deleteFile(file.name, file.source)}
-                          className="w-10 h-10 bg-red-600/80 rounded-full flex items-center justify-center text-white shadow-lg hover:scale-110 transition-transform"
-                          title="Delete"
-                        >
-                          <Trash2 size={18} />
-                        </button>
-                      </div>
-                    </div>
-
-                    {/* Content Area */}
-                    <div className="p-4 flex flex-col gap-2">
-                      <div className="text-white font-semibold truncate group-hover:text-amber-500 transition-colors" title={file.name}>
-                        {file.name}
-                      </div>
-                      
-                      <div className="flex flex-wrap items-center gap-2">
-                        <span className={`px-2 py-0.5 rounded-md text-[10px] font-bold tracking-wider uppercase ${
-                          file.source === 'supabase' ? 'bg-blue-500/10 text-blue-400 border border-blue-500/20' : 'bg-green-500/10 text-green-400 border border-green-500/20'
-                        }`}>
-                          {file.source}
-                        </span>
-                        <span className="text-xs text-neutral-500">{formatSize(file.size)}</span>
+                          <button
+                            onClick={() => deleteFile(file.name, file.source)}
+                            className="w-12 h-12 bg-rose-600/10 border border-rose-500/30 rounded-2xl flex items-center justify-center text-rose-400 shadow-2xl hover:bg-rose-600/30 transition-all hover:scale-110"
+                            title="Terminate Sequence"
+                          >
+                            <Trash2 size={20} strokeWidth={1.5} />
+                          </button>
+                        </div>
                       </div>
 
-                      <div className="mt-2 pt-3 border-t border-neutral-800/50 flex items-center justify-between text-[11px] text-neutral-500">
-                        <span>{new Date(file.lastModified).toLocaleDateString()}</span>
-                        {file.uploadedBy && (
-                          <span className="truncate max-w-[100px]" title={`Uploaded by ${file.uploadedBy}`}>
-                            by <span className="text-neutral-400 font-medium">{file.uploadedBy}</span>
-                          </span>
-                        )}
-                      </div>
-                    </div>
+                      {/* Content Metadata */}
+                      <div className="p-8 space-y-4">
+                        <div className="space-y-1">
+                          <h3 className="text-[15px] font-medium text-white truncate" style={{ fontFamily: 'ForestSmooth, serif' }} title={file.name}>
+                            {file.name}
+                          </h3>
+                        </div>
+                        
+                        <div className="flex items-center justify-between">
+                          <div className={`px-3 py-1 rounded-full text-[9px] font-black tracking-[0.2em] uppercase ${
+                            file.source === 'supabase' ? 'bg-orange-500/10 text-orange-400 border border-orange-500/20' : 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20'
+                          }`}>
+                            {file.source}
+                          </div>
+                          <span className="text-[11px] text-neutral-600 font-black tracking-widest uppercase">{formatSize(file.size)}</span>
+                        </div>
 
-                    {/* Mobile Actions (Visible on touch) */}
-                    <div className="lg:hidden flex border-t border-neutral-800/50 bg-neutral-900/30">
-                      <button onClick={() => file.type.startsWith('image/') && handleDownload(file.url, file.name)} className="flex-1 py-3 flex items-center justify-center gap-2 text-xs text-neutral-400 hover:text-white border-r border-neutral-800/50">
-                        <Download size={14} /> Download
-                      </button>
-                      <button onClick={() => deleteFile(file.name, file.source)} className="flex-1 py-3 flex items-center justify-center gap-2 text-xs text-red-500/60 hover:text-red-500">
-                        <Trash2 size={14} /> Delete
-                      </button>
-                    </div>
-                  </div>
-                ))}
+                        <div className="pt-4 border-t border-white/[0.03] flex items-center justify-between">
+                          <span className="text-[10px] text-neutral-500 font-light tracking-wide uppercase">{new Date(file.lastModified).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' })}</span>
+                          {file.uploadedBy && (
+                            <div className="flex items-center gap-2">
+                               <span className="text-[9px] text-neutral-700 uppercase font-black" style={{ fontFamily: 'Oughter, serif' }}>Curated By</span>
+                               <span className="text-[10px] text-neutral-400 font-medium truncate max-w-[80px]" title={file.uploadedBy}>{file.uploadedBy.split('@')[0]}</span>
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                    </motion.div>
+                  ))}
+                </AnimatePresence>
+              </div>
+            )}
+
+            {/* Empty Protocol */}
+            {!loading && filteredFiles.length === 0 && (
+              <div className="py-32 flex flex-col items-center gap-6 text-center animate-in fade-in slide-in-from-bottom-4 duration-1000">
+                <div className="w-24 h-24 rounded-[2.5rem] bg-orange-600/5 border border-orange-600/10 flex items-center justify-center shadow-2xl">
+                  <HardDrive size={32} className="text-orange-500/30" strokeWidth={1} />
+                </div>
+                <div className="space-y-1">
+                  <p className="text-2xl font-light text-white/90" style={{ fontFamily: 'ForestSmooth, serif' }}>Void Registry</p>
+                  <p className="text-[13px] text-neutral-600 font-light">The digital vault remains unoccupied in this specific sector.</p>
+                </div>
               </div>
             )}
           </div>

@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react'
 import { getCurrentUser } from '@/lib/auth'
 import { Heart, Share2, Download, ShoppingCart } from 'lucide-react'
+import { motion, AnimatePresence } from 'framer-motion'
 import { AuthPromptModal } from './auth-prompt-modal'
 import { toast } from 'sonner'
 
@@ -34,12 +35,19 @@ export function ArtworkCard({ artwork, initialLiked = false, onLike, onOpen }: A
   const [isLiking, setIsLiking] = useState(false)
   const [showAuthPrompt, setShowAuthPrompt] = useState(false)
 
+  const [imageLoaded, setImageLoaded] = useState(false)
+
   const fallbackImage = 'https://images.unsplash.com/photo-1579783483458-83d02161294e?w=800&q=80'
 
   useEffect(() => {
     setIsLiked(initialLiked)
     if (typeof artwork.likes === 'number') setLikesCount(artwork.likes)
   }, [initialLiked, artwork.likes])
+
+  // Reset loading state when image changes
+  useEffect(() => {
+    setImageLoaded(false)
+  }, [artwork.image])
 
   const requireAuth = (action: () => void) => {
     if (!getCurrentUser()) {
@@ -120,15 +128,61 @@ export function ArtworkCard({ artwork, initialLiked = false, onLike, onOpen }: A
         className="group relative bg-neutral-900 border border-white/5 rounded-[2.5rem] overflow-hidden transition-all duration-700 hover:border-amber-600/30 hover:shadow-[0_20px_60px_-15px_rgba(0,0,0,0.5),0_0_40px_-10px_rgba(217,119,6,0.1)] hover:-translate-y-2 cursor-pointer"
       >
         {/* Aspect Ratio Container */}
-        <div className="relative aspect-[3/4] overflow-hidden">
+        <div className="relative aspect-[3/4] overflow-hidden bg-neutral-950">
+          {/* Luxury Placeholder Animation */}
+          <AnimatePresence>
+            {!imageLoaded && (
+              <motion.div 
+                initial={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.8, ease: "easeOut" }}
+                className="absolute inset-0 z-10 flex flex-col items-center justify-center bg-neutral-950"
+              >
+                {/* Glassmorphic Shimmer */}
+                <div className="absolute inset-0 overflow-hidden">
+                  <motion.div 
+                    animate={{ 
+                      x: ['-100%', '100%'],
+                      opacity: [0, 0.1, 0] 
+                    }}
+                    transition={{ 
+                      duration: 2, 
+                      repeat: Infinity, 
+                      ease: "linear" 
+                    }}
+                    className="absolute inset-0 bg-gradient-to-r from-transparent via-amber-200 to-transparent skew-x-12"
+                  />
+                </div>
+
+                {/* Curating Artifact indicator */}
+                <div className="relative space-y-4 text-center">
+                  <div className="w-16 h-16 mx-auto rounded-full border border-amber-600/20 flex items-center justify-center">
+                     <motion.div 
+                        animate={{ rotate: 360 }}
+                        transition={{ duration: 8, repeat: Infinity, ease: "linear" }}
+                        className="absolute inset-0 rounded-full border-t border-amber-600/40"
+                     />
+                     <div className="w-1.5 h-1.5 rounded-full bg-amber-600/60 animate-pulse" />
+                  </div>
+                  <div className="space-y-1">
+                     <p className="text-[8px] uppercase tracking-[0.4em] font-black text-amber-600/40" style={{ fontFamily: 'Oughter, serif' }}>Digital Acquisition</p>
+                     <p className="text-[10px] italic font-light text-neutral-600 tracking-widest" style={{ fontFamily: 'ForestSmooth, serif' }}>Curating Artifact...</p>
+                  </div>
+                </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
+
           {/* Luxury scaling and filtering */}
           <img
             src={artwork.image || fallbackImage}
             alt={artwork.title}
-            className="w-full h-full object-cover grayscale-[0.1] contrast-[1.05] transition-all duration-1000 group-hover:scale-110 group-hover:grayscale-0"
+            className={`w-full h-full object-cover grayscale-[0.1] contrast-[1.05] transition-all duration-1000 group-hover:scale-110 group-hover:grayscale-0 ${imageLoaded ? 'opacity-100' : 'opacity-0'}`}
+            onLoad={() => setImageLoaded(true)}
             onError={(e) => {
               const img = e.target as HTMLImageElement;
               img.src = fallbackImage;
+              setImageLoaded(true);
             }}
           />
           

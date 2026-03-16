@@ -149,300 +149,343 @@ export default function AdminSettings() {
 
   return (
     <DashboardLayout navItems={DASHBOARD_NAV.admin} role="admin">
-      <div className="space-y-6 p-4 lg:p-8">
-        <PageHeader title="Settings" description="Manage your account settings and preferences" />
+      <div className="relative min-h-screen">
+        {/* ── Atmospheric Sentinel ── */}
+        <div className="pointer-events-none fixed inset-0 overflow-hidden">
+          <div className="absolute top-[-5%] right-[-5%] w-[45%] h-[45%] bg-orange-600/[0.03] rounded-full blur-[130px]" />
+          <div className="absolute bottom-[5%] left-[-10%] w-[35%] h-[35%] bg-blue-600/[0.02] rounded-full blur-[110px]" />
+        </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="lg:col-span-1 space-y-4"
-          >
-            <div className="bg-neutral-900 border border-neutral-800 rounded-xl p-6">
-              <div className="flex flex-col items-center text-center mb-6">
-                <div className="relative mb-4">
-                  {avatarUrl ? (
-                    <img src={avatarUrl} alt="Profile" className="h-24 w-24 rounded-full object-cover" />
-                  ) : (
-                    <div className="flex h-24 w-24 items-center justify-center rounded-full bg-neutral-700 text-3xl font-bold text-white">
-                      {(profileForm.full_name || 'A').charAt(0).toUpperCase()}
+        <div className="relative z-10 p-6 lg:p-12 space-y-12 max-w-[1600px] mx-auto">
+          {/* ── Console Header ── */}
+          <div className="space-y-3">
+            <div className="flex items-center gap-3">
+              <div className="px-3 py-1 rounded-full bg-orange-500/10 border border-orange-500/20">
+                <span className="text-[10px] tracking-[0.5em] uppercase font-black text-orange-400">System Parameters</span>
+              </div>
+              <Activity size={14} className="text-neutral-700" />
+            </div>
+            <h1 className="text-5xl md:text-6xl font-light text-white tracking-tight" style={{ fontFamily: 'ForestSmooth, serif' }}>
+              Core <span className="text-neutral-500 italic">Configuration</span>
+            </h1>
+            <p className="text-[15px] text-neutral-500 font-light tracking-wide max-w-lg">
+              Fine-tuning the platform architecture and curating your administrator identity.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-12">
+            {/* ── Left Column: Identity & Intelligence ── */}
+            <motion.div
+              initial={{ opacity: 0, x: -20 }}
+              animate={{ opacity: 1, x: 0 }}
+              className="lg:col-span-4 space-y-6"
+            >
+              {/* Identity Hub */}
+              <div className="relative group overflow-hidden rounded-[2.5rem] bg-neutral-900/40 border border-white/[0.05] p-8 backdrop-blur-3xl transition-all duration-700 hover:bg-neutral-900/60 hover:border-orange-500/20">
+                <div className="flex flex-col items-center text-center">
+                  <div className="relative mb-8">
+                    <div className="absolute inset-0 rounded-full bg-orange-500/10 blur-2xl group-hover:bg-orange-500/20 transition-all duration-700" />
+                    <div className="relative h-32 w-32 md:h-40 md:w-40 rounded-full border border-white/[0.1] p-2 bg-neutral-950/40 group-hover:border-orange-500/40 transition-all duration-700">
+                      {avatarUrl ? (
+                        <img src={avatarUrl} alt="Profile" className="h-full w-full rounded-full object-cover grayscale-[0.2] group-hover:grayscale-0 transition-all duration-700" />
+                      ) : (
+                        <div className="flex h-full w-full items-center justify-center rounded-full bg-neutral-900 text-5xl font-light text-neutral-400" style={{ fontFamily: 'ForestSmooth, serif' }}>
+                          {(profileForm.full_name || 'A').charAt(0).toUpperCase()}
+                        </div>
+                      )}
+                      <label className="absolute bottom-2 right-2 cursor-pointer">
+                        <motion.div 
+                          whileHover={{ scale: 1.1 }}
+                          whileTap={{ scale: 0.9 }}
+                          className="p-3 bg-orange-500 text-white rounded-full shadow-[0_0_20px_rgba(249,115,22,0.4)] transition-colors hover:bg-orange-600"
+                        >
+                          <Upload size={16} />
+                        </motion.div>
+                        <input type="file" accept="image/*" onChange={handleAvatarUpload} className="hidden" />
+                      </label>
                     </div>
-                  )}
-                  <label className="absolute bottom-0 right-0 cursor-pointer">
-                    <div className="p-2 bg-neutral-700 hover:bg-neutral-600 rounded-full transition-colors">
-                      <Upload size={14} className="text-white" />
+                  </div>
+
+                  <h3 className="text-3xl font-light text-white mb-2" style={{ fontFamily: 'ForestSmooth, serif' }}>
+                    {profileForm.full_name || 'Admin Principal'}
+                  </h3>
+                  <p className="text-[12px] text-neutral-500 font-light tracking-[0.2em] uppercase mb-6" style={{ fontFamily: 'Oughter, serif' }}>
+                    {profileForm.email}
+                  </p>
+                  
+                  <div className="px-4 py-1.5 rounded-full bg-white/[0.02] border border-white/[0.05] text-[9px] font-black uppercase tracking-[0.3em] text-neutral-600" style={{ fontFamily: 'Oughter, serif' }}>
+                    Administrator Level Protocol
+                  </div>
+                </div>
+
+                {user && (
+                  <div className="mt-10 pt-8 border-t border-white/[0.03] space-y-4">
+                    <div className="flex items-center justify-between text-[10px] tracking-widest font-black uppercase text-neutral-600" style={{ fontFamily: 'Oughter, serif' }}>
+                      <span>Status Protocol</span>
+                      <span className="text-emerald-500/80">Active.Seal</span>
                     </div>
-                    <input type="file" accept="image/*" onChange={handleAvatarUpload} className="hidden" />
-                  </label>
-                </div>
-                <h3 className="text-xl font-semibold text-white mb-1">{profileForm.full_name || 'Admin User'}</h3>
-                <p className="text-sm text-neutral-400 mb-2">{profileForm.email}</p>
-                <span className="inline-block rounded-full px-3 py-1 text-xs bg-neutral-700 text-neutral-300">
-                  Administrator
-                </span>
+                    {user.profile?.created_at && (
+                      <div className="flex items-center justify-between text-[10px] tracking-widest font-black uppercase text-neutral-600" style={{ fontFamily: 'Oughter, serif' }}>
+                        <span>Initiated</span>
+                        <span className="text-neutral-400">{new Date(user.profile.created_at).toLocaleDateString(undefined, { month: 'short', year: 'numeric' })}</span>
+                      </div>
+                    )}
+                  </div>
+                )}
               </div>
 
-              {user && (
-                <div className="space-y-3 pt-4 border-t border-neutral-800">
-                  <div className="flex items-center justify-between text-xs">
-                    <span className="text-neutral-400">Account Status</span>
-                    <span className="text-green-400">Active</span>
+              {/* Intelligence Stats */}
+              <div className="rounded-[2.5rem] bg-neutral-900/20 border border-white/[0.03] p-8 space-y-6">
+                 <div className="flex items-center gap-3">
+                   <Activity size={14} className="text-neutral-700" />
+                   <h3 className="text-[10px] font-black text-neutral-600 uppercase tracking-[0.4em]" style={{ fontFamily: 'Oughter, serif' }}>Identity Completion</h3>
+                 </div>
+                 
+                 <div className="space-y-4">
+                   <div className="relative h-[2px] w-full bg-white/[0.02] rounded-full overflow-hidden">
+                     <motion.div 
+                       initial={{ width: 0 }}
+                       animate={{ width: `${Math.round([profileForm.full_name, profileForm.email, profileForm.phone, profileForm.location, profileForm.bio].filter(Boolean).length / 5 * 100)}%` }}
+                       className="absolute inset-y-0 left-0 bg-orange-500 shadow-[0_0_10px_rgba(249,115,22,0.5)]"
+                     />
+                   </div>
+                   <div className="flex justify-between items-end">
+                     <p className="text-xs text-neutral-500 font-light italic">Profile integrity level</p>
+                     <p className="text-2xl font-light text-white leading-none" style={{ fontFamily: 'ForestSmooth, serif' }}>
+                       {Math.round([profileForm.full_name, profileForm.email, profileForm.phone, profileForm.location, profileForm.bio].filter(Boolean).length / 5 * 100)}%
+                     </p>
+                   </div>
+                 </div>
+              </div>
+
+              {/* Security Visualization */}
+              <div className="rounded-[2.5rem] bg-neutral-900/20 border border-white/[0.03] p-8 space-y-8">
+                <div className="flex items-center gap-4">
+                  <div className="p-3 bg-emerald-500/10 rounded-2xl border border-emerald-500/20">
+                    <Shield size={16} className="text-emerald-400" />
                   </div>
-                  {user.profile?.created_at && (
-                    <div className="flex items-center justify-between text-xs">
-                      <span className="text-neutral-400">Member Since</span>
-                      <span className="text-white">{new Date(user.profile.created_at).toLocaleDateString('en-US', { month: 'short', year: 'numeric' })}</span>
+                  <div className="space-y-0.5">
+                    <p className="text-[10px] font-black text-neutral-600 uppercase tracking-[0.2em]" style={{ fontFamily: 'Oughter, serif' }}>Protocol Shield</p>
+                    <p className="text-sm text-white font-light" style={{ fontFamily: 'ForestSmooth, serif' }}>Active Encryption</p>
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="p-4 rounded-2xl bg-white/[0.01] border border-white/[0.03] space-y-1">
+                    <p className="text-[8px] text-neutral-600 uppercase font-black tracking-widest" style={{ fontFamily: 'Oughter, serif' }}>2FA Security</p>
+                    <p className="text-[11px] text-neutral-500">Offline</p>
+                  </div>
+                  <div className="p-4 rounded-2xl bg-white/[0.01] border border-white/[0.03] space-y-1">
+                    <p className="text-[8px] text-neutral-600 uppercase font-black tracking-widest" style={{ fontFamily: 'Oughter, serif' }}>Access Logs</p>
+                    <p className="text-[11px] text-emerald-500/60">Verified</p>
+                  </div>
+                </div>
+              </div>
+
+              {/* Preferences Toggles */}
+              <div className="rounded-[2.5rem] bg-neutral-900/20 border border-white/[0.03] p-8 space-y-6">
+                <div className="flex items-center gap-3">
+                  <Bell size={14} className="text-neutral-700" />
+                  <h3 className="text-[10px] font-black text-neutral-600 uppercase tracking-[0.4em]" style={{ fontFamily: 'Oughter, serif' }}>Configuration Flow</h3>
+                </div>
+
+                <div className="space-y-6">
+                  <div className="flex items-center justify-between group cursor-pointer">
+                    <div className="space-y-0.5">
+                      <p className="text-[12px] text-neutral-300 font-light" style={{ fontFamily: 'ForestSmooth, serif' }}>Direct Intelligence Feed</p>
+                      <p className="text-[9px] text-neutral-600 font-black uppercase tracking-widest" style={{ fontFamily: 'Oughter, serif' }}>Core Alerts</p>
                     </div>
-                  )}
-                </div>
-              )}
-            </div>
+                    <div className="w-10 h-5 bg-orange-500 rounded-full relative transition-all duration-300 shadow-[0_0_10px_rgba(249,115,22,0.3)]">
+                      <div className="absolute right-0.5 top-0.5 w-4 h-4 bg-white rounded-full shadow-sm"></div>
+                    </div>
+                  </div>
 
-            <div className="bg-neutral-900 border border-neutral-800 rounded-xl p-5">
-              <div className="flex items-center gap-2 mb-4">
-                <Activity size={16} className="text-neutral-400" />
-                <h3 className="text-sm font-semibold text-white">Quick Stats</h3>
-              </div>
-              <div className="space-y-3">
-                <div className="flex items-center justify-between p-3 bg-neutral-800/50 rounded-lg">
-                  <span className="text-xs text-neutral-400">Profile Completion</span>
-                  <span className="text-sm font-semibold text-white">
-                    {Math.round([
-                      profileForm.full_name,
-                      profileForm.email,
-                      profileForm.phone,
-                      profileForm.location,
-                      profileForm.bio
-                    ].filter(Boolean).length / 5 * 100)}%
-                  </span>
-                </div>
-                <div className="flex items-center justify-between p-3 bg-neutral-800/50 rounded-lg">
-                  <span className="text-xs text-neutral-400">Last Login</span>
-                  <span className="text-sm font-semibold text-white">Today</span>
+                  <div className="flex items-center justify-between group cursor-pointer opacity-50">
+                    <div className="space-y-0.5">
+                      <p className="text-[12px] text-neutral-300 font-light" style={{ fontFamily: 'ForestSmooth, serif' }}>Marketing Propagation</p>
+                      <p className="text-[9px] text-neutral-600 font-black uppercase tracking-widest" style={{ fontFamily: 'Oughter, serif' }}>External Ops</p>
+                    </div>
+                    <div className="w-10 h-5 bg-neutral-800 rounded-full relative transition-all duration-300">
+                      <div className="absolute left-0.5 top-0.5 w-4 h-4 bg-neutral-600 rounded-full shadow-sm"></div>
+                    </div>
+                  </div>
                 </div>
               </div>
-            </div>
+            </motion.div>
 
-            <div className="bg-neutral-900 border border-neutral-800 rounded-xl p-5">
-              <div className="flex items-center gap-2 mb-4">
-                <Shield size={16} className="text-neutral-400" />
-                <h3 className="text-sm font-semibold text-white">Security</h3>
-              </div>
-              <div className="space-y-3">
-                <div className="flex items-center gap-3 p-3 bg-neutral-800/50 rounded-lg">
-                  <div className="flex h-8 w-8 items-center justify-center rounded-full bg-green-600/20">
-                    <Shield size={14} className="text-green-400" />
+            {/* ── Right Column: Configuration Protocols ── */}
+            <motion.div
+              initial={{ opacity: 0, x: 20 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ delay: 0.1 }}
+              className="lg:col-span-8 space-y-12"
+            >
+              {/* Profile Protocol Form */}
+              <div className="rounded-[2.5rem] bg-neutral-900/40 border border-white/[0.05] p-10 backdrop-blur-3xl space-y-10">
+                <div className="flex items-center gap-5">
+                  <div className="p-4 bg-white/[0.02] rounded-3xl border border-white/[0.05]">
+                    <User size={24} className="text-orange-400" />
                   </div>
-                  <div className="flex-1">
-                    <p className="text-xs font-medium text-white">Two-Factor Auth</p>
-                    <p className="text-[10px] text-neutral-400">Not enabled</p>
-                  </div>
-                </div>
-                <div className="flex items-center gap-3 p-3 bg-neutral-800/50 rounded-lg">
-                  <div className="flex h-8 w-8 items-center justify-center rounded-full bg-green-600/20">
-                    <Lock size={14} className="text-green-400" />
-                  </div>
-                  <div className="flex-1">
-                    <p className="text-xs font-medium text-white">Password</p>
-                    <p className="text-[10px] text-neutral-400">Strong</p>
+                  <div className="space-y-1">
+                    <h2 className="text-3xl font-light text-white" style={{ fontFamily: 'ForestSmooth, serif' }}>Principal <span className="text-neutral-500">Identity</span></h2>
+                    <p className="text-[10px] text-neutral-600 uppercase tracking-[0.4em] font-black" style={{ fontFamily: 'Oughter, serif' }}>Public Identity Reconciliation</p>
                   </div>
                 </div>
-              </div>
-            </div>
 
-            <div className="bg-neutral-900 border border-neutral-800 rounded-xl p-5">
-              <div className="flex items-center gap-2 mb-4">
-                <Bell size={16} className="text-neutral-400" />
-                <h3 className="text-sm font-semibold text-white">Preferences</h3>
-              </div>
-              <div className="space-y-3">
-                <div className="flex items-center justify-between">
-                  <span className="text-xs text-neutral-400">Email Notifications</span>
-                  <div className="w-10 h-5 bg-green-600 rounded-full relative cursor-pointer">
-                    <div className="absolute right-0.5 top-0.5 w-4 h-4 bg-white rounded-full"></div>
-                  </div>
-                </div>
-                <div className="flex items-center justify-between">
-                  <span className="text-xs text-neutral-400">Marketing Emails</span>
-                  <div className="w-10 h-5 bg-neutral-700 rounded-full relative cursor-pointer">
-                    <div className="absolute left-0.5 top-0.5 w-4 h-4 bg-white rounded-full"></div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </motion.div>
-
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.05 }}
-            className="lg:col-span-2 space-y-6"
-          >
-            <div className="bg-neutral-900 border border-neutral-800 rounded-xl p-6">
-              <div className="flex items-center gap-3 mb-6">
-                <div className="p-2 bg-neutral-800 rounded-lg">
-                  <User className="text-neutral-400" size={20} />
-                </div>
-                <h2 className="text-xl font-bold text-white">Profile Information</h2>
-              </div>
-
-              <form onSubmit={handleProfileUpdate} className="space-y-6">
-                <div className="p-4 bg-neutral-800/50 rounded-xl border border-neutral-800">
-                  <h4 className="text-sm font-semibold text-white mb-4">Basic Details</h4>
-                  <div className="space-y-4">
-                    <div>
-                      <label className="block text-xs font-medium text-neutral-300 mb-2">Full Name</label>
+                <form onSubmit={handleProfileUpdate} className="space-y-8">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <div className="space-y-3">
+                      <label className="text-[10px] text-neutral-600 uppercase tracking-[0.2em] font-black px-1" style={{ fontFamily: 'Oughter, serif' }}>Full Legal Name</label>
                       <input
                         type="text"
                         value={profileForm.full_name}
                         onChange={(e) => setProfileForm({ ...profileForm, full_name: e.target.value })}
-                        placeholder="Enter your full name"
-                        className="w-full px-4 py-2.5 bg-neutral-800 border border-neutral-700 rounded-lg text-white text-sm focus:outline-none focus:border-neutral-500 placeholder-neutral-600"
-                        required
+                        className="w-full px-6 py-4 bg-white/[0.02] border border-white/[0.05] rounded-2xl text-white text-[15px] font-light focus:outline-none focus:border-orange-500/40 transition-all duration-500 placeholder-neutral-700"
+                        placeholder="Lexington Artisan"
                       />
                     </div>
 
-                    <div>
-                      <label className="block text-xs font-medium text-neutral-300 mb-2">Email Address</label>
+                    <div className="space-y-3">
+                      <label className="text-[10px] text-neutral-600 uppercase tracking-[0.2em] font-black px-1" style={{ fontFamily: 'Oughter, serif' }}>Registered Email</label>
                       <div className="relative">
-                        <Mail size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-neutral-500" />
+                        <Mail size={16} className="absolute left-6 top-1/2 -translate-y-1/2 text-neutral-700" />
                         <input
                           type="email"
                           value={profileForm.email}
-                          className="w-full pl-10 pr-4 py-2.5 bg-neutral-800 border border-neutral-700 rounded-lg text-neutral-500 text-sm cursor-not-allowed"
+                          className="w-full pl-14 pr-6 py-4 bg-white/[0.01] border border-white/[0.03] rounded-2xl text-neutral-600 text-[15px] font-light cursor-not-allowed"
                           disabled
                         />
                       </div>
-                      <p className="text-xs text-neutral-500 mt-1">Email cannot be changed</p>
                     </div>
                   </div>
-                </div>
 
-                <div className="p-4 bg-neutral-800/50 rounded-xl border border-neutral-800">
-                  <h4 className="text-sm font-semibold text-white mb-4">Contact Information</h4>
-                  <div className="space-y-4">
-                    <div>
-                      <label className="block text-xs font-medium text-neutral-300 mb-2">Phone Number</label>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <div className="space-y-3">
+                      <label className="text-[10px] text-neutral-600 uppercase tracking-[0.2em] font-black px-1" style={{ fontFamily: 'Oughter, serif' }}>Secure Communication</label>
                       <div className="relative">
-                        <Phone size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-neutral-500" />
+                        <Phone size={16} className="absolute left-6 top-1/2 -translate-y-1/2 text-neutral-700" />
                         <input
                           type="tel"
                           value={profileForm.phone}
                           onChange={(e) => setProfileForm({ ...profileForm, phone: e.target.value })}
-                          placeholder="+1 (555) 000-0000"
-                          className="w-full pl-10 pr-4 py-2.5 bg-neutral-800 border border-neutral-700 rounded-lg text-white text-sm focus:outline-none focus:border-neutral-500 placeholder-neutral-600"
+                          className="w-full pl-14 pr-6 py-4 bg-white/[0.02] border border-white/[0.05] rounded-2xl text-white text-[15px] font-light focus:outline-none focus:border-orange-500/40 transition-all duration-500 placeholder-neutral-700"
+                          placeholder="+X (XXX) XXX-XXXX"
                         />
                       </div>
                     </div>
 
-                    <div>
-                      <label className="block text-xs font-medium text-neutral-300 mb-2">Location</label>
+                    <div className="space-y-3">
+                      <label className="text-[10px] text-neutral-600 uppercase tracking-[0.2em] font-black px-1" style={{ fontFamily: 'Oughter, serif' }}>Principal Domain</label>
                       <div className="relative">
-                        <MapPin size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-neutral-500" />
+                        <MapPin size={16} className="absolute left-6 top-1/2 -translate-y-1/2 text-neutral-700" />
                         <input
                           type="text"
                           value={profileForm.location}
                           onChange={(e) => setProfileForm({ ...profileForm, location: e.target.value })}
-                          placeholder="City, Country"
-                          className="w-full pl-10 pr-4 py-2.5 bg-neutral-800 border border-neutral-700 rounded-lg text-white text-sm focus:outline-none focus:border-neutral-500 placeholder-neutral-600"
+                          className="w-full pl-14 pr-6 py-4 bg-white/[0.02] border border-white/[0.05] rounded-2xl text-white text-[15px] font-light focus:outline-none focus:border-orange-500/40 transition-all duration-500 placeholder-neutral-700"
+                          placeholder="Paris, France"
                         />
                       </div>
                     </div>
                   </div>
-                </div>
 
-                <div className="p-4 bg-neutral-800/50 rounded-xl border border-neutral-800">
-                  <h4 className="text-sm font-semibold text-white mb-4">About</h4>
-                  <div>
-                    <label className="block text-xs font-medium text-neutral-300 mb-2">Bio</label>
+                  <div className="space-y-3">
+                    <label className="text-[10px] text-neutral-600 uppercase tracking-[0.2em] font-black px-1" style={{ fontFamily: 'Oughter, serif' }}>Biometric Narrative</label>
                     <textarea
                       value={profileForm.bio}
                       onChange={(e) => setProfileForm({ ...profileForm, bio: e.target.value })}
-                      rows={3}
-                      placeholder="Tell us about yourself..."
-                      className="w-full px-4 py-2.5 bg-neutral-800 border border-neutral-700 rounded-lg text-white text-sm focus:outline-none focus:border-neutral-500 placeholder-neutral-600 resize-none"
+                      rows={4}
+                      className="w-full px-6 py-5 bg-white/[0.02] border border-white/[0.05] rounded-[2rem] text-white text-[15px] font-light focus:outline-none focus:border-orange-500/40 transition-all duration-500 placeholder-neutral-700 resize-none"
+                      placeholder="Crafting the artistic direction of the platform..."
                     />
                   </div>
-                </div>
 
-                <button
-                  type="submit"
-                  disabled={loading}
-                  className="w-full px-6 py-3 bg-neutral-700 hover:bg-neutral-600 text-white font-medium rounded-lg transition-colors disabled:opacity-50 flex items-center justify-center gap-2 text-sm"
-                >
-                  <Save size={18} />
-                  {loading ? 'Saving...' : 'Save Changes'}
-                </button>
-              </form>
-            </div>
-
-            <div className="bg-neutral-900 border border-neutral-800 rounded-xl p-6">
-              <div className="flex items-center gap-3 mb-6">
-                <div className="p-2 bg-neutral-800 rounded-lg">
-                  <Lock className="text-neutral-400" size={20} />
-                </div>
-                <div>
-                  <h2 className="text-xl font-bold text-white">Security</h2>
-                  <p className="text-xs text-neutral-400">Update your password to keep your account secure</p>
-                </div>
+                  <motion.button
+                    type="submit"
+                    whileHover={{ scale: 1.01 }}
+                    whileTap={{ scale: 0.99 }}
+                    disabled={loading}
+                    className="w-full py-5 rounded-[2rem] bg-orange-500 text-white font-medium text-[13px] tracking-[0.3em] uppercase transition-all duration-500 hover:bg-orange-600 disabled:opacity-50 shadow-[0_0_30px_rgba(249,115,22,0.2)] hover:shadow-[0_10px_40px_rgba(249,115,22,0.3)] flex items-center justify-center gap-4"
+                    style={{ fontFamily: 'Oughter, serif' }}
+                  >
+                    <Save size={18} />
+                    {loading ? 'Synthesizing...' : 'Seal Changes'}
+                  </motion.button>
+                </form>
               </div>
 
-              <form onSubmit={handlePasswordChange} className="space-y-4">
-                <div>
-                  <label className="block text-xs font-medium text-neutral-300 mb-2">Current Password</label>
-                  <input
-                    type="password"
-                    value={passwordForm.current_password}
-                    onChange={(e) => setPasswordForm({ ...passwordForm, current_password: e.target.value })}
-                    placeholder="Enter current password"
-                    className="w-full px-4 py-2.5 bg-neutral-800 border border-neutral-700 rounded-lg text-white text-sm focus:outline-none focus:border-neutral-500 placeholder-neutral-600"
-                    required
-                  />
-                </div>
-
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div>
-                    <label className="block text-xs font-medium text-neutral-300 mb-2">New Password</label>
-                    <input
-                      type="password"
-                      value={passwordForm.new_password}
-                      onChange={(e) => setPasswordForm({ ...passwordForm, new_password: e.target.value })}
-                      placeholder="Enter new password"
-                      className="w-full px-4 py-2.5 bg-neutral-800 border border-neutral-700 rounded-lg text-white text-sm focus:outline-none focus:border-neutral-500 placeholder-neutral-600"
-                      required
-                      minLength={6}
-                    />
+              {/* Security Protocol Form */}
+              <div className="rounded-[2.5rem] bg-neutral-900/40 border border-white/[0.05] p-10 backdrop-blur-3xl space-y-10">
+                <div className="flex items-center gap-5">
+                  <div className="p-4 bg-white/[0.02] rounded-3xl border border-white/[0.05]">
+                    <Lock size={24} className="text-emerald-400" />
                   </div>
-
-                  <div>
-                    <label className="block text-xs font-medium text-neutral-300 mb-2">Confirm Password</label>
-                    <input
-                      type="password"
-                      value={passwordForm.confirm_password}
-                      onChange={(e) => setPasswordForm({ ...passwordForm, confirm_password: e.target.value })}
-                      placeholder="Confirm new password"
-                      className="w-full px-4 py-2.5 bg-neutral-800 border border-neutral-700 rounded-lg text-white text-sm focus:outline-none focus:border-neutral-500 placeholder-neutral-600"
-                      required
-                      minLength={6}
-                    />
+                  <div className="space-y-1">
+                    <h2 className="text-3xl font-light text-white" style={{ fontFamily: 'ForestSmooth, serif' }}>Cryptographic <span className="text-neutral-500">Security</span></h2>
+                    <p className="text-[10px] text-neutral-600 uppercase tracking-[0.4em] font-black" style={{ fontFamily: 'Oughter, serif' }}>Vault Access Transformation</p>
                   </div>
                 </div>
 
-                <div className="p-3 bg-neutral-800/50 rounded-lg border border-neutral-800">
-                  <p className="text-xs text-neutral-400">Password must be at least 6 characters long</p>
-                </div>
+                <form onSubmit={handlePasswordChange} className="space-y-8">
+                  <div className="space-y-3">
+                    <label className="text-[10px] text-neutral-600 uppercase tracking-[0.2em] font-black px-1" style={{ fontFamily: 'Oughter, serif' }}>Existing Key</label>
+                    <input
+                      type="password"
+                      value={passwordForm.current_password}
+                      onChange={(e) => setPasswordForm({ ...passwordForm, current_password: e.target.value })}
+                      className="w-full px-6 py-4 bg-white/[0.02] border border-white/[0.05] rounded-2xl text-white text-[15px] font-light focus:outline-none focus:border-orange-500/40 transition-all duration-500 placeholder-neutral-700"
+                      placeholder="Enter current key"
+                      required
+                    />
+                  </div>
 
-                <button
-                  type="submit"
-                  disabled={loading}
-                  className="w-full px-6 py-3 bg-neutral-800 hover:bg-neutral-700 text-white font-medium rounded-lg transition-colors disabled:opacity-50 flex items-center justify-center gap-2 text-sm"
-                >
-                  <Lock size={18} />
-                  {loading ? 'Changing...' : 'Change Password'}
-                </button>
-              </form>
-            </div>
-          </motion.div>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <div className="space-y-3">
+                      <label className="text-[10px] text-neutral-600 uppercase tracking-[0.2em] font-black px-1" style={{ fontFamily: 'Oughter, serif' }}>Novus Key</label>
+                      <input
+                        type="password"
+                        value={passwordForm.new_password}
+                        onChange={(e) => setPasswordForm({ ...passwordForm, new_password: e.target.value })}
+                        className="w-full px-6 py-4 bg-white/[0.02] border border-white/[0.05] rounded-2xl text-white text-[15px] font-light focus:outline-none focus:border-orange-500/40 transition-all duration-500 placeholder-neutral-700"
+                        placeholder="Min. 6 indices"
+                        required
+                        minLength={6}
+                      />
+                    </div>
+
+                    <div className="space-y-3">
+                      <label className="text-[10px] text-neutral-600 uppercase tracking-[0.2em] font-black px-1" style={{ fontFamily: 'Oughter, serif' }}>Validation Link</label>
+                      <input
+                        type="password"
+                        value={passwordForm.confirm_password}
+                        onChange={(e) => setPasswordForm({ ...passwordForm, confirm_password: e.target.value })}
+                        className="w-full px-6 py-4 bg-white/[0.02] border border-white/[0.05] rounded-2xl text-white text-[15px] font-light focus:outline-none focus:border-orange-500/40 transition-all duration-500 placeholder-neutral-700"
+                        placeholder="Repeat novus key"
+                        required
+                        minLength={6}
+                      />
+                    </div>
+                  </div>
+
+                  <div className="p-6 rounded-2xl bg-white/[0.01] border border-white/[0.03] border-l-2 border-l-emerald-500/40">
+                    <p className="text-[11px] text-neutral-500 italic font-light">Precision indexing: Security protocols require a minimum of 6 unique cryptographic characters.</p>
+                  </div>
+
+                  <motion.button
+                    type="submit"
+                    whileHover={{ scale: 1.01 }}
+                    whileTap={{ scale: 0.99 }}
+                    disabled={loading}
+                    className="w-full py-5 rounded-[2rem] bg-neutral-950 border border-white/[0.05] text-white font-medium text-[13px] tracking-[0.3em] uppercase transition-all duration-500 hover:bg-neutral-900 group flex items-center justify-center gap-4"
+                    style={{ fontFamily: 'Oughter, serif' }}
+                  >
+                    <Lock size={18} className="text-neutral-600 group-hover:text-emerald-500 transition-colors" />
+                    {loading ? 'Re-keying...' : 'Initiate Re-key'}
+                  </motion.button>
+                </form>
+              </div>
+            </motion.div>
+          </div>
         </div>
       </div>
     </DashboardLayout>

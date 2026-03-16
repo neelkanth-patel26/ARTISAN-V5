@@ -1,9 +1,13 @@
 'use client'
 
 import { DashboardLayout } from '@/components/dashboard-layout'
-import { PageHeader, LoadingSpinner, EmptyState } from '@/components/dashboard'
+import { PageHeader } from '@/components/dashboard'
 import { DASHBOARD_NAV } from '@/lib/dashboard-config'
-import { Plus, Edit, Trash2, MapPin, X, Upload, Calendar, Eye, Clock, User } from 'lucide-react'
+import { 
+  Plus, Edit, Trash2, MapPin, X, Upload, 
+  Calendar, Eye, Clock, User, ArrowUpRight,
+  Globe, Sparkles, LayoutGrid, List
+} from 'lucide-react'
 import { useState, useEffect } from 'react'
 import { supabase } from '@/lib/supabase'
 import { getCurrentUser } from '@/lib/auth'
@@ -34,12 +38,13 @@ export default function AdminExhibitions() {
   }, [])
 
   const loadExhibitions = async () => {
+    setLoading(true)
     try {
       const { data, error } = await supabase.rpc('get_all_exhibitions')
       if (error) throw error
       setExhibitions(data || [])
     } catch (error: any) {
-      toast.error('Failed to load exhibitions: ' + error.message)
+      toast.error('Failed to load exhibitions')
     } finally {
       setLoading(false)
     }
@@ -64,9 +69,9 @@ export default function AdminExhibitions() {
 
       const data = await response.json()
       setFormData(prev => ({ ...prev, image_url: data.url }))
-      toast.success('Image uploaded')
+      toast.success('Visual Artifact Link Established')
     } catch (error) {
-      toast.error('Failed to upload image')
+      toast.error('Failed to upload visual')
     } finally {
       setUploading(false)
     }
@@ -74,15 +79,9 @@ export default function AdminExhibitions() {
 
   const resetForm = () => {
     setFormData({
-      title: '',
-      description: '',
-      location: '',
-      image_url: '',
-      start_date: '',
-      end_date: '',
-      status: 'upcoming',
-      hours: '',
-      artist: '',
+      title: '', description: '', location: '', image_url: '',
+      start_date: '', end_date: '', status: 'upcoming',
+      hours: '', artist: '',
     })
   }
 
@@ -106,7 +105,7 @@ export default function AdminExhibitions() {
           p_artist: formData.artist || null,
         })
         if (error) throw error
-        toast.success('Exhibition updated')
+        toast.success('Exhibition Protocol Updated')
       } else {
         const { error } = await supabase.rpc('create_exhibition', {
           p_title: formData.title,
@@ -121,7 +120,7 @@ export default function AdminExhibitions() {
           p_artist: formData.artist || null,
         })
         if (error) throw error
-        toast.success('Exhibition created')
+        toast.success('New Exhibition Sequence Created')
       }
 
       setShowForm(false)
@@ -152,438 +151,371 @@ export default function AdminExhibitions() {
   }
 
   const handleDelete = async (id: string) => {
-    if (!confirm('Are you sure you want to delete this exhibition?')) return
+    if (!confirm('Are you sure you want to delete this exhibition sequence?')) return
 
     try {
       const { error } = await supabase.rpc('delete_exhibition', { exhibition_id: id })
       if (error) throw error
-      toast.success('Exhibition deleted')
+      toast.success('Exhibition Protocol Terminated')
       loadExhibitions()
     } catch (error: any) {
-      toast.error('Failed to delete: ' + error.message)
+      toast.error('Failed to terminate sequence: ' + error.message)
     }
+  }
+
+  const statusColors: any = {
+    active: 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20',
+    upcoming: 'bg-orange-500/10 text-orange-400 border-orange-500/20',
+    completed: 'bg-neutral-500/10 text-neutral-400 border-neutral-500/20',
+    cancelled: 'bg-rose-500/10 text-rose-400 border-rose-500/20',
   }
 
   return (
     <DashboardLayout navItems={DASHBOARD_NAV.admin} role="admin">
-      <div className="p-6 lg:p-8 space-y-6">
-        <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-          <div>
-            <PageHeader title="Exhibitions" description="Manage museum exhibitions and events" />
-          </div>
-          <button
-            onClick={() => setShowForm(!showForm)}
-            className="flex items-center gap-2 px-6 py-3 bg-gradient-to-r bg-neutral-700 hover:bg-neutral-600 text-white rounded-lg transition-all "
-          >
-            <Plus size={20} />
-            Add Exhibition
-          </button>
-        </div>
+      <div className="relative min-h-screen p-6 lg:p-12 space-y-12 overflow-hidden">
+        {/* Atmospheric Sentinel */}
+        <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-orange-600/5 blur-[120px] rounded-full -translate-y-1/2 translate-x-1/4 pointer-events-none" />
+        <div className="absolute bottom-0 left-0 w-[500px] h-[500px] bg-orange-700/5 blur-[100px] rounded-full translate-y-1/2 -translate-x-1/4 pointer-events-none" />
 
-        <AnimatePresence>
-          {showForm && (
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              className="fixed inset-0 bg-black/80 z-50 flex items-center justify-center p-4"
-              onClick={() => {
-                setShowForm(false)
-                setEditingId(null)
-                resetForm()
-              }}
+        <div className="relative z-10 space-y-10">
+          <div className="flex flex-col xl:flex-row xl:items-end justify-between gap-8">
+            <PageHeader 
+              title="Exhibition Registry" 
+              description="Orchestrating global artifact showcases and immersive curations" 
+            />
+            
+            <button
+              onClick={() => setShowForm(true)}
+              className="flex items-center gap-4 px-8 py-4 bg-orange-600 hover:bg-orange-500 text-black rounded-[2rem] transition-all shadow-xl shadow-orange-950/20 active:scale-95 text-[11px] font-black uppercase tracking-[0.3em]"
+              style={{ fontFamily: 'Oughter, serif' }}
             >
-              <motion.div
-                initial={{ scale: 0.9, opacity: 0 }}
-                animate={{ scale: 1, opacity: 1 }}
-                exit={{ scale: 0.9, opacity: 0 }}
-                onClick={(e) => e.stopPropagation()}
-                className="bg-neutral-900 border border-neutral-800 rounded-xl p-6 max-w-5xl w-full max-h-[90vh] overflow-y-auto"
-              >
-                <div className="flex items-center justify-between mb-6">
-                  <h2 className="text-2xl font-bold text-white">{editingId ? 'Edit' : 'Create'} Exhibition</h2>
-                  <button
-                    onClick={() => {
-                      setShowForm(false)
-                      setEditingId(null)
-                      resetForm()
-                    }}
-                    className="p-2 hover:bg-neutral-800 rounded-lg transition-colors"
-                  >
-                    <X className="text-neutral-400" size={24} />
-                  </button>
-                </div>
+              <Plus size={18} />
+              Initiate Showcase
+            </button>
+          </div>
 
-                <form onSubmit={handleSubmit}>
-                  <div className="grid grid-cols-1 lg:grid-cols-5 gap-6">
-                    <div className="lg:col-span-2 space-y-4">
-                      <div className="p-6 bg-neutral-800/50 rounded-xl border border-neutral-800">
-                        <h4 className="text-sm font-semibold text-white mb-4">Exhibition Image</h4>
+          <AnimatePresence>
+            {showForm && (
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                className="fixed inset-0 z-[200] flex items-center justify-center p-0 md:p-10"
+              >
+                {/* Light Backdrop Blur */}
+                <div 
+                  className="absolute inset-0 bg-black/20 backdrop-blur-[20px]" 
+                  onClick={() => { setShowForm(false); setEditingId(null); resetForm() }} 
+                />
+                
+                <motion.div
+                  initial={{ opacity: 0, y: 30, scale: 0.98 }}
+                  animate={{ opacity: 1, y: 0, scale: 1 }}
+                  exit={{ opacity: 0, y: 30, scale: 0.98 }}
+                  transition={{ duration: 0.5, ease: [0.19, 1, 0.22, 1] }}
+                  onClick={e => e.stopPropagation()}
+                  className="relative w-full h-full md:max-w-6xl md:h-[95vh] bg-neutral-950/60 backdrop-blur-3xl border border-white/[0.08] md:rounded-[3rem] shadow-[0_40px_100px_rgba(0,0,0,0.6)] overflow-hidden flex flex-col lg:flex-row"
+                >
+                  {/* Left: Metadata Side */}
+                  <div className="w-full lg:w-[320px] bg-neutral-900/40 p-10 border-b lg:border-b-0 lg:border-r border-white/[0.05] flex flex-col gap-10">
+                    <div className="space-y-4">
+                      <p className="text-[10px] tracking-[0.4em] uppercase text-neutral-600 font-black" style={{ fontFamily: 'Oughter, serif' }}>Visual Key</p>
+                      <div className="relative group rounded-3xl overflow-hidden border border-white/[0.05] bg-black/40 aspect-[4/5]">
                         {formData.image_url ? (
-                          <div className="space-y-3">
-                            <img src={formData.image_url} alt="Preview" className="w-full h-48 object-cover rounded-lg" />
-                            <button
-                              type="button"
-                              onClick={() => setFormData({ ...formData, image_url: '' })}
-                              className="w-full px-4 py-2 bg-neutral-700 hover:bg-neutral-600 text-white text-sm rounded-lg transition-colors"
-                            >
-                              Remove Image
+                          <>
+                            <img src={formData.image_url} alt="Preview" className="w-full h-full object-cover" />
+                            <button onClick={() => setFormData({ ...formData, image_url: '' })} className="absolute top-4 right-4 p-2 bg-black/60 backdrop-blur-md rounded-xl text-rose-400 border border-rose-500/20 hover:bg-rose-500/10 transition-colors">
+                              <X size={16} />
                             </button>
-                          </div>
+                          </>
                         ) : (
-                          <label className="cursor-pointer block">
-                            <div className="w-full h-48 bg-neutral-800 border-2 border-dashed border-neutral-700 rounded-lg hover:border-neutral-600 transition-colors flex flex-col items-center justify-center gap-2">
-                              <Upload size={32} className="text-neutral-500" />
-                              <span className="text-sm text-neutral-400">{uploading ? 'Uploading...' : 'Click to upload'}</span>
-                            </div>
-                            <input
-                              type="file"
-                              accept="image/*"
-                              onChange={handleImageUpload}
-                              className="hidden"
-                              disabled={uploading}
-                            />
+                          <label className="flex flex-col items-center justify-center w-full h-full cursor-pointer group-hover:bg-white/[0.02] transition-colors">
+                            <Upload size={32} className="text-neutral-700 mb-4 group-hover:text-orange-500 transition-colors" />
+                            <p className="text-[9px] uppercase tracking-[0.3em] text-neutral-600 group-hover:text-orange-400 transition-colors font-black">Upload Artifact</p>
+                            <input type="file" accept="image/*" onChange={handleImageUpload} className="hidden" />
                           </label>
                         )}
                       </div>
+                    </div>
 
-                      {editingId && (
-                        <div className="p-4 bg-neutral-800/50 rounded-xl border border-neutral-800">
-                          <h4 className="text-xs font-semibold text-white mb-3">Exhibition Info</h4>
-                          <div className="space-y-2 text-xs">
-                            <div>
-                              <span className="text-neutral-400">Status</span>
-                              <p className="text-white mt-0.5 capitalize">{formData.status}</p>
-                            </div>
-                            <div>
-                              <span className="text-neutral-400">Current Title</span>
-                              <p className="text-white mt-0.5">{editingId && exhibitions.find(e => e.id === editingId)?.title}</p>
-                            </div>
+                    <div className="p-8 rounded-[2.5rem] bg-white/[0.02] border border-white/[0.05] space-y-6">
+                      <p className="text-[10px] tracking-[0.3em] uppercase text-orange-500/40 font-black" style={{ fontFamily: 'Oughter, serif' }}>Curation Info</p>
+                      <div className="space-y-4">
+                        <div className="flex items-center gap-3">
+                          <Globe size={14} className="text-neutral-600" />
+                          <span className="text-[12px] font-light text-neutral-400 capitalize">{formData.status} Protocol</span>
+                        </div>
+                        <div className="flex items-center gap-3">
+                          <Sparkles size={14} className="text-neutral-600" />
+                          <span className="text-[12px] font-light text-neutral-400">Scan ID: {editingId ? editingId.slice(0, 8) : 'New Entry'}</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Right: Curatorial Form */}
+                  <div className="flex-1 flex flex-col h-full bg-transparent overflow-y-auto">
+                    <div className="flex items-center justify-between px-10 py-10 border-b border-white/[0.05]">
+                      <div className="space-y-1">
+                        <h2 className="text-3xl font-light text-white" style={{ fontFamily: 'ForestSmooth, serif' }}>Showcase Protocol</h2>
+                        <p className="text-[10px] text-neutral-500 uppercase tracking-[0.3em] font-black" style={{ fontFamily: 'Oughter, serif' }}>Defining Environmental Context</p>
+                      </div>
+                      <button onClick={() => { setShowForm(false); setEditingId(null); resetForm() }} className="p-3 rounded-xl bg-white/[0.02] hover:bg-rose-500/10 text-neutral-500 hover:text-rose-400 border border-white/5 transition-all">
+                        <X size={20} />
+                      </button>
+                    </div>
+
+                    <form onSubmit={handleSubmit} className="p-10 lg:p-14 space-y-12">
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                        <div className="col-span-full space-y-3">
+                          <label className="block text-[10px] text-neutral-600 font-black uppercase tracking-[0.2em] ml-2">Exhibition Nomenclature</label>
+                          <input type="text" value={formData.title} onChange={e => setFormData({ ...formData, title: e.target.value })} className="w-full px-6 py-4 bg-white/[0.02] border border-white/[0.05] rounded-2xl text-[15px] text-white focus:outline-none focus:border-orange-500/30 focus:bg-white/[0.04] transition-all" placeholder="e.g. Renaissance Revived" required />
+                        </div>
+                        <div className="space-y-3">
+                          <label className="block text-[10px] text-neutral-600 font-black uppercase tracking-[0.2em] ml-2">Lead Curator / Artist</label>
+                          <input type="text" value={formData.artist} onChange={e => setFormData({ ...formData, artist: e.target.value })} className="w-full px-6 py-4 bg-white/[0.02] border border-white/[0.05] rounded-2xl text-[15px] text-white focus:outline-none focus:border-orange-500/30 focus:bg-white/[0.04] transition-all" placeholder="Name or Identity" />
+                        </div>
+                        <div className="space-y-3">
+                          <label className="block text-[10px] text-neutral-600 font-black uppercase tracking-[0.2em] ml-2">Status Configuration</label>
+                          <select value={formData.status} onChange={e => setFormData({ ...formData, status: e.target.value as any })} className="w-full px-6 py-4 bg-white/[0.02] border border-white/[0.05] rounded-2xl text-[15px] text-white focus:outline-none focus:border-orange-500/30 focus:bg-white/[0.04] transition-all appearance-none">
+                            <option value="upcoming" className="bg-neutral-900">Upcoming Sequence</option>
+                            <option value="active" className="bg-neutral-900">Active Showcase</option>
+                            <option value="completed" className="bg-neutral-900">Archived Collection</option>
+                            <option value="cancelled" className="bg-neutral-900">Terminated Protocol</option>
+                          </select>
+                        </div>
+                        <div className="col-span-full space-y-3">
+                          <label className="block text-[10px] text-neutral-600 font-black uppercase tracking-[0.2em] ml-2">Physical Identification (Location)</label>
+                          <input type="text" value={formData.location} onChange={e => setFormData({ ...formData, location: e.target.value })} className="w-full px-6 py-4 bg-white/[0.02] border border-white/[0.05] rounded-2xl text-[15px] text-white focus:outline-none focus:border-orange-500/30 focus:bg-white/[0.04] transition-all" placeholder="Gallery Address" required />
+                        </div>
+                        <div className="space-y-3">
+                          <label className="block text-[10px] text-neutral-600 font-black uppercase tracking-[0.2em] ml-2">Inception Date</label>
+                          <input type="date" value={formData.start_date} onChange={e => setFormData({ ...formData, start_date: e.target.value })} className="w-full px-6 py-4 bg-white/[0.02] border border-white/[0.05] rounded-2xl text-[15px] text-white focus:outline-none focus:border-orange-500/30 focus:bg-white/[0.04] transition-all" required />
+                        </div>
+                        <div className="space-y-3">
+                          <label className="block text-[10px] text-neutral-600 font-black uppercase tracking-[0.2em] ml-2">Termination Date</label>
+                          <input type="date" value={formData.end_date} onChange={e => setFormData({ ...formData, end_date: e.target.value })} className="w-full px-6 py-4 bg-white/[0.02] border border-white/[0.05] rounded-2xl text-[15px] text-white focus:outline-none focus:border-orange-500/30 focus:bg-white/[0.04] transition-all" required />
+                        </div>
+                        <div className="col-span-full space-y-3">
+                          <label className="block text-[10px] text-neutral-600 font-black uppercase tracking-[0.2em] ml-2">Operational Hours</label>
+                          <input type="text" value={formData.hours} onChange={e => setFormData({ ...formData, hours: e.target.value })} className="w-full px-6 py-4 bg-white/[0.02] border border-white/[0.05] rounded-2xl text-[15px] text-white focus:outline-none focus:border-orange-500/30 focus:bg-white/[0.04] transition-all" placeholder="e.g. 09:00 - 21:00 Daily" />
+                        </div>
+                        <div className="col-span-full space-y-3">
+                          <label className="block text-[10px] text-neutral-600 font-black uppercase tracking-[0.2em] ml-2">Curatorial Narrative</label>
+                          <textarea value={formData.description} onChange={e => setFormData({ ...formData, description: e.target.value })} rows={4} className="w-full px-6 py-4 bg-white/[0.02] border border-white/[0.05] rounded-2xl text-[14px] text-white focus:outline-none focus:border-orange-500/30 focus:bg-white/[0.04] transition-all resize-none" placeholder="Elaborate on the artistic intent..." />
+                        </div>
+                      </div>
+
+                      <div className="flex gap-4 pt-6">
+                        <button type="submit" disabled={loading} className="flex-1 py-5 rounded-[2rem] bg-orange-600 hover:bg-orange-500 disabled:bg-neutral-800 text-black text-[11px] font-black tracking-[0.3em] uppercase transition-all shadow-xl shadow-orange-950/20 active:scale-95">
+                          {loading ? 'Synchronizing Archive...' : editingId ? 'Commit Modifications' : 'Commit New Identity'}
+                        </button>
+                        <button type="button" onClick={() => { setShowForm(false); setEditingId(null); resetForm() }} className="px-12 py-5 rounded-[2rem] bg-white/[0.03] hover:bg-white/[0.08] text-neutral-500 hover:text-white text-[9px] font-black tracking-[0.3em] uppercase border border-white/5 transition-all">
+                          Cancel
+                        </button>
+                      </div>
+                    </form>
+                  </div>
+                </motion.div>
+              </motion.div>
+            )}
+          </AnimatePresence>
+
+          {loading ? (
+            <div className="flex flex-col items-center justify-center py-40 gap-6">
+              <div className="w-16 h-16 border-t-2 border-orange-600 rounded-full animate-spin" />
+              <p className="text-[10px] tracking-[0.5em] uppercase text-neutral-600 font-black" style={{ fontFamily: 'Oughter, serif' }}>Synchronizing Showcase Data</p>
+            </div>
+          ) : exhibitions.length === 0 ? (
+            <div className="py-40 bg-white/[0.01] border border-white/[0.05] border-dashed rounded-[3rem] text-center flex flex-col items-center gap-6">
+              <Calendar className="text-neutral-800" size={64} />
+              <p className="text-[10px] tracking-[0.5em] uppercase text-neutral-600 font-black" style={{ fontFamily: 'Oughter, serif' }}>The Registry is Silent</p>
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+              {exhibitions.map((exhibition, index) => (
+                <motion.div
+                  key={exhibition.id}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: index * 0.05 }}
+                  className="group bg-neutral-900/30 border border-white/[0.05] rounded-[2.5rem] overflow-hidden hover:border-white/[0.1] hover:bg-white/[0.02] transition-all duration-700 shadow-2xl relative"
+                >
+                  <div className="relative h-[280px] overflow-hidden grayscale group-hover:grayscale-0 transition-all duration-1000">
+                    <img
+                      src={exhibition.image_url || '/placeholder.jpg'}
+                      alt={exhibition.title}
+                      className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-[2000ms]"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-neutral-950 via-neutral-950/20 to-transparent opacity-80" />
+                    
+                    <div className="absolute top-6 left-6">
+                      <span className={`px-4 py-1.5 rounded-full text-[9px] font-black uppercase tracking-[0.2em] border ${statusColors[exhibition.status]}`}>
+                        {exhibition.status}
+                      </span>
+                    </div>
+
+                    <div className="absolute bottom-6 left-8 right-8">
+                      <h3 className="text-2xl font-light text-white tracking-tight" style={{ fontFamily: 'ForestSmooth, serif' }}>{exhibition.title}</h3>
+                    </div>
+                  </div>
+
+                  <div className="p-8 space-y-6">
+                    <div className="space-y-4">
+                      {exhibition.artist && (
+                        <div className="flex items-center gap-4 group/item">
+                          <div className="w-10 h-10 rounded-xl bg-white/[0.03] border border-white/[0.05] flex items-center justify-center text-neutral-500 group-hover/item:text-orange-500 transition-colors">
+                            <User size={16} />
+                          </div>
+                          <div className="space-y-0.5">
+                            <p className="text-[8px] uppercase tracking-[0.2em] text-neutral-600 font-black" style={{ fontFamily: 'Oughter, serif' }}>Curator / Artist</p>
+                            <p className="text-[14px] font-light text-white" style={{ fontFamily: 'ForestSmooth, serif' }}>{exhibition.artist}</p>
                           </div>
                         </div>
                       )}
-                    </div>
 
-                    <div className="lg:col-span-3 space-y-6">
-                      <div className="p-6 bg-neutral-800/50 rounded-xl border border-neutral-800">
-                        <h4 className="text-sm font-semibold text-white mb-4">Basic Information</h4>
-                        <div className="space-y-4">
-                          <div>
-                            <label className="block text-xs font-medium text-neutral-300 mb-2">Exhibition Title *</label>
-                            <input
-                              type="text"
-                              value={formData.title}
-                              onChange={(e) => setFormData({ ...formData, title: e.target.value })}
-                              placeholder="Enter exhibition title"
-                              className="w-full px-4 py-2.5 bg-neutral-800 border border-neutral-700 rounded-lg text-white text-sm focus:outline-none focus:border-neutral-500 placeholder-neutral-600"
-                              required
-                            />
-                          </div>
-                          <div className="grid grid-cols-2 gap-4">
-                            <div>
-                              <label className="block text-xs font-medium text-neutral-300 mb-2">Artist / Curator</label>
-                              <input
-                                type="text"
-                                value={formData.artist}
-                                onChange={(e) => setFormData({ ...formData, artist: e.target.value })}
-                                placeholder="e.g. Neelkanth Patel"
-                                className="w-full px-4 py-2.5 bg-neutral-800 border border-neutral-700 rounded-lg text-white text-sm focus:outline-none focus:border-neutral-500 placeholder-neutral-600"
-                              />
-                            </div>
-                            <div>
-                              <label className="block text-xs font-medium text-neutral-300 mb-2">Status *</label>
-                              <select
-                                value={formData.status}
-                                onChange={(e) => setFormData({ ...formData, status: e.target.value as any })}
-                                className="w-full px-4 py-2.5 bg-neutral-800 border border-neutral-700 rounded-lg text-white text-sm focus:outline-none focus:border-neutral-500"
-                              >
-                                <option value="upcoming">Upcoming</option>
-                                <option value="active">Active</option>
-                                <option value="completed">Completed</option>
-                                <option value="cancelled">Cancelled</option>
-                              </select>
-                            </div>
-                          </div>
+                      <div className="flex items-center gap-4 group/item">
+                        <div className="w-10 h-10 rounded-xl bg-white/[0.03] border border-white/[0.05] flex items-center justify-center text-neutral-500 group-hover/item:text-orange-500 transition-colors">
+                          <MapPin size={16} />
+                        </div>
+                        <div className="space-y-0.5">
+                          <p className="text-[8px] uppercase tracking-[0.2em] text-neutral-600 font-black" style={{ fontFamily: 'Oughter, serif' }}>Location Vector</p>
+                          <p className="text-[14px] font-light text-white truncate max-w-[200px]" style={{ fontFamily: 'ForestSmooth, serif' }}>{exhibition.location}</p>
                         </div>
                       </div>
 
-                      <div className="p-6 bg-neutral-800/50 rounded-xl border border-neutral-800">
-                        <h4 className="text-sm font-semibold text-white mb-4">Location & Schedule</h4>
-                        <div className="space-y-4">
-                          <div>
-                            <label className="block text-xs font-medium text-neutral-300 mb-2">Location *</label>
-                            <input
-                              type="text"
-                              value={formData.location}
-                              onChange={(e) => setFormData({ ...formData, location: e.target.value })}
-                              placeholder="Gallery name or address"
-                              className="w-full px-4 py-2.5 bg-neutral-800 border border-neutral-700 rounded-lg text-white text-sm focus:outline-none focus:border-neutral-500 placeholder-neutral-600"
-                              required
-                            />
-                          </div>
-                          <div className="grid grid-cols-2 gap-4">
-                            <div>
-                              <label className="block text-xs font-medium text-neutral-300 mb-2">Start Date *</label>
-                              <input
-                                type="date"
-                                value={formData.start_date}
-                                onChange={(e) => setFormData({ ...formData, start_date: e.target.value })}
-                                className="w-full px-4 py-2.5 bg-neutral-800 border border-neutral-700 rounded-lg text-white text-sm focus:outline-none focus:border-neutral-500"
-                                required
-                              />
-                            </div>
-                            <div>
-                              <label className="block text-xs font-medium text-neutral-300 mb-2">End Date *</label>
-                              <input
-                                type="date"
-                                value={formData.end_date}
-                                onChange={(e) => setFormData({ ...formData, end_date: e.target.value })}
-                                className="w-full px-4 py-2.5 bg-neutral-800 border border-neutral-700 rounded-lg text-white text-sm focus:outline-none focus:border-neutral-500"
-                                required
-                              />
-                            </div>
-                          </div>
-                          <div>
-                            <label className="block text-xs font-medium text-neutral-300 mb-2">Hours</label>
-                            <input
-                              type="text"
-                              value={formData.hours}
-                              onChange={(e) => setFormData({ ...formData, hours: e.target.value })}
-                              placeholder="e.g. 10:00 AM - 6:00 PM"
-                              className="w-full px-4 py-2.5 bg-neutral-800 border border-neutral-700 rounded-lg text-white text-sm focus:outline-none focus:border-neutral-500 placeholder-neutral-600"
-                            />
-                          </div>
+                      <div className="flex items-center gap-4 group/item">
+                        <div className="w-10 h-10 rounded-xl bg-white/[0.03] border border-white/[0.05] flex items-center justify-center text-neutral-500 group-hover/item:text-orange-500 transition-colors">
+                          <Calendar size={16} />
+                        </div>
+                        <div className="space-y-0.5">
+                          <p className="text-[8px] uppercase tracking-[0.2em] text-neutral-600 font-black" style={{ fontFamily: 'Oughter, serif' }}>Showcase Window</p>
+                          <p className="text-[14px] font-light text-white" style={{ fontFamily: 'ForestSmooth, serif' }}>
+                            {new Date(exhibition.start_date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })} - {new Date(exhibition.end_date).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
+                          </p>
                         </div>
                       </div>
+                    </div>
 
-                      <div className="p-6 bg-neutral-800/50 rounded-xl border border-neutral-800">
-                        <h4 className="text-sm font-semibold text-white mb-4">Description</h4>
-                        <textarea
-                          value={formData.description}
-                          onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-                          rows={4}
-                          placeholder="Describe the exhibition..."
-                          className="w-full px-4 py-2.5 bg-neutral-800 border border-neutral-700 rounded-lg text-white text-sm focus:outline-none focus:border-neutral-500 placeholder-neutral-600 resize-none"
-                        />
-                      </div>
+                    <div className="flex gap-3 pt-6 border-t border-white/[0.03]">
+                      <button
+                        onClick={() => setViewingExhibition(exhibition)}
+                        className="flex-1 flex items-center justify-center gap-2 rounded-2xl bg-white/[0.03] hover:bg-white/[0.08] px-4 py-3 text-[10px] font-black uppercase tracking-[0.2em] text-neutral-400 hover:text-white transition-all border border-white/5"
+                        style={{ fontFamily: 'Oughter, serif' }}
+                      >
+                        <Eye size={14} />
+                        Inspect
+                      </button>
+                      <button
+                        onClick={() => handleEdit(exhibition)}
+                        className="flex-1 flex items-center justify-center gap-2 rounded-2xl bg-white/[0.03] hover:bg-orange-600/10 px-4 py-3 text-[10px] font-black uppercase tracking-[0.2em] text-neutral-400 hover:text-orange-400 transition-all border border-white/5"
+                        style={{ fontFamily: 'Oughter, serif' }}
+                      >
+                        <Edit size={14} />
+                        Refine
+                      </button>
+                      <button
+                        onClick={() => handleDelete(exhibition.id)}
+                        className="p-3 rounded-2xl bg-white/[0.03] hover:bg-rose-500/10 text-neutral-600 hover:text-rose-400 border border-white/5 transition-all"
+                      >
+                        <Trash2 size={14} />
+                      </button>
                     </div>
                   </div>
-
-                  <div className="flex gap-3 mt-6 pt-6 border-t border-neutral-800">
-                    <button
-                      type="submit"
-                      disabled={loading}
-                      className="flex-1 px-6 py-3 bg-neutral-700 hover:bg-neutral-600 text-white font-medium rounded-lg transition-colors disabled:opacity-50 text-sm"
-                    >
-                      {loading ? 'Saving...' : editingId ? 'Update Exhibition' : 'Create Exhibition'}
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => {
-                        setShowForm(false)
-                        setEditingId(null)
-                        resetForm()
-                      }}
-                      className="flex-1 px-6 py-3 border border-neutral-700 hover:bg-neutral-800 text-white font-medium rounded-lg transition-colors text-sm"
-                    >
-                      Cancel
-                    </button>
-                  </div>
-                </form>
-              </motion.div>
-            </motion.div>
+                </motion.div>
+              ))}
+            </div>
           )}
-        </AnimatePresence>
 
-        {loading ? (
-          <div className="flex items-center justify-center h-64">
-            <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-neutral-500"></div>
-          </div>
-        ) : exhibitions.length === 0 ? (
-          <div className="text-center py-12 bg-neutral-900 border border-neutral-800 rounded-xl">
-            <Calendar className="mx-auto mb-4 text-neutral-600" size={48} />
-            <p className="text-neutral-400">No exhibitions yet</p>
-          </div>
-        ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {exhibitions.map((exhibition, index) => (
+          <AnimatePresence>
+            {viewingExhibition && (
               <motion.div
-                key={exhibition.id}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: index * 0.05 }}
-                className="group bg-neutral-900 border border-neutral-800 rounded-xl overflow-hidden hover:border-neutral-700 transition-all"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                className="fixed inset-0 z-[200] flex items-center justify-center p-0 md:p-10"
               >
-                {exhibition.image_url && (
-                  <div className="relative h-48 overflow-hidden">
-                    <img
-                      src={exhibition.image_url}
-                      alt={exhibition.title}
-                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-t from-neutral-900 via-neutral-900/50 to-transparent"></div>
-                    <span className={`absolute top-3 right-3 text-xs px-3 py-1 rounded-full font-medium backdrop-blur-sm ${exhibition.status === 'active' ? 'bg-green-600/80 text-white' :
-                        exhibition.status === 'upcoming' ? 'bg-blue-600/80 text-white' :
-                          exhibition.status === 'completed' ? 'bg-neutral-600/80 text-neutral-200' :
-                            'bg-red-600/80 text-white'
-                      }`}>
-                      {exhibition.status}
-                    </span>
-                  </div>
-                )}
-                <div className="p-4">
-                  <h3 className="font-bold text-white text-lg mb-2 line-clamp-1">{exhibition.title}</h3>
-
-                  {exhibition.artist && (
-                    <div className="flex items-center gap-2 text-neutral-400 text-xs mb-2">
-                      <User size={12} />
-                      <span>{exhibition.artist}</span>
+                <div className="absolute inset-0 bg-black/20 backdrop-blur-[20px]" onClick={() => setViewingExhibition(null)} />
+                <motion.div
+                  initial={{ scale: 0.98, opacity: 0, y: 30 }}
+                  animate={{ scale: 1, opacity: 1, y: 0 }}
+                  exit={{ scale: 0.98, opacity: 0, y: 30 }}
+                  onClick={(e) => e.stopPropagation()}
+                  className="relative bg-neutral-950/60 backdrop-blur-3xl border border-white/[0.08] md:rounded-[3rem] p-10 max-w-4xl w-full max-h-[95vh] overflow-y-auto scrollbar-hide shadow-[0_40px_100px_rgba(0,0,0,0.6)]"
+                >
+                  <div className="flex items-center justify-between mb-10">
+                    <div className="space-y-1">
+                      <p className="text-[10px] tracking-[0.5em] uppercase text-orange-500/60 font-black" style={{ fontFamily: 'Oughter, serif' }}>Exhibition Inspection</p>
+                      <h2 className="text-3xl font-light text-white leading-none" style={{ fontFamily: 'ForestSmooth, serif' }}>Showcase Intelligence</h2>
                     </div>
-                  )}
-
-                  <div className="flex items-center gap-2 text-neutral-400 text-xs mb-2">
-                    <MapPin size={12} />
-                    <span className="line-clamp-1">{exhibition.location}</span>
-                  </div>
-
-                  <div className="flex items-center gap-2 text-neutral-400 text-xs mb-2">
-                    <Calendar size={12} />
-                    <span className="text-[11px]">
-                      {new Date(exhibition.start_date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })} - {new Date(exhibition.end_date).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
-                    </span>
-                  </div>
-
-                  {exhibition.hours && (
-                    <div className="flex items-center gap-2 text-neutral-400 text-xs mb-3">
-                      <Clock size={12} />
-                      <span>{exhibition.hours}</span>
-                    </div>
-                  )}
-
-                  {exhibition.description && (
-                    <p className="text-neutral-400 text-xs mb-4 line-clamp-2 leading-relaxed">{exhibition.description}</p>
-                  )}
-
-                  <div className="flex gap-2 pt-3 border-t border-neutral-800">
-                    <button
-                      onClick={() => setViewingExhibition(exhibition)}
-                      className="flex items-center gap-1.5 rounded-lg bg-neutral-700 px-3 py-1.5 text-xs text-white transition-colors hover:bg-neutral-600"
-                    >
-                      <Eye size={12} />
-                      View
-                    </button>
-                    <button
-                      onClick={() => handleEdit(exhibition)}
-                      className="flex items-center gap-1.5 rounded-lg bg-neutral-700 px-3 py-1.5 text-xs text-white transition-colors hover:bg-neutral-600"
-                    >
-                      <Edit size={12} />
-                      Edit
-                    </button>
-                    <button
-                      onClick={() => handleDelete(exhibition.id)}
-                      className="rounded-lg border border-neutral-700 bg-neutral-800 px-3 py-1.5 text-xs text-white transition-colors hover:bg-neutral-700"
-                    >
-                      <Trash2 size={12} />
+                    <button onClick={() => setViewingExhibition(null)} className="p-3 rounded-xl bg-white/[0.02] hover:bg-white/[0.05] text-neutral-500 transition-all border border-white/5">
+                      <X size={24} />
                     </button>
                   </div>
-                </div>
-              </motion.div>
-            ))}
-          </div>
-        )}
 
-        <AnimatePresence>
-          {viewingExhibition && (
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              className="fixed inset-0 bg-black/80 z-50 flex items-center justify-center p-4"
-              onClick={() => setViewingExhibition(null)}
-            >
-              <motion.div
-                initial={{ scale: 0.9, opacity: 0 }}
-                animate={{ scale: 1, opacity: 1 }}
-                exit={{ scale: 0.9, opacity: 0 }}
-                onClick={(e) => e.stopPropagation()}
-                className="bg-neutral-900 border border-neutral-800 rounded-xl p-6 max-w-3xl w-full max-h-[90vh] overflow-y-auto"
-              >
-                <div className="flex items-center justify-between mb-6">
-                  <h2 className="text-2xl font-bold text-white">Exhibition Details</h2>
-                  <button onClick={() => setViewingExhibition(null)} className="p-2 hover:bg-neutral-800 rounded-lg transition-colors">
-                    <X className="text-neutral-400" size={24} />
-                  </button>
-                </div>
-
-                <div className="space-y-6">
-                  {viewingExhibition.image_url && (
-                    <div className="relative h-64 rounded-xl overflow-hidden">
-                      <img src={viewingExhibition.image_url} alt={viewingExhibition.title} className="w-full h-full object-cover" />
-                    </div>
-                  )}
-
-                  <div>
-                    <h3 className="text-2xl font-bold text-white mb-2">{viewingExhibition.title}</h3>
-                    <span className={`inline-block text-xs px-3 py-1 rounded-full font-medium ${viewingExhibition.status === 'active' ? 'bg-green-600/20 text-green-400' :
-                        viewingExhibition.status === 'upcoming' ? 'bg-blue-600/20 text-blue-400' :
-                          viewingExhibition.status === 'completed' ? 'bg-neutral-600/20 text-neutral-400' :
-                            'bg-red-600/20 text-red-400'
-                      }`}>
-                      {viewingExhibition.status.charAt(0).toUpperCase() + viewingExhibition.status.slice(1)}
-                    </span>
-                  </div>
-
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    {viewingExhibition.artist && (
-                      <div className="p-4 bg-neutral-800/50 rounded-xl border border-neutral-800">
-                        <label className="block text-xs font-medium text-neutral-400 mb-1">Artist / Curator</label>
-                        <div className="flex items-center gap-2 text-white">
-                          <User size={16} className="text-neutral-500" />
-                          <span className="text-sm">{viewingExhibition.artist}</span>
+                  <div className="space-y-12">
+                    {viewingExhibition.image_url && (
+                      <div className="relative h-[400px] rounded-[2.5rem] overflow-hidden group shadow-2xl">
+                        <img src={viewingExhibition.image_url} alt={viewingExhibition.title} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-[3000ms]" />
+                        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent" />
+                        <div className="absolute bottom-8 left-8">
+                          <span className={`px-6 py-2 rounded-full text-[10px] font-black uppercase tracking-[0.3em] border ${statusColors[viewingExhibition.status]}`}>
+                            {viewingExhibition.status} showcase
+                          </span>
                         </div>
                       </div>
                     )}
 
-                    <div className="p-4 bg-neutral-800/50 rounded-xl border border-neutral-800">
-                      <label className="block text-xs font-medium text-neutral-400 mb-1">Location</label>
-                      <div className="flex items-center gap-2 text-white">
-                        <MapPin size={16} className="text-neutral-500" />
-                        <span className="text-sm">{viewingExhibition.location}</span>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                      <div className="p-8 bg-white/[0.02] border border-white/[0.05] rounded-[2rem] space-y-4">
+                        <h3 className="text-[10px] tracking-[0.3em] uppercase text-neutral-600 font-black" style={{ fontFamily: 'Oughter, serif' }}>Exhibit Nomenclature</h3>
+                        <p className="text-2xl font-light text-white leading-tight" style={{ fontFamily: 'ForestSmooth, serif' }}>{viewingExhibition.title}</p>
                       </div>
-                    </div>
 
-                    <div className="p-4 bg-neutral-800/50 rounded-xl border border-neutral-800">
-                      <label className="block text-xs font-medium text-neutral-400 mb-1">Duration</label>
-                      <div className="flex items-center gap-2 text-white">
-                        <Calendar size={16} className="text-neutral-500" />
-                        <span className="text-sm">
-                          {new Date(viewingExhibition.start_date).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })} - {new Date(viewingExhibition.end_date).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}
-                        </span>
-                      </div>
-                    </div>
-
-                    {viewingExhibition.hours && (
-                      <div className="p-4 bg-neutral-800/50 rounded-xl border border-neutral-800">
-                        <label className="block text-xs font-medium text-neutral-400 mb-1">Hours</label>
-                        <div className="flex items-center gap-2 text-white">
-                          <Clock size={16} className="text-neutral-500" />
-                          <span className="text-sm">{viewingExhibition.hours}</span>
+                      <div className="grid grid-cols-2 gap-6">
+                        <div className="p-6 bg-white/[0.02] border border-white/[0.05] rounded-[2rem] space-y-1">
+                          <p className="text-[8px] tracking-[0.2em] uppercase text-neutral-600 font-black" style={{ fontFamily: 'Oughter, serif' }}>Launch Sequence</p>
+                          <p className="text-[15px] font-light text-white" style={{ fontFamily: 'ForestSmooth, serif' }}>
+                            {new Date(viewingExhibition.start_date).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
+                          </p>
+                        </div>
+                        <div className="p-6 bg-white/[0.02] border border-white/[0.05] rounded-[2rem] space-y-1">
+                          <p className="text-[8px] tracking-[0.2em] uppercase text-neutral-600 font-black" style={{ fontFamily: 'Oughter, serif' }}>Archival Limit</p>
+                          <p className="text-[15px] font-light text-white" style={{ fontFamily: 'ForestSmooth, serif' }}>
+                            {new Date(viewingExhibition.end_date).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
+                          </p>
                         </div>
                       </div>
-                    )}
-                  </div>
 
-                  {viewingExhibition.description && (
-                    <div className="p-4 bg-neutral-800/50 rounded-xl border border-neutral-800">
-                      <label className="block text-xs font-medium text-neutral-400 mb-2">Description</label>
-                      <p className="text-sm text-neutral-300 leading-relaxed">{viewingExhibition.description}</p>
+                      <div className="p-8 bg-white/[0.02] border border-white/[0.05] rounded-[2rem] space-y-4">
+                        <h3 className="text-[10px] tracking-[0.3em] uppercase text-neutral-600 font-black" style={{ fontFamily: 'Oughter, serif' }}>Location Vector</h3>
+                        <div className="flex items-center gap-3">
+                          <MapPin size={18} className="text-orange-500/50" />
+                          <p className="text-lg font-light text-white" style={{ fontFamily: 'ForestSmooth, serif' }}>{viewingExhibition.location}</p>
+                        </div>
+                      </div>
+
+                      <div className="p-8 bg-white/[0.02] border border-white/[0.05] rounded-[2rem] space-y-4">
+                        <h3 className="text-[10px] tracking-[0.3em] uppercase text-neutral-600 font-black" style={{ fontFamily: 'Oughter, serif' }}>Operational Registry</h3>
+                        <div className="flex items-center gap-3">
+                          <Clock size={18} className="text-orange-500/50" />
+                          <p className="text-lg font-light text-white" style={{ fontFamily: 'ForestSmooth, serif' }}>{viewingExhibition.hours || 'Adaptive Hours'}</p>
+                        </div>
+                      </div>
+
+                      <div className="p-8 bg-white/[0.02] border border-white/[0.05] rounded-[2.5rem] md:col-span-2 space-y-4">
+                        <h3 className="text-[10px] tracking-[0.3em] uppercase text-neutral-600 font-black" style={{ fontFamily: 'Oughter, serif' }}>Curatorial Narrative</h3>
+                        <p className="text-lg font-light text-neutral-400 leading-relaxed italic" style={{ fontFamily: 'ForestSmooth, serif' }}>
+                          "{viewingExhibition.description || 'No narrative provided for this sequence.'}"
+                        </p>
+                      </div>
                     </div>
-                  )}
-                </div>
+                  </div>
+                </motion.div>
               </motion.div>
-            </motion.div>
-          )}
-        </AnimatePresence>
+            )}
+          </AnimatePresence>
+        </div>
       </div>
     </DashboardLayout>
   )
