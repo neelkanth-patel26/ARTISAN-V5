@@ -82,29 +82,34 @@ export function FeaturedArtistsSection() {
             >
               <motion.div
                 suppressHydrationWarning
-                className="relative overflow-hidden border border-neutral-800/30 group-hover:border-amber-600/20 transition-all duration-700 mb-4 bg-neutral-900/40 rounded-2xl"
+                className="relative overflow-hidden border border-neutral-900 group-hover:border-amber-600/20 transition-all duration-700 mb-4 bg-black rounded-3xl"
                 whileHover={{ scale: 1.02 }}
                 transition={{ duration: 0.4 }}
               >
-                <div suppressHydrationWarning className="absolute inset-0 bg-[radial-gradient(circle_at_center,_rgba(217,119,6,0.03)_0%,_transparent_70%)] opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
-                <div suppressHydrationWarning className="relative w-full h-[280px] md:h-[400px] p-12 md:p-20 flex items-center justify-center">
+                <div suppressHydrationWarning className="absolute inset-0 bg-[radial-gradient(circle_at_center,_rgba(217,119,6,0.05)_0%,_transparent_80%)] opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
+                <div suppressHydrationWarning className="relative w-full h-[300px] md:h-[450px] p-10 md:p-16 flex items-center justify-center overflow-hidden">
+                  <motion.div 
+                    className="absolute inset-0 bg-gradient-to-b from-transparent via-black/20 to-black z-10"
+                    initial={{ opacity: 0 }}
+                    whileHover={{ opacity: 1 }}
+                  />
                   <motion.img
                     suppressHydrationWarning
                     src={artist.image}
                     alt={artist.name}
-                    className="w-full h-full object-contain filter drop-shadow-[0_0_30px_rgba(0,0,0,0.5)] will-change-transform"
-                    whileHover={{ scale: 1.1 }}
-                    transition={{ duration: 0.6 }}
+                    className="w-full h-full object-contain filter drop-shadow-[0_0_50px_rgba(0,0,0,0.8)] will-change-transform z-0"
+                    whileHover={{ scale: 1.08 }}
+                    transition={{ duration: 0.8 }}
                   />
                 </div>
-                <div className="absolute inset-x-0 bottom-0 h-1/3 bg-gradient-to-t from-black/80 to-transparent z-20" />
-                <div className="absolute bottom-0 left-0 right-0 p-6 z-30">
-                  <div className="flex items-center gap-2 mb-2">
-                    <div className="w-8 h-px bg-amber-600/50" />
-                    <span className="text-[10px] text-amber-600/70 tracking-[0.2em] font-bold uppercase">{artist.works} WORKS</span>
+                <div className="absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-black via-black/80 to-transparent z-20" />
+                <div className="absolute bottom-0 left-0 right-0 p-8 z-30">
+                  <div className="flex items-center gap-2 mb-3">
+                    <div className="w-10 h-px bg-amber-600/40" />
+                    <span className="text-[9px] text-amber-600/60 tracking-[0.3em] font-medium uppercase">{artist.works} PIECES</span>
                   </div>
-                  <h3 className="text-xl md:text-2xl font-light text-white mb-1" style={{ fontFamily: 'Oughter, serif' }}>{artist.name}</h3>
-                  <p className="text-[11px] text-neutral-500 tracking-[0.1em] font-medium uppercase">{artist.specialty}</p>
+                  <h3 className="text-2xl md:text-3xl font-light text-white/95 mb-1" style={{ fontFamily: 'ForestSmooth, serif' }}>{artist.name}</h3>
+                  <p className="text-[10px] text-neutral-500 tracking-[0.2em] font-light uppercase">{artist.specialty}</p>
                 </div>
               </motion.div>
               <Link href="/gallery">
