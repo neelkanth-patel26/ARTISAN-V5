@@ -44,7 +44,7 @@ function GalleryContent() {
   const searchParams = useSearchParams()
   const artworkParam = searchParams.get('artwork')
   
-  const [categories, setCategories] = useState<string[]>(['all'])
+  const [categories, setCategories] = useState<string[]>([])
   const [selectedCategory, setSelectedCategory] = useState('all')
   const [searchQuery, setSearchQuery] = useState('')
   const [showLiveOnly, setShowLiveOnly] = useState(false)

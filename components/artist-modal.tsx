@@ -164,7 +164,7 @@ export function ArtistModal({ artist, onClose }: ArtistModalProps) {
                 {/* Avatar + Name */}
                 <div className="flex flex-row lg:flex-col items-center lg:items-start gap-5 lg:gap-6 pt-2">
                   <div className="relative shrink-0">
-                    <div className="w-16 h-16 sm:w-20 sm:h-20 lg:w-36 lg:h-36 rounded-[1.5rem] lg:rounded-[2rem] overflow-hidden bg-white/[0.03] border border-white/[0.08]">
+                    <div className="w-16 h-16 sm:w-16 sm:h-16 lg:w-36 lg:h-36 rounded-[1.5rem] lg:rounded-[2rem] overflow-hidden bg-white/[0.03] border border-white/[0.08]">
                       {artist.avatar_url ? (
                         <img src={artist.avatar_url} alt={artist.full_name} className="w-full h-full object-cover" />
                       ) : (
