@@ -1,6 +1,6 @@
 'use client'
 
-import { ReactNode, useState, useEffect } from 'react'
+import { ReactNode, useState, useEffect, useRef } from 'react'
 import Link from 'next/link'
 import { usePathname, useRouter } from 'next/navigation'
 import { Home, LogOut, Menu, X } from 'lucide-react'
@@ -28,12 +28,15 @@ export function DashboardLayout({ children, navItems, role }: DashboardLayoutPro
   const [sidebarOpen, setSidebarOpen] = useState(false)
   const [loading, setLoading] = useState(true)
   const [isInitialLoad, setIsInitialLoad] = useState(true)
+  const drawerRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
-    // Grant a small window for hydration and state sync before enabling transitions
-    const timer = setTimeout(() => setIsInitialLoad(false), 100)
-    return () => clearTimeout(timer)
-  }, [])
+    if (sidebarOpen && drawerRef.current) {
+      setTimeout(() => {
+        drawerRef.current?.scrollTo({ top: 0, behavior: 'smooth' })
+      }, 100)
+    }
+  }, [sidebarOpen])
 
   useEffect(() => {
     const loadProfile = async () => {
@@ -158,20 +161,7 @@ export function DashboardLayout({ children, navItems, role }: DashboardLayoutPro
       <header className="fixed left-0 right-0 top-0 z-50 flex h-24 items-center justify-between border-b border-white/[0.04] bg-neutral-950/80 backdrop-blur-2xl px-6 lg:hidden"
         style={{ paddingTop: 'max(0px, env(safe-area-inset-top))' }}
       >
-        <Link href="/" className="flex items-center gap-3">
-          <div className="relative flex h-9 w-9 items-center justify-center rounded-xl bg-orange-600/10 border border-orange-500/30">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M12 2C6.48 2 2 6.48 2 12c0 5.52 4.48 10 10 10 1.1 0 2-.9 2-2 0-.53-.19-1.01-.5-1.38-.31-.37-.5-.85-.5-1.37 0-1.1.9-2 2-2h2.34c3.12 0 5.66-2.54 5.66-5.66C23 6.01 18.03 2 12 2z" fill="url(#pSidGradMob)" opacity="0.9"/>
-              <defs>
-                <linearGradient id="pSidGradMob" x1="2" y1="2" x2="22" y2="22" gradientUnits="userSpaceOnUse">
-                  <stop offset="0%"   stopColor="#f97316" stopOpacity="0.4"/>
-                  <stop offset="100%" stopColor="#92400e" stopOpacity="0.2"/>
-                </linearGradient>
-              </defs>
-            </svg>
-          </div>
-          <span className="text-[13px] font-black tracking-[0.3em] text-white/90" style={{ fontFamily: 'Oughter, serif' }}>ARTISAN</span>
-        </Link>
+        <span className="text-[13px] font-black tracking-[0.3em] text-white/90" style={{ fontFamily: 'Oughter, serif' }}>ARTISAN</span>
         <div className="flex items-center gap-3">
           {profile && (
             <div className="flex h-8 w-8 items-center justify-center rounded-full bg-orange-600/10 border border-orange-600/20 text-orange-400 text-[12px] font-black" style={{ fontFamily: 'Oughter, serif' }}>
@@ -199,6 +189,7 @@ export function DashboardLayout({ children, navItems, role }: DashboardLayoutPro
               onClick={() => setSidebarOpen(false)}
             />
             <motion.div
+              ref={drawerRef}
               initial={{ x: '100%' }}
               animate={{ x: 0 }}
               exit={{ x: '100%' }}
