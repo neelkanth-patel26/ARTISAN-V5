@@ -373,209 +373,256 @@ function CheckoutContent() {
   }
 
   return (
-    <main className="min-h-screen bg-white font-sans">
-      <div className="border-b border-gray-200 bg-white">
-        <div className="mx-auto max-w-6xl px-4 py-6">
+    <main className="min-h-screen bg-neutral-950 text-neutral-200 font-sans selection:bg-amber-600/30">
+      {/* Header */}
+      <div className="border-b border-neutral-900 bg-black/40 backdrop-blur-md sticky top-0 z-50">
+        <div className="mx-auto max-w-7xl px-6 py-6 sm:py-8">
           <div className="flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <div className="h-10 w-10 rounded-lg bg-gradient-to-br from-purple-600 to-indigo-600 flex items-center justify-center">
-                <span className="text-white font-semibold text-lg">A</span>
+            <Link href="/" className="flex items-center gap-4 group">
+              <div className="h-12 w-12 rounded-2xl bg-amber-600 flex items-center justify-center shadow-lg shadow-amber-900/20 group-hover:scale-105 transition-transform duration-500">
+                <span className="text-white font-bold text-xl" style={{ fontFamily: 'ForestSmooth, serif' }}>A</span>
               </div>
-              <div>
-                <h1 className="text-xl font-semibold text-gray-900">ArtPay</h1>
-                <p className="text-xs text-gray-500 font-normal">Powered by Gaming Network Studio Secure System</p>
+              <div className="hidden sm:block">
+                <h1 className="text-xl font-light text-white tracking-widest uppercase" style={{ fontFamily: 'ForestSmooth, serif' }}>Artisan Checkout</h1>
+                <p className="text-[10px] text-neutral-500 tracking-[0.2em] font-black uppercase">Secure Global Payment Engine</p>
               </div>
+            </Link>
+            <div className="flex items-center gap-4 text-neutral-500">
+              <span className="text-[10px] tracking-widest uppercase font-black hidden lg:block">Data Encryption Active</span>
+              <Lock className="text-amber-600/60" size={18} />
             </div>
-            <Lock className="text-gray-400" size={20} />
           </div>
         </div>
       </div>
 
-      <div className="mx-auto max-w-6xl px-4 py-8">
-        <div className="grid lg:grid-cols-[1fr,400px] gap-8">
-          <div className="space-y-6">
-            <div className="bg-gray-50 rounded-xl p-6 border border-gray-200">
-              <h2 className="text-sm font-semibold text-gray-700 mb-4 tracking-wide">ORDER DETAILS</h2>
-              {isSupport && artist ? (
-                <div className="flex gap-4">
-                  <div className="h-20 w-20 rounded-full bg-neutral-800 overflow-hidden flex-shrink-0">
-                    {artist.avatar_url ? (
-                      <img src={getImageUrl(artist.avatar_url)} alt={artist.full_name} className="w-full h-full object-cover" />
-                    ) : (
-                      <div className="w-full h-full flex items-center justify-center text-2xl text-purple-600">
-                        {artist.full_name.charAt(0).toUpperCase()}
+      <div className="mx-auto max-w-7xl px-6 py-12 sm:py-20 lg:py-24">
+        <div className="grid lg:grid-cols-12 gap-12 lg:gap-20 items-start">
+          
+          {/* Main Payment Section */}
+          <div className="lg:col-span-7 space-y-12">
+            {/* Item Preview */}
+            <div className="relative group p-8 rounded-[2.5rem] bg-neutral-900 border border-neutral-800 shadow-3xl overflow-hidden">
+               <div className="absolute top-0 right-0 w-64 h-64 bg-amber-600/5 blur-[80px] rounded-full pointer-events-none -mr-32 -mt-32" />
+               
+               <div className="relative z-10 flex flex-col sm:flex-row gap-8 items-center sm:items-start text-center sm:text-left">
+                  {isSupport && artist ? (
+                    <>
+                      <div className="h-32 w-32 rounded-[2rem] p-1 bg-black border border-neutral-800 shadow-2xl relative">
+                        <div className="w-full h-full rounded-[1.25rem] overflow-hidden bg-neutral-800">
+                           {artist.avatar_url ? (
+                             <img src={getImageUrl(artist.avatar_url)} alt={artist.full_name} className="w-full h-full object-cover" />
+                           ) : (
+                             <div className="w-full h-full flex items-center justify-center text-4xl text-amber-600/30" style={{ fontFamily: 'ForestSmooth, serif' }}>
+                               {artist.full_name.charAt(0).toUpperCase()}
+                             </div>
+                           )}
+                        </div>
                       </div>
-                    )}
-                  </div>
-                  <div className="flex-1">
-                    <h3 className="font-semibold text-gray-900 mb-1">Support Artist</h3>
-                    <p className="text-sm text-gray-600 font-normal">{artist.full_name}</p>
-                    <p className="text-lg font-semibold text-gray-900 mt-2">₹{baseAmount.toLocaleString()}</p>
-                  </div>
-                </div>
-              ) : artwork ? (
-                <div className="flex gap-4">
-                  <img src={getImageUrl(artwork.image_url)} alt="" className="h-20 w-20 object-cover rounded-lg border border-gray-200" />
-                  <div className="flex-1">
-                    <h3 className="font-semibold text-gray-900 mb-1">{artwork.title}</h3>
-                    <p className="text-sm text-gray-600 font-normal">by {artwork.artist_name}</p>
-                    <p className="text-lg font-semibold text-gray-900 mt-2">₹{artwork.price.toLocaleString()}</p>
-                  </div>
-                </div>
-              ) : null}
+                      <div className="flex-1 space-y-3">
+                         <h2 className="text-[10px] text-amber-600 uppercase tracking-[0.3em] font-black">Support Initiative</h2>
+                         <h3 className="text-4xl font-light text-white leading-tight" style={{ fontFamily: 'ForestSmooth, serif' }}>{artist.full_name}</h3>
+                         <p className="text-neutral-500 text-sm font-light max-w-md">Your direct contribution helps this artist maintain their creative vision and studio operations.</p>
+                      </div>
+                    </>
+                  ) : artwork ? (
+                    <>
+                      <div className="h-40 w-40 rounded-3xl overflow-hidden border border-neutral-800 shadow-2xl">
+                        <img src={getImageUrl(artwork.image_url)} alt={artwork.title} className="w-full h-full object-cover" />
+                      </div>
+                      <div className="flex-1 space-y-3">
+                         <h2 className="text-[10px] text-amber-600 uppercase tracking-[0.3em] font-black">Artwork Acquisition</h2>
+                         <h3 className="text-4xl font-light text-white leading-tight" style={{ fontFamily: 'ForestSmooth, serif' }}>{artwork.title}</h3>
+                         <p className="text-neutral-500 text-sm font-light">by <span className="text-neutral-300 font-medium">{artwork.artist_name}</span></p>
+                      </div>
+                    </>
+                  ) : null}
+               </div>
             </div>
 
-            <div className="bg-white rounded-xl border border-gray-200">
-              <div className="px-6 py-4 border-b border-gray-200">
-                <h2 className="text-sm font-semibold text-gray-700 tracking-wide">PAYMENT METHOD</h2>
+            {/* Payment Controls */}
+            <div className="space-y-8">
+              <div className="flex items-center gap-4">
+                 <h2 className="text-sm text-neutral-400 font-light tracking-widest uppercase">Select Payment Mode</h2>
+                 <div className="h-px flex-1 bg-neutral-900" />
               </div>
-              <div className="p-6">
-                <div className="grid grid-cols-2 gap-3 mb-6">
-                  <button
-                    type="button"
-                    onClick={() => setPaymentMethod('card')}
-                    className={`flex items-center justify-center gap-2 px-4 py-3 rounded-lg border-2 font-medium transition-all ${
-                      paymentMethod === 'card'
-                        ? 'bg-purple-600 border-purple-600 text-white'
-                        : 'bg-white border-gray-300 text-gray-700 hover:border-purple-300'
-                    }`}
-                  >
-                    <CreditCard size={20} />
-                    Card
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => setPaymentMethod('upi')}
-                    disabled={!artistUpiId}
-                    className={`flex items-center justify-center gap-2 px-4 py-3 rounded-lg border-2 font-medium transition-all ${
-                      paymentMethod === 'upi'
-                        ? 'bg-purple-600 border-purple-600 text-white'
-                        : !artistUpiId
-                        ? 'bg-gray-100 border-gray-300 text-gray-400 cursor-not-allowed'
-                        : 'bg-white border-gray-300 text-gray-700 hover:border-purple-300'
-                    }`}
-                  >
-                    <QrCode size={20} />
-                    UPI
-                  </button>
-                </div>
-                
-                {paymentMethod === 'upi' && artistUpiId ? (
-                  <form onSubmit={handleSubmit} className="space-y-5">
-                    <div className="bg-purple-50 p-4 rounded-lg border border-purple-200">
-                      <p className="text-sm text-purple-900 mb-2">Artist UPI ID</p>
-                      <code className="text-purple-700 font-mono text-sm break-all">{artistUpiId}</code>
-                      <div className="mt-4 pt-4 border-t border-purple-200 space-y-2">
-                        <div className="flex justify-between text-sm">
-                          <span className="text-purple-900">Total Amount</span>
-                          <span className="text-purple-900">₹{baseAmount.toFixed(2)}</span>
-                        </div>
-                        <div className="flex justify-between text-xs text-purple-700">
-                          <span>Platform fee will be deducted separately</span>
-                          <span>₹{platformFee.toFixed(2)}</span>
-                        </div>
+
+              <div className="grid grid-cols-2 gap-6">
+                <button
+                  onClick={() => setPaymentMethod('card')}
+                  className={`flex flex-col items-center justify-center gap-4 p-8 rounded-[2rem] border-2 transition-all duration-500 group ${
+                    paymentMethod === 'card'
+                      ? 'bg-amber-600 border-amber-600 text-white shadow-2xl shadow-amber-900/40'
+                      : 'bg-neutral-900 border-neutral-800 text-neutral-500 hover:border-amber-600/30'
+                  }`}
+                >
+                  <CreditCard size={28} className={paymentMethod === 'card' ? 'scale-110 transition-transform' : 'opacity-30'} />
+                  <span className="text-[10px] tracking-[0.3em] uppercase font-black">Secured Card</span>
+                </button>
+                <button
+                  onClick={() => setPaymentMethod('upi')}
+                  disabled={!artistUpiId}
+                  className={`flex flex-col items-center justify-center gap-4 p-8 rounded-[2rem] border-2 transition-all duration-500 group ${
+                    paymentMethod === 'upi'
+                      ? 'bg-amber-600 border-amber-600 text-white shadow-2xl shadow-amber-900/40'
+                      : !artistUpiId
+                      ? 'bg-neutral-900 border-neutral-800/50 text-neutral-800 cursor-not-allowed grayscale'
+                      : 'bg-neutral-900 border-neutral-800 text-neutral-500 hover:border-amber-600/30'
+                  }`}
+                >
+                  <QrCode size={28} className={paymentMethod === 'upi' ? 'scale-110 transition-transform' : 'opacity-30'} />
+                  <span className="text-[10px] tracking-[0.3em] uppercase font-black">UPI Instant</span>
+                </button>
+              </div>
+
+              {/* Form Content */}
+              <div className="bg-neutral-900/50 rounded-[2.5rem] p-8 sm:p-12 border border-neutral-800">
+                {paymentMethod === 'upi' ? (
+                  <form onSubmit={handleSubmit} className="space-y-10">
+                    <div className="space-y-4">
+                      <div className="flex items-center justify-between text-[10px] text-neutral-600 font-black uppercase tracking-widest">
+                        <span>Recipient UPI</span>
+                        <span className="text-amber-600/60">Verified</span>
+                      </div>
+                      <div className="bg-black/40 p-6 rounded-2xl border border-neutral-800">
+                        <code className="text-amber-500 font-mono text-lg break-all">{artistUpiId}</code>
                       </div>
                     </div>
+                    
+                    <div className="space-y-4 pt-4 border-t border-neutral-800">
+                       <p className="text-[10px] text-neutral-500 leading-relaxed uppercase tracking-[0.2em] font-bold">
+                         Proceeding will open your default UPI application. Please ensure the amount matches exactly.
+                       </p>
+                    </div>
+
                     <button
                       type="submit"
                       disabled={paying}
-                      className="w-full py-4 rounded-lg bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white font-semibold transition-all disabled:opacity-50 flex items-center justify-center gap-2 shadow-lg"
+                      className="w-full py-6 rounded-[1.5rem] bg-amber-600 text-white font-black text-sm tracking-[0.3em] uppercase hover:bg-amber-500 transition-all shadow-3xl shadow-amber-900/40 active:scale-[0.98] flex items-center justify-center gap-4 group"
                     >
-                      {paying ? <Loader2 className="h-5 w-5 animate-spin" /> : <QrCode size={18} />}
-                      Pay via UPI
+                      {paying ? <Loader2 className="h-6 w-6 animate-spin" /> : <QrCode size={20} className="group-hover:rotate-12 transition-transform" />}
+                      Initialize UPI Transfer
                     </button>
                   </form>
-                ) : paymentMethod === 'card' ? (
-                  <form onSubmit={handleSubmit} className="space-y-5">
-                <div>
-                  <label className="block text-sm font-medium text-gray-900 mb-2">Card number</label>
-                  <div className="relative">
-                    <input
-                      type="text"
-                      value={cardNumber}
-                      onChange={(e) => setCardNumber(formatCardNumber(e.target.value))}
-                      placeholder="1234 5678 9012 3456"
-                      maxLength={19}
-                      className="w-full rounded-lg border-2 border-gray-300 bg-white px-4 py-3 text-gray-900 placeholder-gray-400 focus:border-purple-500 focus:outline-none transition-colors"
-                    />
-                    <CreditCard className="absolute right-3 top-3.5 text-gray-400" size={20} />
-                  </div>
-                </div>
-                <div className="grid grid-cols-2 gap-4">
-                  <div>
-                    <label className="block text-sm font-medium text-gray-900 mb-2">Expiry date</label>
-                    <input
-                      type="text"
-                      value={expiry}
-                      onChange={(e) => setExpiry(formatExpiry(e.target.value))}
-                      placeholder="MM/YY"
-                      maxLength={5}
-                      className="w-full rounded-lg border-2 border-gray-300 bg-white px-4 py-3 text-gray-900 placeholder-gray-400 focus:border-purple-500 focus:outline-none transition-colors"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-gray-900 mb-2">CVC</label>
-                    <input
-                      type="text"
-                      value={cvc}
-                      onChange={(e) => setCvc(e.target.value.replace(/\D/g, '').slice(0, 4))}
-                      placeholder="123"
-                      className="w-full rounded-lg border-2 border-gray-300 bg-white px-4 py-3 text-gray-900 placeholder-gray-400 focus:border-purple-500 focus:outline-none transition-colors"
-                    />
-                  </div>
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-900 mb-2">Cardholder name</label>
-                  <input
-                    type="text"
-                    value={name}
-                    onChange={(e) => setName(e.target.value)}
-                    placeholder="John Doe"
-                    className="w-full rounded-lg border-2 border-gray-300 bg-white px-4 py-3 text-gray-900 placeholder-gray-400 focus:border-purple-500 focus:outline-none transition-colors"
-                  />
-                </div>
-                <button
-                  type="submit"
-                  disabled={paying}
-                  className="w-full py-4 rounded-lg bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white font-semibold transition-all disabled:opacity-50 flex items-center justify-center gap-2 shadow-lg"
-                >
-                  {paying ? <Loader2 className="h-5 w-5 animate-spin" /> : <Lock size={18} />}
-                  Pay ₹{totalAmount.toLocaleString()}
-                </button>
-              </form>
-                ) : null}
+                ) : (
+                  <form onSubmit={handleSubmit} className="space-y-8">
+                    <div className="space-y-8">
+                      <div className="space-y-4">
+                        <label className="text-[10px] text-neutral-500 uppercase tracking-widest font-black ml-1">Card Identification</label>
+                        <div className="relative">
+                          <input
+                            type="text"
+                            value={cardNumber}
+                            onChange={(e) => setCardNumber(formatCardNumber(e.target.value))}
+                            placeholder="0000 0000 0000 0000"
+                            maxLength={19}
+                            className="w-full bg-black/40 border-2 border-neutral-800 rounded-2xl px-6 py-4 text-xl font-light text-white placeholder:text-neutral-800 focus:border-amber-600/50 focus:outline-none transition-all outline-none"
+                            style={{ fontFamily: 'ForestSmooth, serif' }}
+                          />
+                          <CreditCard className="absolute right-6 top-1/2 -translate-y-1/2 text-neutral-700" size={24} />
+                        </div>
+                      </div>
+                      
+                      <div className="grid grid-cols-2 gap-6">
+                        <div className="space-y-4">
+                          <label className="text-[10px] text-neutral-500 uppercase tracking-widest font-black ml-1">Expiration</label>
+                          <input
+                            type="text"
+                            value={expiry}
+                            onChange={(e) => setExpiry(formatExpiry(e.target.value))}
+                            placeholder="MM/YY"
+                            maxLength={5}
+                            className="w-full bg-black/40 border-2 border-neutral-800 rounded-2xl px-6 py-4 text-xl font-light text-white placeholder:text-neutral-800 focus:border-amber-600/50 focus:outline-none transition-all outline-none"
+                            style={{ fontFamily: 'ForestSmooth, serif' }}
+                          />
+                        </div>
+                        <div className="space-y-4">
+                          <label className="text-[10px] text-neutral-500 uppercase tracking-widest font-black ml-1">CVC Code</label>
+                          <input
+                            type="text"
+                            value={cvc}
+                            onChange={(e) => setCvc(e.target.value.replace(/\D/g, '').slice(0, 4))}
+                            placeholder="•••"
+                            className="w-full bg-black/40 border-2 border-neutral-800 rounded-2xl px-6 py-4 text-xl font-light text-white placeholder:text-neutral-800 focus:border-amber-600/50 focus:outline-none transition-all outline-none"
+                            style={{ fontFamily: 'ForestSmooth, serif' }}
+                          />
+                        </div>
+                      </div>
+
+                      <div className="space-y-4">
+                        <label className="text-[10px] text-neutral-500 uppercase tracking-widest font-black ml-1">Cardholder Entity</label>
+                        <input
+                          type="text"
+                          value={name}
+                          onChange={(e) => setName(e.target.value)}
+                          placeholder="FULL NAME AS PER CARD"
+                          className="w-full bg-black/40 border-2 border-neutral-800 rounded-2xl px-6 py-4 text-sm font-bold tracking-widest text-white placeholder:text-neutral-800 focus:border-amber-600/50 focus:outline-none transition-all outline-none uppercase"
+                        />
+                      </div>
+                    </div>
+
+                    <button
+                      type="submit"
+                      disabled={paying}
+                      className="w-full py-6 rounded-[1.5rem] bg-white text-black font-black text-sm tracking-[0.3em] uppercase hover:bg-neutral-200 transition-all shadow-3xl active:scale-[0.98] flex items-center justify-center gap-4 group mt-4"
+                    >
+                      {paying ? <Loader2 className="h-6 w-6 animate-spin" /> : <Lock size={20} />}
+                      Authorize Payment
+                    </button>
+                  </form>
+                )}
               </div>
             </div>
           </div>
 
-          <div className="lg:sticky lg:top-8 h-fit">
-            <div className="bg-gray-50 rounded-xl p-6 border border-gray-200">
-              <h2 className="text-sm font-semibold text-gray-700 mb-4 tracking-wide">SUMMARY</h2>
-              <div className="space-y-3 mb-4">
-                <div className="flex justify-between text-gray-900 font-normal">
-                  <span>Subtotal</span>
-                  <span>₹{baseAmount.toLocaleString()}</span>
-                </div>
-                <div className="flex justify-between text-gray-900 font-normal">
-                  <span>Platform fee ({isSupport ? '5' : '10'}%)</span>
-                  <span>₹{platformFee.toFixed(2)}</span>
-                </div>
-                <div className="border-t border-gray-300 pt-3 flex justify-between text-lg font-semibold text-gray-900">
-                  <span>Total</span>
-                  <span>₹{totalAmount.toLocaleString()}</span>
-                </div>
-              </div>
-              <div className="bg-purple-50 rounded-lg p-4 border border-purple-200">
-                <div className="flex items-start gap-3">
-                  <Lock className="text-purple-600 mt-0.5" size={18} />
-                  <div>
-                    <p className="text-sm font-medium text-purple-900">Secure payment</p>
-                    <p className="text-xs text-purple-700 mt-1">Your payment information is encrypted and secure</p>
+          {/* Order Summary Sidebar */}
+          <div className="lg:col-span-5 lg:sticky lg:top-32 space-y-8">
+            <div className="relative group p-10 rounded-[2.5rem] bg-neutral-900 border border-neutral-800 shadow-3xl overflow-hidden">
+               <div className="absolute bottom-0 left-0 w-48 h-48 bg-amber-600/5 blur-[80px] rounded-full pointer-events-none -ml-24 -mb-24" />
+               
+               <h2 className="text-sm text-neutral-400 font-light tracking-[0.3em] uppercase mb-10 pb-6 border-b border-neutral-800/50">Fiscal Summary</h2>
+               
+               <div className="space-y-6 mb-12">
+                  <div className="flex justify-between items-center group/item">
+                    <span className="text-[11px] text-neutral-500 uppercase tracking-widest font-bold group-hover/item:text-neutral-400 transition-colors">Net Valuation</span>
+                    <span className="text-xl font-light text-white" style={{ fontFamily: 'ForestSmooth, serif' }}>₹{baseAmount.toLocaleString()}</span>
                   </div>
-                </div>
-              </div>
+                  <div className="flex justify-between items-center group/item">
+                    <span className="text-[11px] text-neutral-500 uppercase tracking-widest font-bold group-hover/item:text-neutral-400 transition-colors">Platform Logistics ({isSupport ? '5' : '10'}%)</span>
+                    <span className="text-lg font-light text-amber-600/80" style={{ fontFamily: 'ForestSmooth, serif' }}>₹{platformFee.toFixed(2)}</span>
+                  </div>
+                  
+                  <div className="pt-8 mt-8 border-t border-neutral-800/50 flex justify-between items-end">
+                    <div className="space-y-1">
+                      <span className="text-[10px] text-amber-600 uppercase tracking-[0.4em] font-black">Total Payable</span>
+                      <p className="text-neutral-600 text-[10px] font-medium tracking-widest">INC. ALL APPLICABLE FEES</p>
+                    </div>
+                    <span className="text-5xl font-light text-white tracking-tighter" style={{ fontFamily: 'ForestSmooth, serif' }}>
+                      ₹{Math.floor(totalAmount).toLocaleString()}
+                    </span>
+                  </div>
+               </div>
+
+               <div className="bg-black/40 rounded-3xl p-6 border border-neutral-800/50 flex items-start gap-5">
+                  <div className="h-10 w-10 rounded-xl bg-neutral-900 border border-neutral-800 flex items-center justify-center flex-shrink-0">
+                    <Lock className="text-amber-600/60" size={18} />
+                  </div>
+                  <div>
+                    <h4 className="text-[10px] text-neutral-300 font-black uppercase tracking-widest mb-1">Encrypted Terminal</h4>
+                    <p className="text-[10px] text-neutral-500 font-medium leading-relaxed uppercase tracking-wider">Your fiscal identity is strictly protected by military-grade RSA protocol.</p>
+                  </div>
+               </div>
+            </div>
+            
+            <div className="text-center">
+               <button 
+                  onClick={() => router.back()}
+                  className="text-[10px] text-neutral-600 uppercase tracking-[0.4em] font-black hover:text-white transition-colors py-4 px-8"
+               >
+                  ← Terminate Session
+               </button>
             </div>
           </div>
+
         </div>
       </div>
     </main>
