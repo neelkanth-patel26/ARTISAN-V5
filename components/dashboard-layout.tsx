@@ -200,13 +200,13 @@ export function DashboardLayout({ children, navItems, role }: DashboardLayoutPro
               {/* Internal Atmospherics */}
               <div className="absolute top-0 right-0 w-32 h-32 bg-orange-600/5 rounded-full blur-[60px] pointer-events-none" />
 
-              <div className="relative px-6 py-4 flex items-center justify-between border-b border-white/[0.04]">
+              <div className="relative px-6 py-2 flex items-center justify-between border-b border-white/[0.04]">
                 <span className="text-[10px] tracking-[0.4em] uppercase font-black text-orange-600/60 bg-orange-600/5 px-3 py-1 rounded-full border border-orange-500/10">
                   {roleLabel[role]} Protocol
                 </span>
               </div>
 
-              <nav className="relative flex-1 px-4 py-8 space-y-2">
+              <nav className="relative flex-1 px-4 py-4 space-y-2">
                 {navItems.map((item) => {
                   const isActive = pathname === item.href
                   return (
