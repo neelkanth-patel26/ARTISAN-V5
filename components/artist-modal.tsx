@@ -217,15 +217,15 @@ export function ArtistModal({ artist, onClose }: ArtistModalProps) {
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
         onClick={onClose}
-        className="fixed inset-0 bg-black/95 backdrop-blur-md z-50 flex items-center justify-center p-4 sm:p-6 overflow-hidden"
+        className="fixed inset-0 bg-black/95 backdrop-blur-md z-50 flex items-end sm:items-center justify-center p-0 sm:p-4 md:p-6 overflow-hidden"
       >
         <motion.div
-          initial={{ scale: 0.9, opacity: 0, y: 40 }}
+          initial={{ scale: 0.95, opacity: 0, y: 40 }}
           animate={{ scale: 1, opacity: 1, y: 0 }}
           transition={{ type: 'spring', damping: 25, stiffness: 300 }}
           onClick={(e) => e.stopPropagation()}
           style={{ height: viewportHeight ? `${viewportHeight * 0.95}px` : '95vh', maxHeight: '900px' }}
-          className="bg-neutral-950 border border-neutral-800 rounded-[2.5rem] max-w-6xl w-full overflow-hidden shadow-[0_0_100px_rgba(217,119,6,0.1)] flex flex-col relative"
+          className="bg-neutral-950 border border-neutral-800 rounded-t-[2rem] sm:rounded-[2.5rem] max-w-6xl w-full overflow-hidden shadow-[0_0_100px_rgba(217,119,6,0.1)] flex flex-col relative"
         >
           {/* Subtle Background Elements */}
           <div className="absolute top-0 right-0 w-[400px] h-[400px] bg-amber-600/5 blur-[100px] rounded-full pointer-events-none -mr-32 -mt-32" />
@@ -233,52 +233,52 @@ export function ArtistModal({ artist, onClose }: ArtistModalProps) {
           {/* Close Button */}
           <button 
             onClick={onClose} 
-            className="absolute top-8 right-8 text-neutral-500 hover:text-white transition-all p-3 hover:bg-neutral-800/80 rounded-2xl z-50 group"
+            className="absolute top-5 right-5 sm:top-8 sm:right-8 text-neutral-500 hover:text-white transition-all p-2.5 sm:p-3 hover:bg-neutral-800/80 rounded-2xl z-50 group"
           >
             <X size={24} className="group-hover:rotate-90 transition-transform duration-300" />
           </button>
 
-          <div className="flex-1 flex flex-col lg:flex-row overflow-hidden">
-            {/* Sidebar - Profile Profile */}
-            <div className="lg:w-[380px] bg-neutral-900/30 lg:border-r border-neutral-800/50 p-8 sm:p-12 overflow-y-auto scrollbar-hide">
+          <div className="flex-1 flex flex-col lg:flex-row overflow-hidden min-h-0">
+            {/* Sidebar — horizontal strip on mobile, vertical panel on desktop */}
+            <div className="lg:w-[340px] xl:w-[380px] bg-neutral-900/30 lg:border-r border-b lg:border-b-0 border-neutral-800/50 p-5 sm:p-8 lg:p-12 overflow-y-auto scrollbar-hide shrink-0">
               <div className="space-y-10">
-                <div className="flex flex-col items-center text-center space-y-6">
+                <div className="flex flex-row lg:flex-col items-center lg:text-center gap-5 lg:gap-6">
                   {/* Avatar */}
                   <motion.div 
                     whileHover={{ scale: 1.02 }}
-                    className="relative w-36 h-36 sm:w-44 sm:h-44 rounded-3xl p-1 bg-black border border-neutral-800 group"
+                    className="relative w-20 h-20 sm:w-28 sm:h-28 lg:w-44 lg:h-44 rounded-2xl lg:rounded-3xl p-1 bg-black border border-neutral-800 group shrink-0"
                   >
-                    <div className="w-full h-full rounded-[1.25rem] overflow-hidden bg-neutral-800">
+                    <div className="w-full h-full rounded-xl lg:rounded-[1.25rem] overflow-hidden bg-neutral-800">
                       {artist.avatar_url ? (
                         <img src={artist.avatar_url} alt={artist.full_name} className="w-full h-full object-cover" />
                       ) : (
-                        <div className="w-full h-full flex items-center justify-center text-5xl text-amber-600/30 font-light" style={{ fontFamily: 'ForestSmooth, serif' }}>
+                        <div className="w-full h-full flex items-center justify-center text-3xl lg:text-5xl text-amber-600/30 font-light" style={{ fontFamily: 'ForestSmooth, serif' }}>
                           {artist.full_name.charAt(0).toUpperCase()}
                         </div>
                       )}
                     </div>
                   </motion.div>
 
-                  <div className="space-y-2">
-                    <h3 className="text-3xl sm:text-4xl font-light text-white tracking-tight" style={{ fontFamily: 'ForestSmooth, serif' }}>
+                  <div className="space-y-1 min-w-0">
+                    <h3 className="text-xl sm:text-2xl lg:text-4xl font-light text-white tracking-tight truncate" style={{ fontFamily: 'ForestSmooth, serif' }}>
                       {artist.full_name}
                     </h3>
-                    <div className="flex flex-col items-center gap-2">
+                    <div className="flex flex-col gap-1">
                       {artist.location && (
-                        <div className="flex items-center gap-2 text-neutral-400 text-xs tracking-widest uppercase font-medium">
-                          <MapPin size={12} className="text-amber-600/60" />
-                          <span>{artist.location}</span>
+                        <div className="flex items-center gap-1.5 text-neutral-400 text-[10px] tracking-widest uppercase font-medium">
+                          <MapPin size={10} className="text-amber-600/60 shrink-0" />
+                          <span className="truncate">{artist.location}</span>
                         </div>
                       )}
-                      <div className="text-[10px] text-neutral-600 tracking-wider uppercase font-bold">
-                        Established {new Date(artist.created_at).getFullYear()}
+                      <div className="text-[9px] text-neutral-600 tracking-wider uppercase font-bold">
+                        Est. {new Date(artist.created_at).getFullYear()}
                       </div>
                     </div>
                   </div>
                 </div>
 
-                {/* Stat Cards - Refined */}
-                <div className="grid grid-cols-2 gap-3">
+                {/* Stats — hidden on mobile to save space, shown on lg */}
+                <div className="hidden lg:grid grid-cols-2 gap-3">
                   <div className="bg-black/20 rounded-2xl p-4 border border-neutral-800/50 hover:border-amber-600/20 transition-colors text-center group">
                     <Heart size={14} className="text-amber-600/50 mx-auto mb-2 group-hover:scale-110 transition-transform" />
                     <p className="text-lg font-light text-white leading-none">{artist.followers_count}</p>
@@ -301,7 +301,7 @@ export function ArtistModal({ artist, onClose }: ArtistModalProps) {
                   </div>
                 </div>
 
-                <div className="space-y-4">
+                <div className="hidden lg:block space-y-4">
                   <h4 className="flex items-center gap-2 text-[10px] text-amber-600/80 uppercase tracking-[0.3em] font-black">
                     <Award size={14} />
                     About Artist
@@ -316,7 +316,7 @@ export function ArtistModal({ artist, onClose }: ArtistModalProps) {
                   </div>
                 </div>
 
-                <div className="pt-4 flex flex-col gap-3">
+                <div className="pt-2 lg:pt-4 flex flex-col gap-3">
                   {artist.website && (
                     <a
                       href={artist.website}
@@ -343,17 +343,17 @@ export function ArtistModal({ artist, onClose }: ArtistModalProps) {
               </div>
             </div>
 
-            {/* Main Section - Artworks & Support Flow */}
-            <div className="flex-1 p-8 sm:p-12 lg:p-16 overflow-y-auto relative scrollbar-hide">
+            {/* Main Section */}
+            <div className="flex-1 p-5 sm:p-8 lg:p-12 xl:p-16 overflow-y-auto relative scrollbar-hide min-h-0">
               <div className="max-w-3xl mx-auto space-y-12">
                 
                 {/* Support Form Design */}
                 <div className="relative group overflow-hidden">
                   <div className="absolute -inset-px bg-gradient-to-b from-amber-600/20 to-transparent rounded-[2rem] opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
-                  <div className="relative bg-neutral-900 border border-neutral-800 rounded-[2rem] p-8 sm:p-12 space-y-10 shadow-3xl transition-all duration-700 group-hover:translate-y-[-2px] group-hover:border-neutral-800">
+                  <div className="relative bg-neutral-900 border border-neutral-800 rounded-[1.5rem] sm:rounded-[2rem] p-5 sm:p-8 lg:p-12 space-y-6 sm:space-y-10 shadow-3xl transition-all duration-700 group-hover:translate-y-[-2px] group-hover:border-neutral-800">
                     
-                    <div className="space-y-2">
-                       <h4 className="text-4xl font-light text-white tracking-tight" style={{ fontFamily: 'ForestSmooth, serif' }}>Support artist</h4>
+                    <div className="space-y-1">
+                       <h4 className="text-2xl sm:text-4xl font-light text-white tracking-tight" style={{ fontFamily: 'ForestSmooth, serif' }}>Support artist</h4>
                        <p className="text-neutral-500 text-xs font-light">Help them continue their creative journey</p>
                     </div>
 
@@ -367,7 +367,7 @@ export function ArtistModal({ artist, onClose }: ArtistModalProps) {
                             value={amount}
                             onChange={(e) => setAmount(e.target.value)}
                             placeholder="00.00"
-                            className="w-full bg-black/40 border-2 border-neutral-800 rounded-[1.25rem] px-8 py-5 text-2xl font-medium text-white placeholder:text-neutral-800 focus:border-amber-600/50 focus:outline-none transition-all focus:bg-black/60 outline-none"
+                            className="w-full bg-black/40 border-2 border-neutral-800 rounded-[1.25rem] px-5 sm:px-8 py-4 sm:py-5 text-xl sm:text-2xl font-medium text-white placeholder:text-neutral-800 focus:border-amber-600/50 focus:outline-none transition-all focus:bg-black/60 outline-none"
                           />
                           <div className="absolute right-6 top-1/2 -translate-y-1/2 text-2xl text-neutral-700 font-medium">
                             INR

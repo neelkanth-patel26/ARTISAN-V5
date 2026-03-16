@@ -374,20 +374,20 @@ export function ArtworkModal({ artwork, onClose, onShowAuthPrompt }: ArtworkModa
   }
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/95 backdrop-blur-2xl" onClick={onClose}>
+    <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-black/95 backdrop-blur-2xl" onClick={onClose}>
       <motion.div 
-        initial={{ opacity: 0, scale: 0.98 }}
-        animate={{ opacity: 1, scale: 1 }}
-        exit={{ opacity: 0, scale: 0.98 }}
+        initial={{ opacity: 0, scale: 0.98, y: 20 }}
+        animate={{ opacity: 1, scale: 1, y: 0 }}
+        exit={{ opacity: 0, scale: 0.98, y: 20 }}
         transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
-        style={{ height: viewportHeight ? `${viewportHeight * 0.9}px` : '90vh' }} 
-        className={`relative bg-neutral-950 border border-white/5 rounded-[3rem] w-full overflow-hidden shadow-[0_50px_100px_-20px_rgba(0,0,0,1)] flex flex-col md:flex-row transition-all duration-500 ${
+        style={{ height: viewportHeight ? `${viewportHeight * 0.95}px` : '95vh' }} 
+        className={`relative bg-neutral-950 border border-white/5 rounded-t-[2rem] sm:rounded-[3rem] w-full overflow-hidden shadow-[0_50px_100px_-20px_rgba(0,0,0,1)] flex flex-col md:flex-row transition-all duration-500 ${
             orientation === 'portrait' ? 'max-w-4xl' : 'max-w-7xl'
         }`} 
         onClick={(e) => e.stopPropagation()}
       >
-        {/* Large Scale Artwork Presentation */}
-        <div className={`relative flex-1 flex items-center justify-center overflow-hidden p-6 md:p-8 transition-all duration-500 ${
+        {/* Artwork Image — fixed height on mobile, flex-1 on desktop */}
+        <div className={`relative h-56 sm:h-72 md:h-auto md:flex-1 flex items-center justify-center overflow-hidden p-4 md:p-8 shrink-0 transition-all duration-500 ${
           orientation === 'portrait' ? 'bg-neutral-900/40' : 'bg-neutral-900/10'
         }`}>
             <div className="absolute inset-0 bg-neutral-900/20 backdrop-blur-3xl pointer-events-none" />
@@ -395,7 +395,7 @@ export function ArtworkModal({ artwork, onClose, onShowAuthPrompt }: ArtworkModa
               initial={{ opacity: 0, scale: 0.98 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ delay: 0.2, duration: 0.8 }}
-              className="relative max-w-full max-h-full flex items-center justify-center shadow-[0_40px_100px_-40px_rgba(0,0,0,0.8)] rounded-2xl overflow-hidden"
+              className="relative w-full h-full flex items-center justify-center shadow-[0_40px_100px_-40px_rgba(0,0,0,0.8)] rounded-2xl overflow-hidden"
             >
               <img 
                 src={artwork.image} 
@@ -410,12 +410,12 @@ export function ArtworkModal({ artwork, onClose, onShowAuthPrompt }: ArtworkModa
             </motion.div>
         </div>
 
-        {/* Information Sidepanel - Glassmorphic Luxury */}
-        <div className="w-full md:w-[450px] bg-neutral-950/30 backdrop-blur-3xl border-l border-white/5 flex flex-col overflow-y-auto scrollbar-hide">
-          <div className="p-8 md:p-10 pb-12 space-y-12 flex-1">
+        {/* Information Sidepanel */}
+        <div className="w-full md:w-[420px] lg:w-[450px] bg-neutral-950/30 backdrop-blur-3xl border-t md:border-t-0 md:border-l border-white/5 flex flex-col overflow-y-auto scrollbar-hide min-h-0">
+          <div className="p-5 md:p-8 lg:p-10 pb-10 space-y-8 md:space-y-12 flex-1">
             
             {/* Scrollable Header Actions */}
-            <div className="flex items-center justify-between pb-8 border-b border-white/5">
+            <div className="flex items-center justify-between pb-5 md:pb-8 border-b border-white/5">
                <div className="flex items-center gap-3">
                  <button onClick={handleShare} className="p-3.5 rounded-2xl bg-white/5 text-neutral-400 hover:text-white hover:bg-white/10 transition-all border border-white/5">
                    <Share2 size={16} />
@@ -436,7 +436,7 @@ export function ArtworkModal({ artwork, onClose, onShowAuthPrompt }: ArtworkModa
             <div className="space-y-6">
                <div className="space-y-2">
                  <p className="text-amber-600/60 text-[10px] tracking-[0.4em] font-black uppercase">Masterpiece</p>
-                 <h2 className="text-5xl font-light text-white tracking-tight leading-[1.1]" style={{ fontFamily: 'ForestSmooth, serif' }}>
+                 <h2 className="text-3xl md:text-4xl lg:text-5xl font-light text-white tracking-tight leading-[1.1]" style={{ fontFamily: 'ForestSmooth, serif' }}>
                    {artwork.title}
                  </h2>
                  <p className="text-neutral-500 text-xs tracking-[0.2em] font-black uppercase opacity-60">
@@ -475,7 +475,7 @@ export function ArtworkModal({ artwork, onClose, onShowAuthPrompt }: ArtworkModa
             </div>
 
             {/* Acquisition Block */}
-            <div className="p-8 rounded-[2.5rem] bg-gradient-to-br from-neutral-900/50 to-neutral-900/20 border border-white/5 space-y-8">
+            <div className="p-5 md:p-8 rounded-[1.5rem] md:rounded-[2.5rem] bg-gradient-to-br from-neutral-900/50 to-neutral-900/20 border border-white/5 space-y-5 md:space-y-8">
                <div className="flex items-center justify-between">
                  <div className="space-y-0.5">
                    <p className="text-[8px] text-amber-600/60 tracking-[0.3em] font-black uppercase">Valuation</p>
@@ -540,7 +540,7 @@ export function ArtworkModal({ artwork, onClose, onShowAuthPrompt }: ArtworkModa
           </div>
 
           {/* Action Row - Minimal Footer */}
-          <div className="p-8 border-t border-white/5 flex items-center justify-end bg-neutral-900/40">
+          <div className="p-5 md:p-8 border-t border-white/5 flex items-center justify-end bg-neutral-900/40">
              {artistInfo && (
                <button onClick={toggleFollow} className={`px-6 py-4 rounded-2xl text-[9px] font-black uppercase tracking-widest transition-all ${
                  isFollowing ? 'text-neutral-500 border border-white/5' : 'bg-amber-600/20 text-amber-600 border border-amber-600/30'
