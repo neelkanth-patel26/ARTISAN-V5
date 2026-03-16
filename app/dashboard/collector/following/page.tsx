@@ -80,11 +80,7 @@ export default function CollectorFollowing() {
 
   return (
     <DashboardLayout navItems={DASHBOARD_NAV.collector} role="collector">
-      <div className="relative min-h-[calc(100vh-100px)] space-y-8 p-6 lg:p-12 overflow-hidden bg-black/20">
-        {/* Subtle Background Glows */}
-        <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-amber-600/5 blur-[120px] rounded-full pointer-events-none -mr-48 -mt-48" />
-        <div className="absolute bottom-0 left-0 w-[400px] h-[400px] bg-neutral-900/20 blur-[100px] rounded-full pointer-events-none -ml-32 -mb-32" />
-
+      <div className="min-h-screen space-y-8 p-6 lg:p-12 bg-transparent">
         <div className="relative z-10">
           <PageHeader 
             title="Following" 
@@ -116,88 +112,82 @@ export default function CollectorFollowing() {
                   <motion.div
                     layout
                     key={item.following_id}
-                    initial={{ opacity: 0, y: 30, scale: 0.95 }}
-                    animate={{ opacity: 1, y: 0, scale: 1 }}
-                    exit={{ opacity: 0, scale: 0.9, transition: { duration: 0.2 } }}
-                    transition={{ 
-                      type: 'spring',
-                      stiffness: 100,
-                      damping: 15,
-                      delay: i * 0.08 
-                    }}
-                    className="group relative"
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, scale: 0.95 }}
+                    transition={{ delay: i * 0.05 }}
+                    className="group flex"
                   >
-                    <div className="overflow-hidden rounded-2xl border border-neutral-800/80 bg-neutral-900/40 backdrop-blur-xl transition-all duration-500 hover:border-amber-600/30 hover:bg-neutral-900/60 shadow-2xl hover:shadow-amber-900/10">
-                      {/* Card Header / Cover */}
-                      <div 
-                        className="h-28 w-full opacity-60 group-hover:opacity-80 transition-opacity duration-500"
-                        style={{ 
-                          background: `linear-gradient(45deg, #1a1a1a, #0a0a0a)`,
-                          backgroundImage: `radial-gradient(circle at 20% 50%, rgba(217, 119, 6, 0.1), transparent 50%), radial-gradient(circle at 80% 50%, rgba(38, 38, 38, 0.4), transparent 50%)`
-                        }}
-                      />
+                    <div className="relative flex-1 flex flex-col overflow-hidden rounded-[2.5rem] border border-neutral-800 bg-neutral-800/40 backdrop-blur-xl transition-all duration-700 hover:border-amber-600/30 hover:bg-neutral-800/60 shadow-2xl">
+                      {/* Subthe Hover Glow */}
+                      <div className="absolute inset-0 bg-gradient-to-br from-amber-600/5 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none" />
                       
-                      {/* Avatar Overlay */}
-                      <div className="absolute top-14 left-6">
-                        <motion.div 
-                          whileHover={{ scale: 1.05 }}
-                          className="w-22 h-22 p-1.5 rounded-2xl bg-black border border-neutral-800 group-hover:border-amber-600/30 shadow-2xl transition-all duration-500"
-                        >
-                          <div className="w-full h-full rounded-xl overflow-hidden bg-neutral-800">
-                            {item.artist?.avatar_url ? (
-                              <img 
-                                src={item.artist.avatar_url} 
-                                alt={item.artist.full_name} 
-                                className="w-full h-full object-cover grayscale-[20%] group-hover:grayscale-0 transition-all duration-700" 
-                              />
-                            ) : (
-                              <div className="w-full h-full flex items-center justify-center text-3xl font-light text-amber-500/50">
-                                {item.artist?.full_name?.charAt(0).toUpperCase()}
-                              </div>
-                            )}
+                      <div className="flex-1 flex flex-col p-8">
+                        {/* Top Section: Avatar and Main Info */}
+                        <div className="flex flex-col items-center text-center space-y-4 mb-6">
+                          {/* Avatar Container */}
+                          <div className="relative">
+                            <motion.div 
+                              whileHover={{ scale: 1.05 }}
+                              className="w-24 h-24 rounded-3xl bg-neutral-800 border-2 border-neutral-800 group-hover:border-amber-600/30 transition-all duration-700 overflow-hidden shadow-2xl"
+                            >
+                              {item.artist?.avatar_url ? (
+                                <img 
+                                  src={item.artist.avatar_url} 
+                                  alt={item.artist.full_name} 
+                                  className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" 
+                                />
+                              ) : (
+                                <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-neutral-800 to-neutral-900 text-3xl font-light text-amber-500/30">
+                                  {item.artist?.full_name?.charAt(0).toUpperCase()}
+                                </div>
+                              )}
+                            </motion.div>
                           </div>
-                        </motion.div>
-                      </div>
 
-                      <div className="pt-14 p-6 space-y-4">
-                        <div className="space-y-1">
-                          <Link 
-                            href={`/artist?id=${item.following_id}`}
-                            className="flex items-center gap-2 group/name"
-                          >
-                            <h3 className="text-xl font-light text-white group-hover/name:text-amber-500 transition-colors duration-300" style={{ fontFamily: 'ForestSmooth, serif' }}>
-                              {item.artist?.full_name}
-                            </h3>
-                            <ArrowUpRight size={14} className="text-neutral-500 opacity-0 group-hover/name:opacity-100 transition-all" />
-                          </Link>
-                          <div className="flex items-center gap-4 text-[10px] tracking-[0.15em] text-neutral-500 uppercase font-medium">
-                            <span className="flex items-center gap-1.5">
-                              <Users size={10} className="text-amber-600/60" />
-                              {item.artist?.followers_count}
-                            </span>
-                            <span className="flex items-center gap-1.5">
-                              <Eye size={10} className="text-amber-600/60" />
-                              {item.artist?.total_views}
-                            </span>
+                          <div className="space-y-1.5 w-full">
+                            <Link 
+                              href={`/artist?id=${item.following_id}`}
+                              className="inline-block max-w-full"
+                            >
+                              <h3 className="text-2xl font-light text-white truncate hover:text-amber-500 transition-colors duration-300" style={{ fontFamily: 'ForestSmooth, serif' }}>
+                                {item.artist?.full_name}
+                              </h3>
+                            </Link>
+                            <div className="flex justify-center items-center gap-4">
+                              <span className="flex items-center gap-1.5 text-[8px] tracking-[0.2em] text-neutral-500 uppercase font-semibold">
+                                <Users size={10} className="text-amber-600/50" />
+                                {item.artist?.followers_count}
+                              </span>
+                              <div className="w-1 h-1 rounded-full bg-neutral-800" />
+                              <span className="flex items-center gap-1.5 text-[8px] tracking-[0.2em] text-neutral-500 uppercase font-semibold">
+                                <Eye size={10} className="text-amber-600/50" />
+                                {item.artist?.total_views}
+                              </span>
+                            </div>
                           </div>
                         </div>
 
-                        {item.artist?.bio && (
-                          <p className="text-xs text-neutral-400 leading-relaxed line-clamp-2 h-8 font-light italic">
-                            "{item.artist.bio}"
+                        {/* Bio Section with Fixed Height for Consistency */}
+                        <div className="flex-1 flex flex-col justify-center min-h-[60px] relative">
+                          <div className="absolute inset-x-0 h-px bg-gradient-to-r from-transparent via-neutral-800 to-transparent top-0" />
+                          <p className="text-[11px] text-neutral-400 leading-relaxed text-center font-light italic opacity-70 group-hover:opacity-100 transition-opacity px-2">
+                             {item.artist?.bio ? `"${item.artist.bio.slice(0, 100)}${item.artist.bio.length > 100 ? '...' : ''}"` : "Exploring contemporary art boundaries..."}
                           </p>
-                        )}
+                          <div className="absolute inset-x-0 h-px bg-gradient-to-r from-transparent via-neutral-800 to-transparent bottom-0" />
+                        </div>
 
-                        <div className="pt-2 flex gap-2">
+                        {/* Action Area */}
+                        <div className="mt-8">
                           <button
                             onClick={(e) => {
                               e.stopPropagation()
                               handleUnfollow(item.following_id)
                             }}
-                            className="flex-1 px-4 py-2.5 rounded-xl border border-neutral-800 bg-black/40 text-neutral-400 hover:text-red-400 hover:bg-red-500/10 hover:border-red-500/20 transition-all duration-300 text-xs font-medium flex items-center justify-center gap-2"
+                            className="w-full flex items-center justify-center gap-2 group/btn relative py-3.5 rounded-2xl bg-amber-600 text-white text-[10px] tracking-[0.2em] uppercase font-bold hover:bg-amber-500 transition-all duration-300 shadow-lg shadow-amber-900/20 active:scale-[0.98]"
                           >
-                            <UserMinus size={14} />
-                            <span>Stop Following</span>
+                            <UserMinus size={14} className="transition-transform duration-500 group-hover/btn:-translate-x-1" />
+                            <span className="relative z-10">Stop Following</span>
                           </button>
                         </div>
                       </div>
