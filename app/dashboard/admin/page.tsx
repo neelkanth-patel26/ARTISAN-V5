@@ -108,29 +108,29 @@ export default function AdminDashboard() {
 
         <div className="relative z-10 p-6 lg:p-12 space-y-12 max-w-[1600px] mx-auto">
           {/* ── Command Header ── */}
-          <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
+          <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 md:gap-6">
             <div className="space-y-2">
               <div className="flex items-center gap-3">
                 <div className="px-3 py-1 rounded-full bg-orange-500/10 border border-orange-500/20">
-                  <span className="text-[10px] tracking-[0.4em] uppercase font-black text-orange-400">Command Center</span>
+                  <span className="text-[9px] md:text-[10px] tracking-[0.4em] uppercase font-black text-orange-400">Command Center</span>
                 </div>
                 <Activity size={14} className="text-neutral-700" />
               </div>
-              <h1 className="text-4xl md:text-5xl font-light text-white tracking-tight" style={{ fontFamily: 'ForestSmooth, serif' }}>
+              <h1 className="text-3xl md:text-5xl font-light text-white tracking-tight" style={{ fontFamily: 'ForestSmooth, serif' }}>
                 Platform <span className="text-neutral-500">Registry</span>
               </h1>
-              <p className="text-[14px] text-neutral-500 font-light tracking-wide max-w-md">
+              <p className="text-[12px] md:text-[14px] text-neutral-500 font-light tracking-wide max-w-md">
                 Orchestrating the elite artisan ecosystem and overseeing curatorial protocols.
               </p>
             </div>
 
-            <div className="flex items-center gap-3">
-              <div className="flex gap-1 p-1 rounded-2xl bg-white/[0.02] border border-white/[0.05] backdrop-blur-xl">
+            <div className="flex items-center gap-2 md:gap-3 overflow-x-auto">
+              <div className="flex gap-1 p-1 rounded-2xl bg-white/[0.02] border border-white/[0.05] backdrop-blur-xl shrink-0">
                 {TABS.map(tab => (
                   <button
                     key={tab.id}
                     onClick={() => setActiveTab(tab.id)}
-                    className={`flex items-center gap-2 px-6 py-2.5 rounded-xl text-[12px] font-light tracking-widest transition-all duration-500 ${
+                    className={`flex items-center gap-1 md:gap-2 px-3 md:px-6 py-2 md:py-2.5 rounded-xl text-[10px] md:text-[12px] font-light tracking-widest transition-all duration-500 whitespace-nowrap ${
                       activeTab === tab.id
                         ? 'bg-orange-500/10 text-orange-400 shadow-[0_0_20px_rgba(234,88,12,0.1)]'
                         : 'text-neutral-600 hover:text-neutral-300 hover:bg-white/[0.02]'
@@ -138,9 +138,9 @@ export default function AdminDashboard() {
                     style={{ fontFamily: 'Oughter, serif' }}
                   >
                     <tab.icon size={14} className={activeTab === tab.id ? 'text-orange-400' : 'text-neutral-700'} />
-                    <span className="uppercase">{tab.label}</span>
+                    <span className="uppercase hidden sm:inline">{tab.label}</span>
                     {tab.id === 'pending' && stats.pendingArtworks > 0 && (
-                      <span className="ml-1 flex h-4 w-4 items-center justify-center rounded-full bg-orange-500 text-[9px] font-black text-white shadow-lg shadow-orange-500/20">
+                      <span className="ml-1 flex h-4 w-4 items-center justify-center rounded-full bg-orange-500 text-[8px] font-black text-white shadow-lg shadow-orange-500/20">
                         {stats.pendingArtworks}
                       </span>
                     )}
@@ -162,7 +162,7 @@ export default function AdminDashboard() {
                 className="space-y-16"
               >
                   {/* ── Metrics Nucleus ── */}
-                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
                     {statCards.map((s, i) => (
                       <motion.div
                         key={s.label}
@@ -170,32 +170,33 @@ export default function AdminDashboard() {
                         animate={{ opacity: 1, scale: 1 }}
                         transition={{ delay: i * 0.05, duration: 0.8, ease: [0.19, 1, 0.22, 1] }}
                       >
-                        <Link href={s.href || '#'} className={`group relative block h-full p-8 rounded-[2.5rem] bg-neutral-900/40 border border-white/[0.05] backdrop-blur-2xl transition-all duration-700 hover:bg-neutral-900/60 hover:border-white/[0.1] hover:translate-y-[-4px] overflow-hidden ${!s.href && 'cursor-default'}`}>
+                        <Link href={s.href || '#'} className={`group relative block h-full p-6 md:p-8 rounded-[2.5rem] bg-neutral-900/40 border border-white/[0.05] backdrop-blur-2xl transition-all duration-700 hover:bg-neutral-900/60 hover:border-white/[0.1] hover:translate-y-[-4px] overflow-hidden ${!s.href && 'cursor-default'}`}>
                           {/* Inner atmospheric glow */}
                           <div className={`absolute top-0 right-0 w-32 h-32 opacity-0 group-hover:opacity-100 transition-opacity duration-1000 blur-[60px] rounded-full pointer-events-none ${s.glow.replace('bg-', 'bg-')}`} />
                           
                           <div className="relative z-10 flex flex-col h-full">
-                            <div className="flex items-center justify-between mb-8">
-                              <div className="p-3 rounded-2xl bg-white/[0.03] border border-white/[0.05] group-hover:scale-110 group-hover:bg-orange-500/5 group-hover:border-orange-500/20 transition-all duration-700">
-                                <s.icon size={20} className="text-neutral-500 group-hover:text-orange-400 transition-colors duration-700" />
+                            <div className="flex items-center justify-between mb-4 md:mb-8">
+                              <div className="p-2 md:p-3 rounded-2xl bg-white/[0.03] border border-white/[0.05] group-hover:scale-110 group-hover:bg-orange-500/5 group-hover:border-orange-500/20 transition-all duration-700">
+                                <s.icon size={16} className="text-neutral-500 group-hover:text-orange-400 transition-colors duration-700 md:hidden" />
+                                <s.icon size={20} className="text-neutral-500 group-hover:text-orange-400 transition-colors duration-700 hidden md:block" />
                               </div>
                               {s.urgent && (
-                                <div className="flex items-center gap-2 px-3 py-1 rounded-full bg-orange-500/10 border border-orange-500/20">
+                                <div className="flex items-center gap-2 px-2 md:px-3 py-1 rounded-full bg-orange-500/10 border border-orange-500/20">
                                   <span className="w-1.5 h-1.5 rounded-full bg-orange-500 animate-pulse" />
-                                  <span className="text-[10px] font-black text-orange-400 uppercase tracking-tighter">Action Required</span>
+                                  <span className="text-[8px] md:text-[10px] font-black text-orange-400 uppercase tracking-tighter">Action Required</span>
                                 </div>
                               )}
                             </div>
                             
-                            <p className="text-[11px] tracking-[0.4em] uppercase font-black text-neutral-600 mb-2 group-hover:text-neutral-400 transition-colors duration-700">
+                            <p className="text-[9px] md:text-[11px] tracking-[0.4em] uppercase font-black text-neutral-600 mb-2 group-hover:text-neutral-400 transition-colors duration-700">
                               {s.label}
                             </p>
-                            <h3 className={`text-4xl font-light tracking-tighter group-hover:scale-[1.02] origin-left transition-transform duration-700 ${s.color}`} style={{ fontFamily: 'ForestSmooth, serif' }}>
+                            <h3 className={`text-2xl md:text-4xl font-light tracking-tighter group-hover:scale-[1.02] origin-left transition-transform duration-700 ${s.color}`} style={{ fontFamily: 'ForestSmooth, serif' }}>
                               {s.value}
                             </h3>
                             
                             {s.href && (
-                              <div className="mt-auto pt-6 flex items-center gap-2 text-[10px] text-neutral-600 group-hover:text-orange-400 transition-all duration-700 opacity-60 group-hover:opacity-100 tracking-[0.2em] font-black uppercase">
+                              <div className="mt-auto pt-4 md:pt-6 flex items-center gap-2 text-[8px] md:text-[10px] text-neutral-600 group-hover:text-orange-400 transition-all duration-700 opacity-60 group-hover:opacity-100 tracking-[0.2em] font-black uppercase">
                                 View Intelligence <ArrowRight size={10} className="transition-transform group-hover:translate-x-1" />
                               </div>
                             )}

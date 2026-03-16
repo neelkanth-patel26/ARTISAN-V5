@@ -250,24 +250,24 @@ export default function AdminAnalytics() {
 
         <div className="relative z-10 p-6 lg:p-12 space-y-12 max-w-[1700px] mx-auto">
           {/* ── Intelligence Header ── */}
-          <div className="flex flex-col md:flex-row md:items-end justify-between gap-8">
-            <div className="space-y-3">
+          <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 md:gap-8">
+            <div className="space-y-2 md:space-y-3">
               <div className="flex items-center gap-3">
                 <div className="px-3 py-1 rounded-full bg-orange-500/10 border border-orange-500/20">
-                  <span className="text-[10px] tracking-[0.5em] uppercase font-black text-orange-400">Strategic Overview</span>
+                  <span className="text-[9px] md:text-[10px] tracking-[0.5em] uppercase font-black text-orange-400">Strategic Overview</span>
                 </div>
                 <TrendingUp size={14} className="text-neutral-700" />
               </div>
-              <h1 className="text-5xl md:text-6xl font-light text-white tracking-tight" style={{ fontFamily: 'ForestSmooth, serif' }}>
+              <h1 className="text-3xl md:text-5xl lg:text-6xl font-light text-white tracking-tight" style={{ fontFamily: 'ForestSmooth, serif' }}>
                 Predictive <span className="text-neutral-500 italic">Intelligence</span>
               </h1>
-              <p className="text-[15px] text-neutral-500 font-light tracking-wide max-w-lg">
+              <p className="text-[13px] md:text-[15px] text-neutral-500 font-light tracking-wide max-w-lg">
                 Orchestrating platform growth vectors and synthesizing transactional brilliance.
               </p>
             </div>
 
             {/* Metrics Nucleus: Master KPIs */}
-            <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+            <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4">
               {[
                 { label: 'Revenue Vector', value: `₹${stats.totalRevenue.toLocaleString()}`, icon: DollarSign, color: 'text-orange-400' },
                 { label: 'Platform Yield', value: `₹${stats.platformFees.toLocaleString()}`, icon: TrendingUp, color: 'text-emerald-400' },
@@ -279,12 +279,11 @@ export default function AdminAnalytics() {
                   initial={{ opacity: 0, y: 15 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: i * 0.1 }}
-                  className="px-6 py-5 rounded-[2rem] bg-white/[0.02] border border-white/[0.05] backdrop-blur-2xl group hover:border-orange-500/20 transition-all duration-700"
-                >
-                  <p className="text-[9px] tracking-[0.4em] uppercase font-black text-neutral-600 group-hover:text-neutral-400 transition-colors mb-2" style={{ fontFamily: 'Oughter, serif' }}>
+                  className="px-4 md:px-6 py-4 md:py-5 rounded-[2rem] bg-white/[0.02] border border-white/[0.05] backdrop-blur-2xl group hover:border-orange-500/20 transition-all duration-700">
+                  <p className="text-[8px] md:text-[9px] tracking-[0.4em] uppercase font-black text-neutral-600 group-hover:text-neutral-400 transition-colors mb-2" style={{ fontFamily: 'Oughter, serif' }}>
                     {stat.label}
                   </p>
-                  <p className="text-2xl font-light text-white leading-none" style={{ fontFamily: 'ForestSmooth, serif' }}>
+                  <p className="text-lg md:text-2xl font-light text-white leading-none" style={{ fontFamily: 'ForestSmooth, serif' }}>
                     {stat.value}
                   </p>
                 </motion.div>
@@ -293,7 +292,7 @@ export default function AdminAnalytics() {
           </div>
 
           {/* ── Metrics Nucleus: Secondary Vectors ── */}
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3 md:gap-4">
             {[
               { label: 'Purchases', value: stats.purchases, icon: ShoppingBag, color: 'text-blue-400' },
               { label: 'Supports', value: stats.supports, icon: Heart, color: 'text-pink-400' },
@@ -307,15 +306,15 @@ export default function AdminAnalytics() {
                 initial={{ opacity: 0, scale: 0.95 }}
                 animate={{ opacity: 1, scale: 1 }}
                 transition={{ delay: 0.2 + i * 0.05 }}
-                className="p-5 rounded-3xl bg-white/[0.01] border border-white/[0.03] hover:bg-white/[0.03] hover:border-white/[0.08] transition-all duration-500"
-              >
-                <div className="flex items-center gap-3 mb-3">
-                  <div className={`p-2 rounded-xl bg-white/[0.02] border border-white/[0.05] ${stat.color}`}>
-                    <stat.icon size={14} />
+                className="p-3 md:p-5 rounded-3xl bg-white/[0.01] border border-white/[0.03] hover:bg-white/[0.03] hover:border-white/[0.08] transition-all duration-500">
+                <div className="flex items-center gap-2 md:gap-3 mb-2 md:mb-3">
+                  <div className={`p-1.5 md:p-2 rounded-xl bg-white/[0.02] border border-white/[0.05] ${stat.color}`}>
+                    <stat.icon size={14} className="md:hidden" />
+                    <stat.icon size={16} className="hidden md:block" />
                   </div>
-                  <span className="text-[9px] text-neutral-600 uppercase font-black tracking-widest" style={{ fontFamily: 'Oughter, serif' }}>{stat.label}</span>
+                  <span className="text-[8px] md:text-[9px] text-neutral-600 uppercase font-black tracking-widest" style={{ fontFamily: 'Oughter, serif' }}>{stat.label}</span>
                 </div>
-                <p className="text-xl text-white font-light" style={{ fontFamily: 'ForestSmooth, serif' }}>{stat.value}</p>
+                <p className="text-lg md:text-xl text-white font-light" style={{ fontFamily: 'ForestSmooth, serif' }}>{stat.value}</p>
               </motion.div>
             ))}
           </div>
