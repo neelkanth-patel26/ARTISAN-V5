@@ -255,55 +255,58 @@ function ArtistPageContent() {
                   </div>
 
                   {/* High-Fidelity Labels (Museum Plaque Style) */}
-                  <div className="absolute inset-x-0 bottom-0 p-10 z-10 space-y-6">
-                    <div className="space-y-2">
+                  <div className="absolute inset-x-0 bottom-0 p-8 sm:p-10 z-10 space-y-6">
+                    {/* Darker, more pronounced glass overlay for visibility */}
+                    <div className="absolute inset-0 bg-gradient-to-t from-black via-black/80 to-transparent -z-10" />
+                    
+                    <div className="space-y-3 relative">
                        <motion.h3 
-                         className="text-4xl font-light text-white tracking-tight" 
+                         className="text-3xl sm:text-4xl font-light text-white tracking-tight" 
                          style={{ fontFamily: 'ForestSmooth, serif' }}
                        >
                          {artist.full_name}
                        </motion.h3>
                        {artist.location && (
-                        <div className="flex items-center gap-2 text-neutral-400 text-[10px] tracking-widest uppercase font-black opacity-60">
+                        <div className="flex items-center gap-2 text-neutral-400 text-[10px] tracking-widest uppercase font-black">
                            <MapPin size={10} className="text-amber-600" />
                            {artist.location}
                         </div>
                        )}
                     </div>
 
-                    {/* Revealable Stats */}
-                    <div className="flex items-center gap-8 pt-6 border-t border-white/5 opacity-0 translate-y-4 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-500">
+                    {/* Permanently Visible Stats for Accessibility */}
+                    <div className="flex items-center gap-8 pt-6 border-t border-white/10 transition-all duration-500">
                        <div className="space-y-1">
-                          <p className="text-[14px] font-medium text-white">{artist.followers_count}</p>
+                          <p className="text-[14px] font-medium text-white">{artist.followers_count.toLocaleString()}</p>
                           <p className="text-[8px] text-neutral-500 uppercase tracking-widest font-black">Patrons</p>
                        </div>
                        <div className="space-y-1">
-                          <p className="text-[14px] font-medium text-white">{artist.artwork_count || 0}</p>
+                          <p className="text-[14px] font-medium text-white">{(artist.artwork_count || 0).toLocaleString()}</p>
                           <p className="text-[8px] text-neutral-500 uppercase tracking-widest font-black">Pieces</p>
                        </div>
                        <div className="flex-1 flex justify-end">
-                          <div className="h-8 w-8 rounded-full border border-white/10 flex items-center justify-center text-white/50 group-hover:border-amber-600/50 group-hover:text-amber-600 transition-colors">
+                          <div className="h-10 w-10 sm:h-8 sm:w-8 rounded-full border border-white/10 flex items-center justify-center text-white/50 group-hover:border-amber-600/50 group-hover:text-amber-600 transition-colors">
                              <ArrowRight size={14} />
                           </div>
                        </div>
                     </div>
                   </div>
 
-                  {/* Interactive Buttons (Overlay on Hover) */}
-                  <div className="absolute top-6 right-6 flex flex-col gap-3 opacity-0 translate-x-4 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-500 delay-100">
+                  {/* Permanently Visible Interactive Buttons for Mobile/UX */}
+                  <div className="absolute top-6 right-6 flex flex-col gap-3 z-20">
                     <button
                       onClick={(e) => toggleFollow(artist.id, e)}
-                      className={`h-12 w-12 rounded-2xl flex items-center justify-center transition-all ${
+                      className={`h-12 w-12 rounded-2xl flex items-center justify-center transition-all shadow-2xl ${
                         followingIds.has(artist.id)
                           ? 'bg-neutral-800 text-amber-600 border border-neutral-700'
-                          : 'bg-white text-black hover:bg-neutral-200 shadow-xl'
+                          : 'bg-white text-black hover:bg-neutral-200'
                       }`}
                     >
                       {followingIds.has(artist.id) ? <UserCheck size={18} /> : <UserPlus size={18} />}
                     </button>
                     <button
                       onClick={(e) => shareArtist(artist.id, artist.full_name, e)}
-                      className="h-12 w-12 rounded-2xl bg-black/40 backdrop-blur-md border border-white/10 text-white hover:bg-black/60 transition-all flex items-center justify-center"
+                      className="h-12 w-12 rounded-2xl bg-black/60 backdrop-blur-md border border-white/10 text-white hover:bg-black/80 transition-all flex items-center justify-center shadow-2xl"
                     >
                       <Share2 size={18} />
                     </button>
