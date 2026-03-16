@@ -52,7 +52,7 @@ export function Navigation() {
       initial={pathname === '/' && !isMobile ? { y: -100, opacity: 0 } : false}
       animate={showNav ? { y: 0, opacity: 1 } : { y: -100, opacity: 0 }}
       transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
-      className="fixed top-0 left-0 right-0 z-50 py-3 md:py-6 bg-neutral-950/40 backdrop-blur-3xl border-b border-white/5 pt-[max(10px,env(safe-area-inset-top))] overflow-hidden"
+      className="fixed top-0 left-0 right-0 z-50 py-3 md:py-6 bg-neutral-950/40 backdrop-blur-3xl border-b border-white/5 pt-[max(10px,env(safe-area-inset-top))]"
     >
       {/* Header Top Shimmer */}
       <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-white/5 to-transparent" />
