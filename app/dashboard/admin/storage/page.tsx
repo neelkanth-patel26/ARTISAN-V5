@@ -42,6 +42,27 @@ export default function StorageManagement() {
     }
   }
 
+  const handleDownload = async (url: string, filename: string) => {
+    try {
+      const response = await fetch(url)
+      const blob = await response.blob()
+      const blobUrl = window.URL.createObjectURL(blob)
+      const link = document.createElement('a')
+      link.href = blobUrl
+      link.download = filename
+      document.body.appendChild(link)
+      link.click()
+      document.body.removeChild(link)
+      window.URL.revokeObjectURL(blobUrl)
+      toast.success('Download started')
+    } catch (error) {
+      console.error('Download failed:', error)
+      toast.error('Failed to download file')
+      // Fallback: open in new tab if blob download fails
+      window.open(url, '_blank')
+    }
+  }
+
   const deleteFile = async (filename: string, source: 'local' | 'supabase') => {
     const confirmed = await new Promise<boolean>((resolve) => {
       const modal = document.createElement('div')
@@ -222,106 +243,171 @@ export default function StorageManagement() {
                 <p className="text-neutral-400 text-lg">No files found</p>
               </div>
             ) : (
-              <div className="space-y-3">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
                 {filteredFiles.map((file) => (
-                  <div key={file.name} className="group flex items-center gap-4 p-4 bg-neutral-800/50 hover:bg-neutral-800 rounded-lg border border-neutral-800 hover:border-neutral-700 transition-all">
-                    {file.type.startsWith('image/') ? (
-                      <div className="w-20 h-20 rounded-lg overflow-hidden bg-neutral-900 flex-shrink-0">
-                        <img src={file.url} alt={file.name} className="w-full h-full object-cover" />
+                  <div key={file.name} className="group relative flex flex-col shadow-xl bg-neutral-800/40 hover:bg-neutral-800 rounded-2xl border border-neutral-800/50 hover:border-amber-500/30 transition-all duration-300 overflow-hidden">
+                    {/* Preview Area */}
+                    <div className="aspect-square relative overflow-hidden bg-neutral-900/50 border-b border-neutral-800/30">
+                      {file.type.startsWith('image/') ? (
+                        <img src={file.url} alt={file.name} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" />
+                      ) : (
+                        <div className="w-full h-full flex items-center justify-center">
+                          <div className="scale-150 opacity-40 group-hover:opacity-60 transition-opacity duration-300">
+                            {getFileIcon(file.type)}
+                          </div>
+                        </div>
+                      )}
+                      
+                      {/* Action Overlay (Desktop Hover) */}
+                      <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center gap-2 backdrop-blur-[2px]">
+                        {file.type.startsWith('image/') && (
+                          <button
+                            onClick={() => {
+                              const modal = document.createElement('div')
+                              modal.style.cssText = 'position:fixed;inset:0;background:radial-gradient(circle at center, rgba(15,15,15,0.95) 0%, rgba(0,0,0,0.98) 100%);display:flex;align-items:center;justify-content:center;z-index:9999;backdrop-filter:blur(24px);animation:premiumFadeIn 0.4s cubic-bezier(0.16,1,0.3,1);padding:max(20px, 4vw)'
+                              modal.innerHTML = `
+                                <style>
+                                  @keyframes premiumFadeIn{from{opacity:0;backdrop-filter:blur(0px)}to{opacity:1;backdrop-filter:blur(24px)}}
+                                  @keyframes premiumScaleIn{from{transform:scale(0.9) translateY(20px);opacity:0}to{transform:scale(1) translateY(0);opacity:1}}
+                                  @keyframes premiumFadeOut{from{opacity:1;backdrop-filter:blur(24px)}to{opacity:0;backdrop-filter:blur(0px)}}
+                                  .viewer{animation:premiumScaleIn 0.5s cubic-bezier(0.16,1,0.3,1);will-change:transform, opacity}
+                                  .premium-btn{background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:#fff;border-radius:12px;cursor:pointer;transition:all 0.3s cubic-bezier(0.4,0,0.2,1);display:flex;align-items:center;justify-content:center;backdrop-filter:blur(8px)}
+                                  .premium-btn:hover{background:rgba(255,255,255,0.12);border-color:rgba(255,255,255,0.3);transform:translateY(-2px);box-shadow:0 10px 20px rgba(0,0,0,0.3)}
+                                  .premium-btn:active{transform:translateY(0);scale:0.95}
+                                  .download-btn{background:linear-gradient(135deg, #d97706, #b45309);border:none;color:#fff;border-radius:12px;padding:0 24px;height:48px;font-weight:700;font-size:15px;cursor:pointer;transition:all 0.3s cubic-bezier(0.4,0,0.2,1);box-shadow:0 10px 25px rgba(180,83,9,0.3)}
+                                  .download-btn:hover{transform:translateY(-2px);box-shadow:0 15px 30px rgba(180,83,9,0.5);filter:brightness(1.1)}
+                                  .download-btn:active{transform:translateY(0);scale:0.95}
+                                  .glass-container{background:rgba(10,10,10,0.6);border:1px solid rgba(255,255,255,0.08);border-radius:24px;overflow:hidden;box-shadow:0 100px 100px rgba(0,0,0,0.8);backdrop-filter:blur(16px)}
+                                  .meta-tag{padding:4px 10px;border-radius:8px;font-size:11px;font-weight:700;letter-spacing:0.05em;text-transform:uppercase}
+                                  @media (max-width: 640px) {
+                                    .viewer-header { flex-direction: column; gap: 16px; align-items: flex-start !important; }
+                                    .viewer-footer { padding: 20px !important; flex-direction: column-reverse; gap: 16px; align-items: stretch !important; }
+                                    .zoom-controls { justify-content: center; }
+                                    .download-btn { width: 100%; height: 52px; }
+                                  }
+                                </style>
+                                <div class="viewer" style="width:100%;max-width:1300px;display:flex;flex-direction:column;gap:24px">
+                                  <div class="viewer-header" style="display:flex;justify-content:space-between;align-items:center;padding:0 8px">
+                                    <div style="flex:1;min-width:0">
+                                      <h2 style="color:#fff;font-size:24px;font-weight:800;margin:0 0 8px 0;letter-spacing:-0.02em;word-break:break-all">${file.name}</h2>
+                                      <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap">
+                                        <span style="color:#888;font-size:14px;font-weight:500">${formatSize(file.size)}</span>
+                                        <span style="color:rgba(255,255,255,0.1)">•</span>
+                                        <span style="color:#888;font-size:14px;font-weight:500">${new Date(file.lastModified).toLocaleDateString()}</span>
+                                        ${file.uploadedBy ? `<span style="color:rgba(255,255,255,0.1)">•</span><span style="color:#888;font-size:14px;font-weight:500">by <span style="color:#fff;font-weight:600">${file.uploadedBy}</span></span>` : ''}
+                                        <span class="meta-tag" style="background:${file.source === 'supabase' ? 'rgba(59,130,246,0.15)' : 'rgba(34,197,94,0.15)'};color:${file.source === 'supabase' ? '#60a5fa' : '#4ade80'}">${file.source}</span>
+                                      </div>
+                                    </div>
+                                    <button id="close" class="premium-btn" style="width:48px;height:48px;border-radius:14px;font-size:20px;flex-shrink:0">✕</button>
+                                  </div>
+                                  
+                                  <div class="glass-container" style="position:relative">
+                                    <div style="display:flex;align-items:center;justify-content:center;min-height:350px;max-height:calc(85vh - 220px);overflow:auto;background:radial-gradient(circle at center, #111, #050505);padding:8px">
+                                      <img id="img" src="${file.url}" style="max-width:100%;max-height:calc(85vh - 220px);object-fit:contain;transition:transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);user-select:none;filter:drop-shadow(0 20px 40px rgba(0,0,0,0.5))" draggable="false" />
+                                    </div>
+                                    
+                                    <div class="viewer-footer" style="padding:24px 32px;display:flex;justify-content:space-between;align-items:center;background:rgba(255,255,255,0.02);border-top:1px solid rgba(255,255,255,0.05)">
+                                      <div class="zoom-controls" style="display:flex;gap:12px">
+                                        <button id="zoom-out" class="premium-btn" style="width:44px;height:44px" title="Zoom Out">
+                                          <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M5 10h10"/></svg>
+                                        </button>
+                                        <button id="zoom-reset" class="premium-btn" style="padding:0 16px;font-size:13px;font-weight:700" title="Reset Zoom">Fit View</button>
+                                        <button id="zoom-in" class="premium-btn" style="width:44px;height:44px" title="Zoom In">
+                                          <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M10 5v10M5 10h10"/></svg>
+                                        </button>
+                                      </div>
+                                      <button id="download-btn" class="download-btn">
+                                        <div style="display:flex;align-items:center;gap:12px">
+                                          <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>
+                                          <span>Download Artwork</span>
+                                        </div>
+                                      </button>
+                                    </div>
+                                  </div>
+                                </div>
+                              `
+                              document.body.appendChild(modal)
+                              
+                              const img = modal.querySelector('#img') as HTMLImageElement
+                              let scale = 1
+                              
+                              const updateScale = (delta: number) => {
+                                scale = Math.max(0.1, Math.min(10, scale * delta))
+                                img.style.transform = `scale(${scale})`
+                              }
+
+                              modal.querySelector('#zoom-in')?.addEventListener('click', () => updateScale(1.4))
+                              modal.querySelector('#zoom-out')?.addEventListener('click', () => updateScale(0.7))
+                              modal.querySelector('#zoom-reset')?.addEventListener('click', () => { scale = 1; img.style.transform = 'scale(1)' })
+                              modal.querySelector('#download-btn')?.addEventListener('click', () => handleDownload(file.url, file.name))
+                              
+                              const close = () => {
+                                  modal.querySelector('.viewer')?.setAttribute('style', 'animation: premiumFadeOut 0.3s forwards cubic-bezier(0.16,1,0.3,1);')
+                                  modal.style.opacity = '0'
+                                  modal.style.transition = 'opacity 0.3s ease'
+                                  setTimeout(() => document.body.removeChild(modal), 300)
+                              }
+                              
+                              modal.addEventListener('click', (e) => { if (e.target === modal) close() })
+                              modal.querySelector('#close')?.addEventListener('click', close)
+                              const escHandler = (e: KeyboardEvent) => { if (e.key === 'Escape') { close(); document.removeEventListener('keydown', escHandler) } }
+                              document.addEventListener('keydown', escHandler)
+                            }}
+                            className="w-10 h-10 bg-amber-600 rounded-full flex items-center justify-center text-white shadow-lg hover:scale-110 transition-transform"
+                            title="View"
+                          >
+                            <Eye size={18} />
+                          </button>
+                        )}
+                        <button
+                          onClick={() => handleDownload(file.url, file.name)}
+                          className="w-10 h-10 bg-neutral-800 rounded-full flex items-center justify-center text-white shadow-lg hover:scale-110 transition-transform"
+                          title="Download"
+                        >
+                          <Download size={18} />
+                        </button>
+                        <button
+                          onClick={() => deleteFile(file.name, file.source)}
+                          className="w-10 h-10 bg-red-600/80 rounded-full flex items-center justify-center text-white shadow-lg hover:scale-110 transition-transform"
+                          title="Delete"
+                        >
+                          <Trash2 size={18} />
+                        </button>
                       </div>
-                    ) : (
-                      <div className="w-20 h-20 rounded-lg bg-neutral-900 flex items-center justify-center flex-shrink-0">
-                        {getFileIcon(file.type)}
+                    </div>
+
+                    {/* Content Area */}
+                    <div className="p-4 flex flex-col gap-2">
+                      <div className="text-white font-semibold truncate group-hover:text-amber-500 transition-colors" title={file.name}>
+                        {file.name}
                       </div>
-                    )}
-                    <div className="flex-1 min-w-0">
-                      <div className="text-white font-medium truncate mb-1">{file.name}</div>
-                      <div className="flex items-center gap-2 text-sm text-neutral-400">
-                        <span>{formatSize(file.size)}</span>
-                        <span>•</span>
+                      
+                      <div className="flex flex-wrap items-center gap-2">
+                        <span className={`px-2 py-0.5 rounded-md text-[10px] font-bold tracking-wider uppercase ${
+                          file.source === 'supabase' ? 'bg-blue-500/10 text-blue-400 border border-blue-500/20' : 'bg-green-500/10 text-green-400 border border-green-500/20'
+                        }`}>
+                          {file.source}
+                        </span>
+                        <span className="text-xs text-neutral-500">{formatSize(file.size)}</span>
+                      </div>
+
+                      <div className="mt-2 pt-3 border-t border-neutral-800/50 flex items-center justify-between text-[11px] text-neutral-500">
                         <span>{new Date(file.lastModified).toLocaleDateString()}</span>
-                        <span>•</span>
-                        <span className={`px-2 py-0.5 rounded text-xs font-medium ${
-                          file.source === 'supabase' ? 'bg-blue-500/20 text-blue-400' : 'bg-green-500/20 text-green-400'
-                        }`}>{file.source}</span>
                         {file.uploadedBy && (
-                          <>
-                            <span>•</span>
-                            <span className="text-neutral-500">by {file.uploadedBy}</span>
-                          </>
+                          <span className="truncate max-w-[100px]" title={`Uploaded by ${file.uploadedBy}`}>
+                            by <span className="text-neutral-400 font-medium">{file.uploadedBy}</span>
+                          </span>
                         )}
                       </div>
                     </div>
-                    <div className="flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                      {file.type.startsWith('image/') && (
-                        <button
-                          onClick={() => {
-                            const modal = document.createElement('div')
-                            modal.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.96);display:flex;align-items:center;justify-content:center;z-index:9999;backdrop-filter:blur(20px);animation:fadeIn 0.25s;padding:40px'
-                            modal.innerHTML = `
-                              <style>
-                                @keyframes fadeIn{from{opacity:0}to{opacity:1}}
-                                @keyframes scaleIn{from{transform:scale(0.95)}to{transform:scale(1)}}
-                                .viewer{animation:scaleIn 0.3s cubic-bezier(0.34,1.56,0.64,1)}
-                                .zoom-btn:hover{transform:scale(1.1)}
-                              </style>
-                              <div class="viewer" style="width:100%;max-width:1400px;display:flex;flex-direction:column;gap:20px">
-                                <div style="display:flex;justify-content:space-between;align-items:flex-start;padding:0 10px">
-                                  <div style="flex:1;min-width:0">
-                                    <h2 style="color:#fff;font-size:22px;font-weight:700;margin:0 0 8px 0">${file.name}</h2>
-                                    <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap">
-                                      <span style="color:#a3a3a3;font-size:14px">${formatSize(file.size)}</span>
-                                      <span style="color:#404040">•</span>
-                                      <span style="color:#a3a3a3;font-size:14px">${new Date(file.lastModified).toLocaleDateString()}</span>
-                                      ${file.uploadedBy ? `<span style="color:#404040">•</span><span style="color:#a3a3a3;font-size:14px">by <strong style="color:#fff">${file.uploadedBy}</strong></span>` : ''}
-                                      <span style="padding:4px 10px;background:${file.source === 'supabase' ? 'rgba(59,130,246,0.15)' : 'rgba(34,197,94,0.15)'};color:${file.source === 'supabase' ? '#60a5fa' : '#4ade80'};border-radius:6px;font-size:12px;font-weight:600;text-transform:uppercase">${file.source}</span>
-                                    </div>
-                                  </div>
-                                  <button id="close" style="background:#171717;color:#fff;border:1px solid #262626;border-radius:12px;padding:12px 24px;cursor:pointer;font-weight:700;font-size:15px;transition:all 0.2s;margin-left:20px" onmouseover="this.style.background='#262626'" onmouseout="this.style.background='#171717'">✕ Close</button>
-                                </div>
-                                <div style="position:relative;background:#000;border-radius:20px;overflow:hidden;box-shadow:0 30px 90px rgba(0,0,0,0.9);border:1px solid #1a1a1a">
-                                  <div style="display:flex;align-items:center;justify-content:center;min-height:400px;max-height:calc(90vh - 200px);overflow:auto">
-                                    <img id="img" src="${file.url}" style="max-width:100%;max-height:calc(90vh - 200px);object-fit:contain;transition:transform 0.3s;user-select:none" draggable="false" />
-                                  </div>
-                                  <div style="position:absolute;bottom:0;left:0;right:0;background:linear-gradient(to top,rgba(0,0,0,0.95),transparent);padding:24px;display:flex;justify-content:space-between;align-items:center">
-                                    <div style="display:flex;gap:10px">
-                                      <button class="zoom-btn" onclick="let img=document.getElementById('img');let s=(parseFloat(img.dataset.s)||1)*1.25;img.dataset.s=s;img.style.transform='scale('+s+')'" style="background:rgba(38,38,38,0.9);color:#fff;border:1px solid #404040;border-radius:10px;padding:10px;cursor:pointer;font-size:20px;font-weight:700;transition:all 0.2s;width:44px;height:44px" title="Zoom In">+</button>
-                                      <button class="zoom-btn" onclick="let img=document.getElementById('img');let s=(parseFloat(img.dataset.s)||1)*0.8;img.dataset.s=s;img.style.transform='scale('+s+')'" style="background:rgba(38,38,38,0.9);color:#fff;border:1px solid #404040;border-radius:10px;padding:10px;cursor:pointer;font-size:20px;font-weight:700;transition:all 0.2s;width:44px;height:44px" title="Zoom Out">−</button>
-                                      <button class="zoom-btn" onclick="let img=document.getElementById('img');img.dataset.s=1;img.style.transform='scale(1)'" style="background:rgba(38,38,38,0.9);color:#fff;border:1px solid #404040;border-radius:10px;padding:10px 16px;cursor:pointer;font-size:13px;font-weight:700;transition:all 0.2s" title="Reset">1:1</button>
-                                    </div>
-                                    <a href="${file.url}" download style="display:flex;align-items:center;gap:10px;background:rgba(217,119,6,0.9);color:#fff;border:none;border-radius:10px;padding:12px 20px;text-decoration:none;font-weight:700;font-size:14px;transition:all 0.2s" onmouseover="this.style.background='rgba(217,119,6,1)'" onmouseout="this.style.background='rgba(217,119,6,0.9)'">
-                                      <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>
-                                      Download
-                                    </a>
-                                  </div>
-                                </div>
-                              </div>
-                            `
-                            document.body.appendChild(modal)
-                            modal.addEventListener('click', (e) => { if (e.target === modal) document.body.removeChild(modal) })
-                            modal.querySelector('#close')?.addEventListener('click', () => document.body.removeChild(modal))
-                            document.addEventListener('keydown', function h(e) { if (e.key === 'Escape') { document.body.removeChild(modal); document.removeEventListener('keydown', h) } })
-                          }}
-                          className="p-2 bg-neutral-700 hover:bg-neutral-600 rounded-lg transition-colors"
-                          title="View"
-                        >
-                          <Eye size={16} className="text-white" />
-                        </button>
-                      )}
-                      <a
-                        href={file.url}
-                        download
-                        className="p-2 bg-neutral-700 hover:bg-neutral-600 rounded-lg transition-colors"
-                        title="Download"
-                      >
-                        <Download size={16} className="text-white" />
-                      </a>
-                      <button
-                        onClick={() => deleteFile(file.name, file.source)}
-                        className="p-2 bg-neutral-700 hover:bg-red-600 rounded-lg transition-colors"
-                        title="Delete"
-                      >
-                        <Trash2 size={16} className="text-white" />
+
+                    {/* Mobile Actions (Visible on touch) */}
+                    <div className="lg:hidden flex border-t border-neutral-800/50 bg-neutral-900/30">
+                      <button onClick={() => file.type.startsWith('image/') && handleDownload(file.url, file.name)} className="flex-1 py-3 flex items-center justify-center gap-2 text-xs text-neutral-400 hover:text-white border-r border-neutral-800/50">
+                        <Download size={14} /> Download
+                      </button>
+                      <button onClick={() => deleteFile(file.name, file.source)} className="flex-1 py-3 flex items-center justify-center gap-2 text-xs text-red-500/60 hover:text-red-500">
+                        <Trash2 size={14} /> Delete
                       </button>
                     </div>
                   </div>

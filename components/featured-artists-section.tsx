@@ -81,26 +81,29 @@ export function FeaturedArtistsSection() {
               className="group cursor-pointer will-change-transform"
             >
               <motion.div
-                className="relative overflow-hidden border border-neutral-800/50 group-hover:border-amber-600/30 transition-all duration-500 mb-4"
+                suppressHydrationWarning
+                className="relative overflow-hidden border border-neutral-800/30 group-hover:border-amber-600/20 transition-all duration-700 mb-4 bg-neutral-900/40 rounded-2xl"
                 whileHover={{ scale: 1.02 }}
-                transition={{ duration: 0.3 }}
+                transition={{ duration: 0.4 }}
               >
-                <div className="hidden lg:block absolute inset-0 bg-gradient-to-br from-amber-600/0 to-amber-600/0 group-hover:from-amber-600/10 group-hover:to-transparent transition-all duration-500 z-10" />
-                <motion.img
-                  src={artist.image}
-                  alt={artist.name}
-                  className="w-full h-[280px] md:h-[400px] object-cover object-center will-change-transform"
-                  whileHover={{ scale: 1.05 }}
-                  transition={{ duration: 0.5 }}
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/30 to-transparent z-20" />
-                <div className="absolute bottom-0 left-0 right-0 p-5 z-30">
+                <div suppressHydrationWarning className="absolute inset-0 bg-[radial-gradient(circle_at_center,_rgba(217,119,6,0.03)_0%,_transparent_70%)] opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
+                <div className="relative w-full h-[280px] md:h-[400px] p-12 md:p-20 flex items-center justify-center">
+                  <motion.img
+                    src={artist.image}
+                    alt={artist.name}
+                    className="w-full h-full object-contain filter drop-shadow-[0_0_30px_rgba(0,0,0,0.5)] will-change-transform"
+                    whileHover={{ scale: 1.1 }}
+                    transition={{ duration: 0.6 }}
+                  />
+                </div>
+                <div className="absolute inset-x-0 bottom-0 h-1/3 bg-gradient-to-t from-black/80 to-transparent z-20" />
+                <div className="absolute bottom-0 left-0 right-0 p-6 z-30">
                   <div className="flex items-center gap-2 mb-2">
-                    <div className="w-8 h-px bg-gradient-to-r from-amber-600/70 to-transparent" />
-                    <span className="text-[10px] text-amber-600/70 tracking-wider font-light">{artist.works} WORKS</span>
+                    <div className="w-8 h-px bg-amber-600/50" />
+                    <span className="text-[10px] text-amber-600/70 tracking-[0.2em] font-bold uppercase">{artist.works} WORKS</span>
                   </div>
-                  <h3 className="text-lg md:text-xl font-light text-white/90 mb-1" style={{ fontFamily: 'Oughter, serif' }}>{artist.name}</h3>
-                  <p className="text-xs text-neutral-400 tracking-wider font-light">{artist.specialty}</p>
+                  <h3 className="text-xl md:text-2xl font-light text-white mb-1" style={{ fontFamily: 'Oughter, serif' }}>{artist.name}</h3>
+                  <p className="text-[11px] text-neutral-500 tracking-[0.1em] font-medium uppercase">{artist.specialty}</p>
                 </div>
               </motion.div>
               <Link href="/gallery">

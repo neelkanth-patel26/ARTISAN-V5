@@ -71,7 +71,7 @@ export default function RootLayout({
   children: React.ReactNode
 }>) {
   return (
-    <html lang="en" className="dark" style={{
+    <html lang="en" suppressHydrationWarning className="dark" style={{
       '--font-serif': playfairDisplay.style.fontFamily,
       '--font-body': lora.style.fontFamily,
     } as any}>
