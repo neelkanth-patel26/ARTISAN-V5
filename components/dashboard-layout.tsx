@@ -172,7 +172,7 @@ export function DashboardLayout({ children, navItems, role }: DashboardLayoutPro
       </aside>
 
       {/* ── Mobile Header ── */}
-      <header className="fixed left-0 right-0 top-0 z-50 flex h-16 items-center justify-between border-b border-white/[0.04] bg-neutral-950/80 backdrop-blur-2xl px-6 lg:hidden"
+      <header className="fixed left-0 right-0 top-0 z-50 flex h-20 items-center justify-between border-b border-white/[0.04] bg-neutral-950/80 backdrop-blur-2xl px-6 lg:hidden"
         style={{ paddingTop: 'max(0px, env(safe-area-inset-top))' }}
       >
         <Link href="/" className="flex items-center gap-3">
@@ -221,7 +221,7 @@ export function DashboardLayout({ children, navItems, role }: DashboardLayoutPro
               exit={{ x: '100%' }}
               transition={{ type: 'spring', damping: 30, stiffness: 300 }}
               className="fixed right-0 top-0 bottom-0 z-50 w-80 flex flex-col border-l border-white/[0.04] bg-neutral-950/90 backdrop-blur-3xl lg:hidden overflow-y-auto scrollbar-hide"
-              style={{ paddingTop: 'calc(4rem + max(0px, env(safe-area-inset-top)))' }}
+              style={{ paddingTop: 'calc(5rem + max(0px, env(safe-area-inset-top)))' }}
             >
               {/* Internal Atmospherics */}
               <div className="absolute top-0 right-0 w-32 h-32 bg-orange-600/5 rounded-full blur-[60px] pointer-events-none" />
