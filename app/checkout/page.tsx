@@ -7,7 +7,7 @@ import { getCurrentUser } from '@/lib/auth'
 import { supabase } from '@/lib/supabase'
 import { toast } from 'sonner'
 import { CreditCard, Lock, Loader2, CheckCircle2, QrCode, X } from 'lucide-react'
-import { motion } from 'framer-motion'
+import { motion, AnimatePresence } from 'framer-motion'
 import { sendPurchaseEmails, sendSupportEmails } from '@/lib/email/sender'
 import { triggerNotification } from '@/lib/notification-triggers'
 import { getImageUrl } from '@/lib/image-utils'
@@ -373,142 +373,158 @@ function CheckoutContent() {
   }
 
   return (
-    <main className="min-h-screen bg-neutral-950 text-neutral-200 font-sans selection:bg-amber-600/30">
-      {/* Header */}
-      <div className="border-b border-neutral-900 bg-black/40 backdrop-blur-md sticky top-0 z-50">
-        <div className="mx-auto max-w-7xl px-6 py-6 sm:py-8">
-          <div className="flex items-center justify-between">
-            <Link href="/" className="flex items-center gap-4 group">
-              <div className="h-12 w-12 rounded-2xl bg-amber-600 flex items-center justify-center shadow-lg shadow-amber-900/20 group-hover:scale-105 transition-transform duration-500">
-                <span className="text-white font-bold text-xl" style={{ fontFamily: 'ForestSmooth, serif' }}>A</span>
+    <main className="min-h-screen bg-neutral-950 text-neutral-200 font-sans selection:bg-amber-600/30 flex flex-col lg:flex-row">
+      
+      {/* Left Sidebar - Information (Fixed on Desktop) */}
+      <section className="w-full lg:w-[40%] bg-neutral-900/30 lg:h-screen lg:fixed lg:left-0 border-b lg:border-b-0 lg:border-r border-neutral-800/50 flex flex-col p-8 sm:p-12 lg:p-20 overflow-y-auto">
+        <div className="flex-1 space-y-12 lg:space-y-20 max-w-sm mx-auto lg:mx-0">
+          
+          {/* Header & Back */}
+          <div className="space-y-8">
+            <button 
+              onClick={() => router.back()}
+              className="group flex items-center gap-2 text-[10px] text-neutral-500 hover:text-white transition-colors uppercase tracking-[0.3em] font-black"
+            >
+              <div className="h-6 w-6 rounded-full border border-neutral-800 flex items-center justify-center group-hover:border-amber-600/50 transition-colors">
+                <span className="text-xs">←</span>
               </div>
-              <div className="hidden sm:block">
-                <h1 className="text-xl font-light text-white tracking-widest uppercase" style={{ fontFamily: 'ForestSmooth, serif' }}>Artisan Checkout</h1>
-                <p className="text-[10px] text-neutral-500 tracking-[0.2em] font-black uppercase">Secure Global Payment Engine</p>
+              Back to Artisan
+            </button>
+            
+            <div className="flex items-center gap-4">
+              <div className="h-14 w-14 rounded-2xl bg-amber-600 flex items-center justify-center shadow-2xl shadow-amber-900/30">
+                <span className="text-white font-bold text-2xl" style={{ fontFamily: 'ForestSmooth, serif' }}>A</span>
               </div>
-            </Link>
-            <div className="flex items-center gap-4 text-neutral-500">
-              <span className="text-[10px] tracking-widest uppercase font-black hidden lg:block">Data Encryption Active</span>
-              <Lock className="text-amber-600/60" size={18} />
+              <div>
+                <h1 className="text-xl font-light text-white tracking-widest uppercase" style={{ fontFamily: 'ForestSmooth, serif' }}>Checkout</h1>
+                <p className="text-[9px] text-neutral-500 tracking-[0.2em] font-black uppercase">Secure Institutional Terminal</p>
+              </div>
+            </div>
+          </div>
+
+          {/* Pricing Display */}
+          <div className="space-y-4">
+            <p className="text-[11px] text-neutral-500 uppercase tracking-[0.4em] font-black">Total Valuation</p>
+            <h2 className="text-7xl lg:text-8xl font-light text-white tracking-tighter" style={{ fontFamily: 'ForestSmooth, serif' }}>
+              ₹{Math.floor(totalAmount).toLocaleString()}
+            </h2>
+            <div className="flex items-center gap-2 text-neutral-400">
+               <span className="text-[10px] font-black tracking-widest uppercase">INR</span>
+               <div className="h-1 w-1 rounded-full bg-neutral-700" />
+               <span className="text-[10px] font-black tracking-widest uppercase">Secured Transaction</span>
+            </div>
+          </div>
+
+          {/* Product Preview */}
+          <div className="relative group p-6 rounded-[2rem] bg-black/40 border border-neutral-800/50 shadow-2xl overflow-hidden">
+             <div className="absolute top-0 right-0 w-32 h-32 bg-amber-600/5 blur-[40px] rounded-full pointer-events-none -mr-16 -mt-16" />
+             
+             <div className="relative z-10 flex gap-6 items-center">
+                {isSupport && artist ? (
+                  <>
+                    <div className="h-20 w-20 rounded-2xl overflow-hidden bg-neutral-800 border border-neutral-700/50">
+                       {artist.avatar_url ? (
+                         <img src={artist.avatar_url} alt={artist.full_name} className="w-full h-full object-cover" />
+                       ) : (
+                         <div className="w-full h-full flex items-center justify-center text-2xl text-amber-600/30" style={{ fontFamily: 'ForestSmooth, serif' }}>
+                           {artist.full_name.charAt(0).toUpperCase()}
+                         </div>
+                       )}
+                    </div>
+                    <div className="space-y-1">
+                       <h3 className="text-sm font-bold text-white tracking-wide">{artist.full_name}</h3>
+                       <p className="text-neutral-500 text-[10px] tracking-widest uppercase font-black">Support Initiative</p>
+                    </div>
+                  </>
+                ) : artwork ? (
+                  <>
+                    <div className="h-24 w-24 rounded-2xl overflow-hidden border border-neutral-700/50 shadow-xl">
+                      <img src={artwork.image_url} alt={artwork.title} className="w-full h-full object-cover" />
+                    </div>
+                    <div className="space-y-1">
+                       <h3 className="text-sm font-bold text-white tracking-wide">{artwork.title}</h3>
+                       <p className="text-neutral-500 text-[10px] tracking-widest uppercase font-black">by {artwork.artist_name}</p>
+                    </div>
+                  </>
+                ) : null}
+             </div>
+          </div>
+
+          {/* Price Breakdown Details */}
+          <div className="space-y-4 pt-10 border-t border-neutral-800/50">
+            <div className="flex justify-between items-center text-[10px] tracking-widest uppercase font-black text-neutral-500">
+               <span>Base Contribution</span>
+               <span className="text-white">₹{baseAmount.toLocaleString()}</span>
+            </div>
+            <div className="flex justify-between items-center text-[10px] tracking-widest uppercase font-black text-neutral-500">
+               <span>Platform Fee ({isSupport ? '5' : '10'}%)</span>
+               <span className="text-white font-medium">₹{platformFee.toFixed(2)}</span>
             </div>
           </div>
         </div>
-      </div>
 
-      <div className="mx-auto max-w-7xl px-6 py-12 sm:py-20 lg:py-24">
-        <div className="grid lg:grid-cols-12 gap-12 lg:gap-20 items-start">
+        {/* Footer info */}
+        <div className="mt-20 pt-10 border-t border-neutral-800/30 flex items-center gap-4 text-neutral-600">
+          <div className="flex items-center gap-2">
+            <Lock size={12} />
+            <span className="text-[9px] font-black uppercase tracking-widest">RSA 4096 Encrypted</span>
+          </div>
+        </div>
+      </section>
+
+      {/* Right Section - Payment Form (Scrollable) */}
+      <section className="flex-1 lg:ml-[40%] min-h-screen py-12 px-6 sm:px-12 lg:px-24 flex items-center justify-center">
+        <div className="w-full max-w-lg space-y-12">
           
-          {/* Main Payment Section */}
-          <div className="lg:col-span-7 space-y-12">
-            {/* Item Preview */}
-            <div className="relative group p-8 rounded-[2.5rem] bg-neutral-900 border border-neutral-800 shadow-3xl overflow-hidden">
-               <div className="absolute top-0 right-0 w-64 h-64 bg-amber-600/5 blur-[80px] rounded-full pointer-events-none -mr-32 -mt-32" />
-               
-               <div className="relative z-10 flex flex-col sm:flex-row gap-8 items-center sm:items-start text-center sm:text-left">
-                  {isSupport && artist ? (
-                    <>
-                      <div className="h-32 w-32 rounded-[2rem] p-1 bg-black border border-neutral-800 shadow-2xl relative">
-                        <div className="w-full h-full rounded-[1.25rem] overflow-hidden bg-neutral-800">
-                           {artist.avatar_url ? (
-                             <img src={getImageUrl(artist.avatar_url)} alt={artist.full_name} className="w-full h-full object-cover" />
-                           ) : (
-                             <div className="w-full h-full flex items-center justify-center text-4xl text-amber-600/30" style={{ fontFamily: 'ForestSmooth, serif' }}>
-                               {artist.full_name.charAt(0).toUpperCase()}
-                             </div>
-                           )}
-                        </div>
-                      </div>
-                      <div className="flex-1 space-y-3">
-                         <h2 className="text-[10px] text-amber-600 uppercase tracking-[0.3em] font-black">Support Initiative</h2>
-                         <h3 className="text-4xl font-light text-white leading-tight" style={{ fontFamily: 'ForestSmooth, serif' }}>{artist.full_name}</h3>
-                         <p className="text-neutral-500 text-sm font-light max-w-md">Your direct contribution helps this artist maintain their creative vision and studio operations.</p>
-                      </div>
-                    </>
-                  ) : artwork ? (
-                    <>
-                      <div className="h-40 w-40 rounded-3xl overflow-hidden border border-neutral-800 shadow-2xl">
-                        <img src={getImageUrl(artwork.image_url)} alt={artwork.title} className="w-full h-full object-cover" />
-                      </div>
-                      <div className="flex-1 space-y-3">
-                         <h2 className="text-[10px] text-amber-600 uppercase tracking-[0.3em] font-black">Artwork Acquisition</h2>
-                         <h3 className="text-4xl font-light text-white leading-tight" style={{ fontFamily: 'ForestSmooth, serif' }}>{artwork.title}</h3>
-                         <p className="text-neutral-500 text-sm font-light">by <span className="text-neutral-300 font-medium">{artwork.artist_name}</span></p>
-                      </div>
-                    </>
-                  ) : null}
-               </div>
+          <div className="space-y-10">
+            <h2 className="text-[11px] text-neutral-600 uppercase tracking-[0.5em] font-black text-center">Payment Configuration</h2>
+
+            {/* Segmented Toggle - High Fidelity */}
+            <div className="bg-neutral-900/50 p-1.5 rounded-[1.25rem] border border-neutral-800 grid grid-cols-2 gap-1 backdrop-blur-sm shadow-xl">
+              <button
+                onClick={() => setPaymentMethod('card')}
+                className={`flex items-center justify-center gap-3 py-3.5 rounded-xl text-[10px] tracking-[0.2em] font-black uppercase transition-all duration-500 ${
+                  paymentMethod === 'card'
+                    ? 'bg-neutral-800 text-white shadow-lg border border-neutral-700/50'
+                    : 'text-neutral-600 hover:text-neutral-400'
+                }`}
+              >
+                <CreditCard size={14} className={paymentMethod === 'card' ? 'text-amber-600' : 'opacity-30'} />
+                Card Gateway
+              </button>
+              <button
+                onClick={() => setPaymentMethod('upi')}
+                disabled={!artistUpiId}
+                className={`flex items-center justify-center gap-3 py-3.5 rounded-xl text-[10px] tracking-[0.2em] font-black uppercase transition-all duration-500 ${
+                  paymentMethod === 'upi'
+                    ? 'bg-neutral-800 text-white shadow-lg border border-neutral-700/50'
+                    : !artistUpiId
+                    ? 'opacity-20 cursor-not-allowed'
+                    : 'text-neutral-600 hover:text-neutral-400'
+                }`}
+              >
+                <QrCode size={14} className={paymentMethod === 'upi' ? 'text-amber-600' : 'opacity-30'} />
+                UPI Instant
+              </button>
             </div>
 
-            {/* Payment Controls */}
-            <div className="space-y-8">
-              <div className="flex items-center gap-4">
-                 <h2 className="text-sm text-neutral-400 font-light tracking-widest uppercase">Select Payment Mode</h2>
-                 <div className="h-px flex-1 bg-neutral-900" />
-              </div>
-
-              <div className="grid grid-cols-2 gap-6">
-                <button
-                  onClick={() => setPaymentMethod('card')}
-                  className={`flex flex-col items-center justify-center gap-4 p-8 rounded-[2rem] border-2 transition-all duration-500 group ${
-                    paymentMethod === 'card'
-                      ? 'bg-amber-600 border-amber-600 text-white shadow-2xl shadow-amber-900/40'
-                      : 'bg-neutral-900 border-neutral-800 text-neutral-500 hover:border-amber-600/30'
-                  }`}
-                >
-                  <CreditCard size={28} className={paymentMethod === 'card' ? 'scale-110 transition-transform' : 'opacity-30'} />
-                  <span className="text-[10px] tracking-[0.3em] uppercase font-black">Secured Card</span>
-                </button>
-                <button
-                  onClick={() => setPaymentMethod('upi')}
-                  disabled={!artistUpiId}
-                  className={`flex flex-col items-center justify-center gap-4 p-8 rounded-[2rem] border-2 transition-all duration-500 group ${
-                    paymentMethod === 'upi'
-                      ? 'bg-amber-600 border-amber-600 text-white shadow-2xl shadow-amber-900/40'
-                      : !artistUpiId
-                      ? 'bg-neutral-900 border-neutral-800/50 text-neutral-800 cursor-not-allowed grayscale'
-                      : 'bg-neutral-900 border-neutral-800 text-neutral-500 hover:border-amber-600/30'
-                  }`}
-                >
-                  <QrCode size={28} className={paymentMethod === 'upi' ? 'scale-110 transition-transform' : 'opacity-30'} />
-                  <span className="text-[10px] tracking-[0.3em] uppercase font-black">UPI Instant</span>
-                </button>
-              </div>
-
-              {/* Form Content */}
-              <div className="bg-neutral-900/50 rounded-[2.5rem] p-8 sm:p-12 border border-neutral-800">
-                {paymentMethod === 'upi' ? (
-                  <form onSubmit={handleSubmit} className="space-y-10">
-                    <div className="space-y-4">
-                      <div className="flex items-center justify-between text-[10px] text-neutral-600 font-black uppercase tracking-widest">
-                        <span>Recipient UPI</span>
-                        <span className="text-amber-600/60">Verified</span>
-                      </div>
-                      <div className="bg-black/40 p-6 rounded-2xl border border-neutral-800">
-                        <code className="text-amber-500 font-mono text-lg break-all">{artistUpiId}</code>
-                      </div>
-                    </div>
-                    
-                    <div className="space-y-4 pt-4 border-t border-neutral-800">
-                       <p className="text-[10px] text-neutral-500 leading-relaxed uppercase tracking-[0.2em] font-bold">
-                         Proceeding will open your default UPI application. Please ensure the amount matches exactly.
-                       </p>
-                    </div>
-
-                    <button
-                      type="submit"
-                      disabled={paying}
-                      className="w-full py-6 rounded-[1.5rem] bg-amber-600 text-white font-black text-sm tracking-[0.3em] uppercase hover:bg-amber-500 transition-all shadow-3xl shadow-amber-900/40 active:scale-[0.98] flex items-center justify-center gap-4 group"
-                    >
-                      {paying ? <Loader2 className="h-6 w-6 animate-spin" /> : <QrCode size={20} className="group-hover:rotate-12 transition-transform" />}
-                      Initialize UPI Transfer
-                    </button>
-                  </form>
-                ) : (
-                  <form onSubmit={handleSubmit} className="space-y-8">
-                    <div className="space-y-8">
+            {/* Form Area */}
+            <div className="relative group p-8 sm:p-12 rounded-[2.5rem] bg-neutral-900/50 border border-neutral-800 shadow-3xl overflow-hidden backdrop-blur-xl transition-all duration-700 hover:border-neutral-700/50">
+              
+              <AnimatePresence mode="wait">
+                {paymentMethod === 'card' ? (
+                  <motion.form 
+                    key="card-form"
+                    initial={{ opacity: 0, x: 20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    exit={{ opacity: 0, x: -20 }}
+                    onSubmit={handleSubmit} 
+                    className="space-y-8"
+                  >
+                    <div className="space-y-6">
                       <div className="space-y-4">
                         <label className="text-[10px] text-neutral-500 uppercase tracking-widest font-black ml-1">Card Identification</label>
-                        <div className="relative">
+                        <div className="relative group/input">
                           <input
                             type="text"
                             value={cardNumber}
@@ -518,7 +534,7 @@ function CheckoutContent() {
                             className="w-full bg-black/40 border-2 border-neutral-800 rounded-2xl px-6 py-4 text-xl font-light text-white placeholder:text-neutral-800 focus:border-amber-600/50 focus:outline-none transition-all outline-none"
                             style={{ fontFamily: 'ForestSmooth, serif' }}
                           />
-                          <CreditCard className="absolute right-6 top-1/2 -translate-y-1/2 text-neutral-700" size={24} />
+                          <CreditCard className="absolute right-6 top-1/2 -translate-y-1/2 text-neutral-700 group-focus-within/input:text-amber-600/50 transition-colors" size={24} />
                         </div>
                       </div>
                       
@@ -549,13 +565,13 @@ function CheckoutContent() {
                       </div>
 
                       <div className="space-y-4">
-                        <label className="text-[10px] text-neutral-500 uppercase tracking-widest font-black ml-1">Cardholder Entity</label>
+                        <label className="text-[10px] text-neutral-500 uppercase tracking-widest font-black ml-1">Cardholder Identity</label>
                         <input
                           type="text"
                           value={name}
                           onChange={(e) => setName(e.target.value)}
-                          placeholder="FULL NAME AS PER CARD"
-                          className="w-full bg-black/40 border-2 border-neutral-800 rounded-2xl px-6 py-4 text-sm font-bold tracking-widest text-white placeholder:text-neutral-800 focus:border-amber-600/50 focus:outline-none transition-all outline-none uppercase"
+                          placeholder="FULL NAME AS PER DOCUMENTATION"
+                          className="w-full bg-black/40 border-2 border-neutral-800 rounded-2xl px-6 py-4 text-xs font-black tracking-[0.2em] text-white placeholder:text-neutral-800 focus:border-amber-600/50 focus:outline-none transition-all outline-none uppercase"
                         />
                       </div>
                     </div>
@@ -563,68 +579,64 @@ function CheckoutContent() {
                     <button
                       type="submit"
                       disabled={paying}
-                      className="w-full py-6 rounded-[1.5rem] bg-white text-black font-black text-sm tracking-[0.3em] uppercase hover:bg-neutral-200 transition-all shadow-3xl active:scale-[0.98] flex items-center justify-center gap-4 group mt-4"
+                      className="w-full py-6 rounded-[1.5rem] bg-white text-black font-black text-[11px] tracking-[0.4em] uppercase hover:bg-neutral-200 transition-all shadow-3xl active:scale-[0.98] flex items-center justify-center gap-4 group mt-8"
                     >
-                      {paying ? <Loader2 className="h-6 w-6 animate-spin" /> : <Lock size={20} />}
-                      Authorize Payment
+                      {paying ? <Loader2 className="h-6 w-6 animate-spin" /> : <Lock size={16} />}
+                      Confirm Transaction
                     </button>
-                  </form>
-                )}
-              </div>
-            </div>
-          </div>
-
-          {/* Order Summary Sidebar */}
-          <div className="lg:col-span-5 lg:sticky lg:top-32 space-y-8">
-            <div className="relative group p-10 rounded-[2.5rem] bg-neutral-900 border border-neutral-800 shadow-3xl overflow-hidden">
-               <div className="absolute bottom-0 left-0 w-48 h-48 bg-amber-600/5 blur-[80px] rounded-full pointer-events-none -ml-24 -mb-24" />
-               
-               <h2 className="text-sm text-neutral-400 font-light tracking-[0.3em] uppercase mb-10 pb-6 border-b border-neutral-800/50">Fiscal Summary</h2>
-               
-               <div className="space-y-6 mb-12">
-                  <div className="flex justify-between items-center group/item">
-                    <span className="text-[11px] text-neutral-500 uppercase tracking-widest font-bold group-hover/item:text-neutral-400 transition-colors">Net Valuation</span>
-                    <span className="text-xl font-light text-white" style={{ fontFamily: 'ForestSmooth, serif' }}>₹{baseAmount.toLocaleString()}</span>
-                  </div>
-                  <div className="flex justify-between items-center group/item">
-                    <span className="text-[11px] text-neutral-500 uppercase tracking-widest font-bold group-hover/item:text-neutral-400 transition-colors">Platform Logistics ({isSupport ? '5' : '10'}%)</span>
-                    <span className="text-lg font-light text-amber-600/80" style={{ fontFamily: 'ForestSmooth, serif' }}>₹{platformFee.toFixed(2)}</span>
-                  </div>
-                  
-                  <div className="pt-8 mt-8 border-t border-neutral-800/50 flex justify-between items-end">
-                    <div className="space-y-1">
-                      <span className="text-[10px] text-amber-600 uppercase tracking-[0.4em] font-black">Total Payable</span>
-                      <p className="text-neutral-600 text-[10px] font-medium tracking-widest">INC. ALL APPLICABLE FEES</p>
+                  </motion.form>
+                ) : (
+                  <motion.form 
+                    key="upi-form"
+                    initial={{ opacity: 0, x: 20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    exit={{ opacity: 0, x: -20 }}
+                    onSubmit={handleSubmit} 
+                    className="space-y-10 text-center"
+                  >
+                    <div className="space-y-8">
+                      <div className="h-24 w-24 rounded-3xl bg-neutral-900 border border-neutral-800 flex items-center justify-center mx-auto shadow-2xl">
+                        <QrCode size={40} className="text-amber-600/60" />
+                      </div>
+                      <div className="space-y-2">
+                        <h4 className="text-sm font-bold text-white tracking-widest uppercase">UPI Identification</h4>
+                        <p className="text-[10px] text-neutral-500 tracking-widest uppercase font-black">Authorized Payment Channel</p>
+                      </div>
+                      
+                      <div className="bg-black/60 p-6 rounded-3xl border border-neutral-800/80 backdrop-blur-md shadow-inner">
+                        <code className="text-amber-500 font-mono text-xl break-all transition-all hover:scale-105 inline-block">{artistUpiId}</code>
+                      </div>
                     </div>
-                    <span className="text-5xl font-light text-white tracking-tighter" style={{ fontFamily: 'ForestSmooth, serif' }}>
-                      ₹{Math.floor(totalAmount).toLocaleString()}
-                    </span>
-                  </div>
-               </div>
+                    
+                    <p className="text-[9px] text-neutral-600 font-black uppercase tracking-[0.3em] leading-loose max-w-xs mx-auto">
+                      Initiating this transfer will redirect you to your high-fidelity financial application for final authorization.
+                    </p>
 
-               <div className="bg-black/40 rounded-3xl p-6 border border-neutral-800/50 flex items-start gap-5">
-                  <div className="h-10 w-10 rounded-xl bg-neutral-900 border border-neutral-800 flex items-center justify-center flex-shrink-0">
-                    <Lock className="text-amber-600/60" size={18} />
-                  </div>
-                  <div>
-                    <h4 className="text-[10px] text-neutral-300 font-black uppercase tracking-widest mb-1">Encrypted Terminal</h4>
-                    <p className="text-[10px] text-neutral-500 font-medium leading-relaxed uppercase tracking-wider">Your fiscal identity is strictly protected by military-grade RSA protocol.</p>
-                  </div>
-               </div>
+                    <button
+                      type="submit"
+                      disabled={paying}
+                      className="w-full py-6 rounded-[1.5rem] bg-amber-600 text-white font-black text-[11px] tracking-[0.4em] uppercase hover:bg-amber-500 transition-all shadow-3xl shadow-amber-900/40 active:scale-[0.98] flex items-center justify-center gap-4 group"
+                    >
+                      {paying ? <Loader2 className="h-6 w-6 animate-spin" /> : <QrCode size={18} />}
+                      Authorize UPI Link
+                    </button>
+                  </motion.form>
+                )}
+              </AnimatePresence>
             </div>
-            
-            <div className="text-center">
-               <button 
-                  onClick={() => router.back()}
-                  className="text-[10px] text-neutral-600 uppercase tracking-[0.4em] font-black hover:text-white transition-colors py-4 px-8"
-               >
-                  ← Terminate Session
-               </button>
+
+            <div className="text-center space-y-4">
+               <p className="text-[9px] text-neutral-700 tracking-[0.3em] uppercase font-black">POWERED BY ARTISAN GLOBAL PLATFORM</p>
+               <div className="flex items-center justify-center gap-8 opacity-20 grayscale brightness-200">
+                  <div className="h-4 w-12 bg-neutral-600 rounded-sm" />
+                  <div className="h-4 w-12 bg-neutral-600 rounded-sm" />
+                  <div className="h-4 w-12 bg-neutral-600 rounded-sm" />
+               </div>
             </div>
           </div>
-
         </div>
-      </div>
+      </section>
+
     </main>
   )
 }
