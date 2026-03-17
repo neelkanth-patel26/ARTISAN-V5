@@ -302,7 +302,7 @@ export default function AdminTransactions() {
         </div>
 
         {/* Summary Metrics */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-4">
           <AnimatePresence mode="popLayout">
             {statCards.map((s, i) => (
               <motion.div
@@ -456,7 +456,7 @@ export default function AdminTransactions() {
           </div>
         ) : (
           <div className="space-y-10">
-            <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-3 gap-4 md:gap-8">
+            <div className="grid grid-cols-1 md:grid-cols-2 2xl:grid-cols-3 gap-8">
               {filtered.map((tx, i) => <TxCard key={tx.id} tx={tx} index={i} />)}
             </div>
 
