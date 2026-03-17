@@ -151,7 +151,7 @@ export default function AdminDashboard() {
           </div>
 
           {loading ? (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
               {[1, 2, 3, 4].map(i => (
                 <div key={i} className="h-44 rounded-[2.5rem] bg-white/[0.02] border border-white/[0.05] animate-pulse" />
               ))}
@@ -162,7 +162,7 @@ export default function AdminDashboard() {
                 className="space-y-16"
               >
                   {/* ── Metrics Nucleus ── */}
-                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 md:gap-6">
                     {statCards.map((s, i) => (
                       <motion.div
                         key={s.label}
