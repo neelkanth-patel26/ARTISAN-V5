@@ -181,7 +181,7 @@ export default function AdminArtworks() {
         </div>
 
         {/* Summary Metrics */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4">
           <AnimatePresence mode="popLayout">
             {statsCards.map((s, i) => (
               <motion.div
@@ -189,14 +189,14 @@ export default function AdminArtworks() {
                 initial={{ opacity: 0, scale: 0.95 }}
                 animate={{ opacity: 1, scale: 1 }}
                 transition={{ delay: i * 0.1, duration: 0.5 }}
-                className={`relative group rounded-[2rem] border ${s.border} ${s.glow} p-6 overflow-hidden`}
+                className={`relative group rounded-[1.5rem] md:rounded-[2rem] border ${s.border} ${s.glow} p-4 md:p-6 overflow-hidden`}
               >
-                <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
-                  <s.icon size={48} strokeWidth={1} />
+                <div className="absolute top-0 right-0 p-3 md:p-4 opacity-10 group-hover:opacity-20 transition-opacity">
+                  <s.icon size={32} md:size={48} strokeWidth={1} />
                 </div>
-                <div className="relative z-10 space-y-4">
-                  <p className="text-[10px] text-neutral-500 tracking-[0.25em] font-black uppercase" style={{ fontFamily: 'Oughter, serif' }}>{s.label}</p>
-                  <p className={`text-3xl lg:text-4xl font-light ${s.color} tracking-tighter`} style={{ fontFamily: 'ForestSmooth, serif' }}>
+                <div className="relative z-10 space-y-3 md:space-y-4">
+                  <p className="text-[9px] md:text-[10px] text-neutral-500 tracking-[0.25em] font-black uppercase" style={{ fontFamily: 'Oughter, serif' }}>{s.label}</p>
+                  <p className={`text-2xl md:text-3xl lg:text-4xl font-light ${s.color} tracking-tighter`} style={{ fontFamily: 'ForestSmooth, serif' }}>
                     {s.value}
                   </p>
                 </div>
@@ -263,29 +263,29 @@ export default function AdminArtworks() {
 
         {/* Content */}
         {loading ? (
-          <div className={`grid gap-8 ${viewMode === 'grid' ? 'grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4' : 'grid-cols-1'}`}>
+          <div className={`grid gap-4 md:gap-8 ${viewMode === 'grid' ? 'grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4' : 'grid-cols-1'}`}>
             {[...Array(8)].map((_, i) => (
-              <div key={i} className="h-[400px] rounded-[2rem] border border-white/[0.05] bg-white/[0.02] animate-pulse" />
+              <div key={i} className="h-[300px] md:h-[400px] rounded-[1.5rem] md:rounded-[2rem] border border-white/[0.05] bg-white/[0.02] animate-pulse" />
             ))}
           </div>
         ) : filteredArtworks.length === 0 ? (
-          <div className="rounded-[3rem] border border-white/[0.05] bg-white/[0.01] p-32 flex flex-col items-center gap-6 text-center">
-            <div className="w-20 h-20 rounded-[2rem] bg-orange-500/5 border border-orange-500/10 flex items-center justify-center">
-              <Image size={32} className="text-orange-500/20" strokeWidth={1} />
+          <div className="rounded-[2rem] md:rounded-[3rem] border border-white/[0.05] bg-white/[0.01] p-12 md:p-32 flex flex-col items-center gap-6 text-center">
+            <div className="w-16 md:w-20 h-16 md:h-20 rounded-[1.5rem] md:rounded-[2rem] bg-orange-500/5 border border-orange-500/10 flex items-center justify-center">
+              <Image size={24} md:size={32} className="text-orange-500/20" strokeWidth={1} />
             </div>
             <div className="space-y-2">
-              <h3 className="text-2xl font-light text-white" style={{ fontFamily: 'ForestSmooth, serif' }}>Empty Gallery</h3>
-              <p className="text-[13px] text-neutral-600 max-w-sm mx-auto">No artistic records match the current identification parameters.</p>
+              <h3 className="text-xl md:text-2xl font-light text-white" style={{ fontFamily: 'ForestSmooth, serif' }}>Empty Gallery</h3>
+              <p className="text-[12px] md:text-[13px] text-neutral-600 max-w-sm mx-auto">No artistic records match the current identification parameters.</p>
             </div>
             <button 
               onClick={() => { setSearchTerm(''); setFilter('all'); }}
-              className="mt-4 px-8 py-3 bg-white/[0.03] hover:bg-white/[0.08] border border-white/10 rounded-2xl text-[10px] text-white font-black tracking-[0.3em] uppercase transition-all"
+              className="mt-4 px-6 md:px-8 py-2 md:py-3 bg-white/[0.03] hover:bg-white/[0.08] border border-white/10 rounded-xl md:rounded-2xl text-[9px] md:text-[10px] text-white font-black tracking-[0.3em] uppercase transition-all"
             >
               Reset Sentinel
             </button>
           </div>
         ) : viewMode === 'grid' ? (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 md:gap-8">
             {filteredArtworks.map((artwork, i) => {
               const sc = statusConfig[artwork.status] || statusConfig.pending
               return (
@@ -294,10 +294,10 @@ export default function AdminArtworks() {
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: i * 0.04, duration: 0.6, ease: [0.23, 1, 0.32, 1] }}
-                  className="group relative rounded-[2.5rem] border border-white/[0.05] bg-white/[0.02] hover:bg-white/[0.04] transition-all duration-700 overflow-hidden flex flex-col shadow-xl hover:shadow-orange-500/5"
+                  className="group relative rounded-[1.5rem] md:rounded-[2.5rem] border border-white/[0.05] bg-white/[0.02] hover:bg-white/[0.04] transition-all duration-700 overflow-hidden flex flex-col shadow-xl hover:shadow-orange-500/5"
                 >
                   {/* Exhibit Visual */}
-                  <div className="relative h-64 overflow-hidden shrink-0">
+                  <div className="relative h-40 md:h-64 overflow-hidden shrink-0">
                     <img 
                       src={artwork.image_url} 
                       alt={artwork.title} 
@@ -306,58 +306,58 @@ export default function AdminArtworks() {
                     <div className="absolute inset-0 bg-gradient-to-t from-neutral-950 via-neutral-950/20 to-transparent opacity-80" />
                     
                     {/* Status Badge */}
-                    <div className="absolute top-4 right-4 z-20">
-                      <div className={`flex items-center gap-1.5 px-3 py-1 rounded-full backdrop-blur-md border text-[8px] font-black tracking-[0.2em] uppercase ${sc.badge}`}>
-                        <div className={`w-1 h-1 rounded-full ${sc.dot}`} />
+                    <div className="absolute top-3 md:top-4 right-3 md:right-4 z-20">
+                      <div className={`flex items-center gap-1 px-2 md:px-3 py-0.5 md:py-1 rounded-full backdrop-blur-md border text-[7px] md:text-[8px] font-black tracking-[0.2em] uppercase ${sc.badge}`}>
+                        <div className={`w-0.5 md:w-1 h-0.5 md:h-1 rounded-full ${sc.dot}`} />
                         {sc.label}
                       </div>
                     </div>
 
                     {/* Price Tag */}
-                    <div className="absolute bottom-4 left-6 z-20">
-                      <p className="text-2xl font-light text-white leading-none tracking-tight" style={{ fontFamily: 'ForestSmooth, serif' }}>
+                    <div className="absolute bottom-3 md:bottom-4 left-4 md:left-6 z-20">
+                      <p className="text-lg md:text-2xl font-light text-white leading-none tracking-tight" style={{ fontFamily: 'ForestSmooth, serif' }}>
                         ₹{Number(artwork.price).toLocaleString()}
                       </p>
                     </div>
                   </div>
 
-                  <div className="p-6 space-y-5 flex-1 flex flex-col">
+                  <div className="p-4 md:p-6 space-y-3 md:space-y-5 flex-1 flex flex-col">
                     <div className="space-y-1">
-                      <p className="text-[10px] text-orange-500/60 tracking-[0.2em] uppercase font-black" style={{ fontFamily: 'Oughter, serif' }}>{artwork.category?.name || 'Artistic Inquiry'}</p>
-                      <h3 className="text-[16px] font-light text-white truncate group-hover:text-orange-400 transition-colors" style={{ fontFamily: 'ForestSmooth, serif' }}>{artwork.title}</h3>
+                      <p className="text-[9px] md:text-[10px] text-orange-500/60 tracking-[0.2em] uppercase font-black" style={{ fontFamily: 'Oughter, serif' }}>{artwork.category?.name || 'Artistic Inquiry'}</p>
+                      <h3 className="text-[14px] md:text-[16px] font-light text-white truncate group-hover:text-orange-400 transition-colors" style={{ fontFamily: 'ForestSmooth, serif' }}>{artwork.title}</h3>
                     </div>
 
-                    <div className="flex items-center gap-3 p-3 bg-white/[0.02] rounded-2xl border border-white/[0.04]">
-                      <div className="w-8 h-8 rounded-full bg-orange-600/10 border border-orange-600/20 flex items-center justify-center shrink-0">
-                        <span className="text-[10px] font-black text-orange-400">{(artwork.artist?.full_name || 'U').charAt(0).toUpperCase()}</span>
+                    <div className="flex items-center gap-2 md:gap-3 p-2 md:p-3 bg-white/[0.02] rounded-xl md:rounded-2xl border border-white/[0.04]">
+                      <div className="w-6 md:w-8 h-6 md:h-8 rounded-lg md:rounded-full bg-orange-600/10 border border-orange-600/20 flex items-center justify-center shrink-0">
+                        <span className="text-[8px] md:text-[10px] font-black text-orange-400">{(artwork.artist?.full_name || 'U').charAt(0).toUpperCase()}</span>
                       </div>
                       <div className="min-w-0">
-                        <p className="text-[11px] text-white font-light truncate">{artwork.artist?.full_name || 'Anonymous Creator'}</p>
-                        <p className="text-[8px] text-neutral-600 tracking-widest uppercase font-black">Creator</p>
+                        <p className="text-[10px] md:text-[11px] text-white font-light truncate">{artwork.artist?.full_name || 'Anonymous Creator'}</p>
+                        <p className="text-[7px] md:text-[8px] text-neutral-600 tracking-widest uppercase font-black">Creator</p>
                       </div>
                     </div>
 
-                    <div className="mt-auto pt-4 flex gap-2">
+                    <div className="mt-auto pt-2 md:pt-4 flex flex-col gap-2">
                       {artwork.status === 'pending' ? (
-                        <>
-                          <button onClick={() => handleApprove(artwork.id)} className="flex-1 py-3 rounded-xl bg-emerald-500/5 hover:bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-[9px] font-black tracking-widest uppercase transition-all flex items-center justify-center gap-2">
-                            <CheckCircle size={12} /> Approve
+                        <div className="flex gap-2">
+                          <button onClick={() => handleApprove(artwork.id)} className="flex-1 py-2 md:py-3 rounded-lg md:rounded-xl bg-emerald-500/5 hover:bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-[8px] md:text-[9px] font-black tracking-widest uppercase transition-all flex items-center justify-center gap-1">
+                            <CheckCircle size={10} md:size={12} /> Approve
                           </button>
-                          <button onClick={() => handleReject(artwork.id)} className="flex-1 py-3 rounded-xl bg-rose-500/5 hover:bg-rose-500/10 border border-rose-500/20 text-rose-400 text-[9px] font-black tracking-widest uppercase transition-all flex items-center justify-center gap-2">
-                            <XCircle size={12} /> Reject
+                          <button onClick={() => handleReject(artwork.id)} className="flex-1 py-2 md:py-3 rounded-lg md:rounded-xl bg-rose-500/5 hover:bg-rose-500/10 border border-rose-500/20 text-rose-400 text-[8px] md:text-[9px] font-black tracking-widest uppercase transition-all flex items-center justify-center gap-1">
+                            <XCircle size={10} md:size={12} /> Reject
                           </button>
-                        </>
+                        </div>
                       ) : (
-                        <button onClick={() => setViewingArtwork(artwork)} className="flex-1 py-3 rounded-xl bg-white/[0.03] hover:bg-white/[0.08] border border-white/5 text-white text-[9px] font-black tracking-widest uppercase transition-all flex items-center justify-center gap-2">
-                          <Eye size={12} strokeWidth={1.5} /> Inspect
+                        <button onClick={() => setViewingArtwork(artwork)} className="w-full py-2 md:py-3 rounded-lg md:rounded-xl bg-white/[0.03] hover:bg-white/[0.08] border border-white/5 text-white text-[8px] md:text-[9px] font-black tracking-widest uppercase transition-all flex items-center justify-center gap-1">
+                          <Eye size={10} md:size={12} strokeWidth={1.5} /> Inspect
                         </button>
                       )}
-                      <div className="flex gap-2">
-                        <button onClick={() => handleEdit(artwork)} className="p-3 rounded-xl bg-white/[0.03] hover:bg-white/[0.08] border border-white/5 text-neutral-400 hover:text-white transition-all">
-                          <Edit size={14} />
+                      <div className="flex gap-1 md:gap-2">
+                        <button onClick={() => handleEdit(artwork)} className="flex-1 p-2 md:p-3 rounded-lg md:rounded-xl bg-white/[0.03] hover:bg-white/[0.08] border border-white/5 text-neutral-400 hover:text-white transition-all">
+                          <Edit size={12} md:size={14} />
                         </button>
-                        <button onClick={() => handleDelete(artwork.id)} className="p-3 rounded-xl bg-white/[0.03] hover:bg-rose-500/10 border border-white/5 text-neutral-600 hover:text-rose-400 transition-all">
-                          <Trash2 size={14} />
+                        <button onClick={() => handleDelete(artwork.id)} className="flex-1 p-2 md:p-3 rounded-lg md:rounded-xl bg-white/[0.03] hover:bg-rose-500/10 border border-white/5 text-neutral-600 hover:text-rose-400 transition-all">
+                          <Trash2 size={12} md:size={14} />
                         </button>
                       </div>
                     </div>
