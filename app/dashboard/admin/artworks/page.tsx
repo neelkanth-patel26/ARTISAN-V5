@@ -192,7 +192,7 @@ export default function AdminArtworks() {
                 className={`relative group rounded-[1.5rem] md:rounded-[2rem] border ${s.border} ${s.glow} p-4 md:p-6 overflow-hidden`}
               >
                 <div className="absolute top-0 right-0 p-3 md:p-4 opacity-10 group-hover:opacity-20 transition-opacity">
-                  <s.icon size={32} md:size={48} strokeWidth={1} />
+                  <s.icon size={40} strokeWidth={1} />
                 </div>
                 <div className="relative z-10 space-y-3 md:space-y-4">
                   <p className="text-[9px] md:text-[10px] text-neutral-500 tracking-[0.25em] font-black uppercase" style={{ fontFamily: 'Oughter, serif' }}>{s.label}</p>
@@ -271,7 +271,7 @@ export default function AdminArtworks() {
         ) : filteredArtworks.length === 0 ? (
           <div className="rounded-[2rem] md:rounded-[3rem] border border-white/[0.05] bg-white/[0.01] p-12 md:p-32 flex flex-col items-center gap-6 text-center">
             <div className="w-16 md:w-20 h-16 md:h-20 rounded-[1.5rem] md:rounded-[2rem] bg-orange-500/5 border border-orange-500/10 flex items-center justify-center">
-              <Image size={24} md:size={32} className="text-orange-500/20" strokeWidth={1} />
+              <Image size={28} className="text-orange-500/20" strokeWidth={1} />
             </div>
             <div className="space-y-2">
               <h3 className="text-xl md:text-2xl font-light text-white" style={{ fontFamily: 'ForestSmooth, serif' }}>Empty Gallery</h3>
@@ -341,23 +341,23 @@ export default function AdminArtworks() {
                       {artwork.status === 'pending' ? (
                         <div className="flex gap-2">
                           <button onClick={() => handleApprove(artwork.id)} className="flex-1 py-2 md:py-3 rounded-lg md:rounded-xl bg-emerald-500/5 hover:bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-[8px] md:text-[9px] font-black tracking-widest uppercase transition-all flex items-center justify-center gap-1">
-                            <CheckCircle size={10} md:size={12} /> Approve
+                            <CheckCircle size={11} /> Approve
                           </button>
                           <button onClick={() => handleReject(artwork.id)} className="flex-1 py-2 md:py-3 rounded-lg md:rounded-xl bg-rose-500/5 hover:bg-rose-500/10 border border-rose-500/20 text-rose-400 text-[8px] md:text-[9px] font-black tracking-widest uppercase transition-all flex items-center justify-center gap-1">
-                            <XCircle size={10} md:size={12} /> Reject
+                            <XCircle size={11} /> Reject
                           </button>
                         </div>
                       ) : (
                         <button onClick={() => setViewingArtwork(artwork)} className="w-full py-2 md:py-3 rounded-lg md:rounded-xl bg-white/[0.03] hover:bg-white/[0.08] border border-white/5 text-white text-[8px] md:text-[9px] font-black tracking-widest uppercase transition-all flex items-center justify-center gap-1">
-                          <Eye size={10} md:size={12} strokeWidth={1.5} /> Inspect
+                          <Eye size={11} strokeWidth={1.5} /> Inspect
                         </button>
                       )}
                       <div className="flex gap-1 md:gap-2">
                         <button onClick={() => handleEdit(artwork)} className="flex-1 p-2 md:p-3 rounded-lg md:rounded-xl bg-white/[0.03] hover:bg-white/[0.08] border border-white/5 text-neutral-400 hover:text-white transition-all">
-                          <Edit size={12} md:size={14} />
+                          <Edit size={13} />
                         </button>
                         <button onClick={() => handleDelete(artwork.id)} className="flex-1 p-2 md:p-3 rounded-lg md:rounded-xl bg-white/[0.03] hover:bg-rose-500/10 border border-white/5 text-neutral-600 hover:text-rose-400 transition-all">
-                          <Trash2 size={12} md:size={14} />
+                          <Trash2 size={13} />
                         </button>
                       </div>
                     </div>
