@@ -125,10 +125,10 @@ export function ArtworkCard({ artwork, initialLiked = false, onLike, onOpen }: A
     <>
       <div 
         onClick={handleCardClick}
-        className="group relative bg-neutral-900 border border-white/5 rounded-[2.5rem] overflow-hidden transition-all duration-700 hover:border-amber-600/30 hover:shadow-[0_20px_60px_-15px_rgba(0,0,0,0.5),0_0_40px_-10px_rgba(217,119,6,0.1)] hover:-translate-y-2 cursor-pointer"
+        className="group relative bg-neutral-900 border border-white/5 rounded-[2.5rem] overflow-hidden transition-all duration-700 hover:border-amber-600/30 hover:shadow-[0_20px_60px_-15px_rgba(0,0,0,0.5),0_0_40px_-10px_rgba(217,119,6,0.1)] hover:-translate-y-2 cursor-pointer will-change-transform"
       >
         {/* Aspect Ratio Container */}
-        <div className="relative aspect-[3/4] overflow-hidden bg-neutral-950">
+        <div className="relative aspect-[3/4] overflow-hidden bg-neutral-950" style={{ borderRadius: '2.5rem', clipPath: 'inset(0 round 2.5rem)' }}>
           {/* Luxury Placeholder Animation */}
           <AnimatePresence>
             {!imageLoaded && (
@@ -177,7 +177,7 @@ export function ArtworkCard({ artwork, initialLiked = false, onLike, onOpen }: A
           <img
             src={artwork.image || fallbackImage}
             alt={artwork.title}
-            className={`w-full h-full object-cover grayscale-[0.1] contrast-[1.05] transition-all duration-1000 group-hover:scale-110 group-hover:grayscale-0 ${imageLoaded ? 'opacity-100' : 'opacity-0'}`}
+            className={`w-full h-full object-cover grayscale-[0.1] contrast-[1.05] transition-all duration-1000 group-hover:grayscale-0 ${imageLoaded ? 'opacity-100' : 'opacity-0'}`}
             onLoad={() => setImageLoaded(true)}
             onError={(e) => {
               const img = e.target as HTMLImageElement;
@@ -187,10 +187,10 @@ export function ArtworkCard({ artwork, initialLiked = false, onLike, onOpen }: A
           />
           
           {/* Subtle Permanent Overlay for Legibility */}
-          <div className="absolute inset-0 bg-gradient-to-t from-black via-black/20 to-transparent opacity-60" />
+          <div className="absolute inset-0 bg-gradient-to-t from-black via-black/20 to-transparent opacity-60 pointer-events-none" />
 
           {/* Action Row - Permanently Visible for Accessibility */}
-          <div className="absolute top-6 right-6 flex flex-col gap-3 z-20">
+          <div className="absolute top-6 right-6 flex flex-col gap-3 z-20 pointer-events-auto">
             <button
               onClick={handleLike}
               disabled={isLiking}
@@ -215,36 +215,36 @@ export function ArtworkCard({ artwork, initialLiked = false, onLike, onOpen }: A
               <Download size={18} />
             </button>
           </div>
+        </div>
 
-          {/* Floating Plaque Info Overlay */}
-          <div className="absolute inset-x-0 bottom-0 p-8 z-10 space-y-4">
-             {/* Stronger glass overlay for high-contrast visibility */}
-             <div className="absolute inset-0 bg-gradient-to-t from-black via-black/80 to-transparent -z-10" />
-             
-             <div className="space-y-1 relative">
-                <h3 className="text-2xl sm:text-3xl font-light text-white tracking-tight" style={{ fontFamily: 'ForestSmooth, serif' }}>
-                  {artwork.title}
-                </h3>
-                <p className="text-neutral-400 text-[10px] tracking-[0.2em] uppercase font-black opacity-80">
-                   by {artwork.artist}
-                </p>
-             </div>
+        {/* Floating Plaque Info Overlay */}
+        <div className="absolute inset-x-0 bottom-0 p-8 z-10 space-y-4 pointer-events-none overflow-hidden">
+           {/* Stronger glass overlay for high-contrast visibility */}
+           <div className="absolute inset-0 bg-gradient-to-t from-black via-black/80 to-transparent -z-10" />
+           
+           <div className="space-y-1 relative">
+              <h3 className="text-2xl sm:text-3xl font-light text-white tracking-tight" style={{ fontFamily: 'ForestSmooth, serif' }}>
+                {artwork.title}
+              </h3>
+              <p className="text-neutral-400 text-[10px] tracking-[0.2em] uppercase font-black opacity-80">
+                 by {artwork.artist}
+              </p>
+           </div>
 
-             <div className="flex items-center justify-between pt-4 border-t border-white/10">
-                <div className="space-y-0.5">
-                   <p className="text-xl font-medium text-amber-600">₹{(artwork.price || 0).toLocaleString()}</p>
-                   <p className="text-[8px] text-neutral-500 uppercase tracking-widest font-black">{artwork.category}</p>
-                </div>
-                
-                <button
-                  onClick={handleBuyClick}
-                  className="px-6 py-2.5 rounded-2xl bg-white text-black hover:bg-neutral-200 transition-all text-[10px] font-black uppercase tracking-widest flex items-center gap-2 shadow-xl"
-                >
-                  <ShoppingCart size={14} />
-                  Acquire
-                </button>
-             </div>
-          </div>
+           <div className="flex items-center justify-between pt-4 border-t border-white/10">
+              <div className="space-y-0.5">
+                 <p className="text-xl font-medium text-amber-600">₹{(artwork.price || 0).toLocaleString()}</p>
+                 <p className="text-[8px] text-neutral-500 uppercase tracking-widest font-black">{artwork.category}</p>
+              </div>
+              
+              <button
+                onClick={handleBuyClick}
+                className="px-6 py-2.5 rounded-2xl bg-white text-black hover:bg-neutral-200 transition-all text-[10px] font-black uppercase tracking-widest flex items-center gap-2 shadow-xl pointer-events-auto"
+              >
+                <ShoppingCart size={14} />
+                Acquire
+              </button>
+           </div>
         </div>
       </div>
 

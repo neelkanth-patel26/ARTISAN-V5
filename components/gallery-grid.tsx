@@ -48,13 +48,14 @@ export function GalleryGrid({ selectedCategory, searchQuery, hidden }: GalleryGr
               Showing {filteredArtworks.length} {filteredArtworks.length === 1 ? 'artwork' : 'artworks'}
             </p>
           </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 overflow-hidden">
             {filteredArtworks.map((artwork, i) => (
               <motion.div
                 key={artwork.id}
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: i * 0.05, duration: 0.5 }}
+                className="overflow-hidden"
               >
                 <ArtworkCard artwork={artwork} />
               </motion.div>
