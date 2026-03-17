@@ -122,7 +122,7 @@ function SortableGridItem({ artwork, updateArtwork, removeArtwork }: any) {
           />
         </div>
 
-        <div className="grid grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div className="space-y-2">
             <label className="text-[8px] uppercase tracking-[0.4em] font-black text-neutral-600 px-1" style={{ fontFamily: 'Oughter, serif' }}>Value (₹)</label>
             <div className="relative">
@@ -163,7 +163,7 @@ function SortableGridItem({ artwork, updateArtwork, removeArtwork }: any) {
           />
         </div>
 
-        <div className="grid grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div className="space-y-2">
             <label className="text-[8px] uppercase tracking-[0.4em] font-black text-neutral-600 px-1" style={{ fontFamily: 'Oughter, serif' }}>Medium</label>
             <input 
@@ -187,8 +187,7 @@ function SortableGridItem({ artwork, updateArtwork, removeArtwork }: any) {
             />
           </div>
         </div>
-
-        <div className="grid grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div className="space-y-2">
             <label className="text-[8px] uppercase tracking-[0.4em] font-black text-neutral-600 px-1" style={{ fontFamily: 'Oughter, serif' }}>Origin Epoch</label>
             <input 
@@ -238,7 +237,7 @@ function SortableListItem({ artwork, updateArtwork, removeArtwork }: any) {
       style={style} 
       initial={{ opacity: 0, x: -10 }}
       animate={{ opacity: 1, x: 0 }}
-      className={`group relative rounded-3xl bg-white/[0.02] border border-white/[0.05] p-6 hover:bg-white/[0.04] hover:border-orange-500/20 transition-all duration-500 flex items-center gap-8 ${isDragging ? 'z-50 shadow-2xl' : ''}`}
+      className={`group relative rounded-3xl bg-white/[0.02] border border-white/[0.05] p-6 hover:bg-white/[0.04] hover:border-orange-500/20 transition-all duration-500 flex flex-col sm:flex-row items-start sm:items-center gap-6 sm:gap-8 ${isDragging ? 'z-50 shadow-2xl' : ''}`}
     >
       <div {...listeners} {...attributes} className="p-2 cursor-grab active:cursor-grabbing text-neutral-700 hover:text-orange-400 transition-colors">
         <GripVertical size={20} strokeWidth={1.5} />
@@ -255,8 +254,8 @@ function SortableListItem({ artwork, updateArtwork, removeArtwork }: any) {
         )}
       </div>
 
-      <div className="flex-1 space-y-4">
-        <div className="grid grid-cols-4 gap-6">
+      <div className="flex-1 w-full space-y-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
           <div className="space-y-1">
             <p className="text-[7px] uppercase tracking-[0.4em] font-black text-neutral-600" style={{ fontFamily: 'Oughter, serif' }}>Designation</p>
             <input 
@@ -353,7 +352,7 @@ function SortableListItem({ artwork, updateArtwork, removeArtwork }: any) {
         </div>
       </div>
 
-      <div className="flex items-center gap-4 pl-4 border-l border-white/[0.05]">
+      <div className="flex items-center gap-4 pl-0 sm:pl-4 border-l-0 sm:border-l border-white/[0.05] w-full sm:w-auto justify-end">
         {artwork.status === 'pending' && (
           <button onClick={() => removeArtwork(artwork.id)} className="p-3 rounded-2xl bg-white/[0.02] border border-white/[0.05] text-neutral-600 hover:text-rose-400 hover:border-rose-500/20 transition-all">
             <Trash2 size={18} strokeWidth={1.5} />
@@ -498,7 +497,7 @@ export function BulkUpload({ artistId, onComplete }: { artistId: string; onCompl
       {!uploading && (
         <div 
           {...getRootProps()} 
-          className={`group relative border-2 border-dashed rounded-[3.5rem] p-20 text-center cursor-pointer transition-all duration-1000 overflow-hidden ${
+          className={`group relative border-2 border-dashed rounded-[3.5rem] p-8 sm:p-20 text-center cursor-pointer transition-all duration-1000 overflow-hidden ${
             isDragActive 
               ? 'border-orange-500 bg-orange-500/5' 
               : 'border-white/[0.05] hover:border-orange-500/30 bg-white/[0.01]'
@@ -523,7 +522,7 @@ export function BulkUpload({ artistId, onComplete }: { artistId: string; onCompl
       {/* ── Registry Inventory View ── */}
       {artworks.length > 0 && (
         <div className="space-y-10">
-          <div className="flex flex-col md:flex-row md:items-end justify-between gap-8 px-4">
+          <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-8 px-4">
             <div className="space-y-2">
               <div className="flex items-center gap-3">
                  <div className="p-1 px-3 rounded-full bg-orange-500/10 border border-orange-500/20">
@@ -537,24 +536,24 @@ export function BulkUpload({ artistId, onComplete }: { artistId: string; onCompl
               </h3>
               <p className="text-[10px] text-neutral-600 uppercase tracking-widest flex items-center gap-2" style={{ fontFamily: 'Oughter, serif' }}>
                 <GripVertical size={12} className="text-orange-500/40" />
-                Orchestrate placement through tactical displacement
+                Orchestrate placement
               </p>
             </div>
 
-            <div className="flex items-center gap-6">
-              {/* Aesthetic Selector */}
-              <div className="flex bg-white/[0.02] border border-white/[0.05] rounded-2xl p-1.5 backdrop-blur-2xl">
+            <div className="flex flex-wrap items-center gap-4 sm:gap-6">
+              {/* Aesthetic Selector - Desktop Only */}
+              <div className="hidden lg:flex bg-white/[0.02] border border-white/[0.05] rounded-2xl p-1.5 backdrop-blur-2xl">
                 <button 
                   onClick={() => setViewMode('grid')} 
-                  className={`p-3 rounded-xl transition-all duration-500 ${viewMode === 'grid' ? 'bg-orange-600/20 text-orange-400 border border-orange-500/20' : 'text-neutral-600 hover:text-neutral-400'}`}
+                  className={`p-2.5 sm:p-3 rounded-xl transition-all duration-500 ${viewMode === 'grid' ? 'bg-orange-600/20 text-orange-400 border border-orange-500/20' : 'text-neutral-600 hover:text-neutral-400'}`}
                 >
-                  <Grid3x3 size={18} strokeWidth={1.5} />
+                  <Grid3x3 className="w-4 h-4 sm:w-[18px] sm:h-[18px]" strokeWidth={1.5} />
                 </button>
                 <button 
                   onClick={() => setViewMode('list')} 
-                  className={`p-3 rounded-xl transition-all duration-500 ${viewMode === 'list' ? 'bg-orange-600/20 text-orange-400 border border-orange-500/20' : 'text-neutral-600 hover:text-neutral-400'}`}
+                  className={`p-2.5 sm:p-3 rounded-xl transition-all duration-500 ${viewMode === 'list' ? 'bg-orange-600/20 text-orange-400 border border-orange-500/20' : 'text-neutral-600 hover:text-neutral-400'}`}
                 >
-                  <List size={18} strokeWidth={1.5} />
+                  <List className="w-4 h-4 sm:w-[18px] sm:h-[18px]" strokeWidth={1.5} />
                 </button>
               </div>
 
@@ -562,13 +561,13 @@ export function BulkUpload({ artistId, onComplete }: { artistId: string; onCompl
                 <button 
                   onClick={uploadAll} 
                   disabled={!allValid} 
-                  className="group relative px-10 py-4 bg-neutral-900 border border-white/[0.05] rounded-[2rem] overflow-hidden transition-all duration-700 hover:border-orange-500/40 hover:translate-y-[-4px] disabled:opacity-20 disabled:hover:translate-y-0 disabled:cursor-not-allowed"
+                  className="group relative flex-1 sm:flex-none px-6 sm:px-10 py-3.5 sm:py-4 bg-neutral-900 border border-white/[0.05] rounded-[1.5rem] sm:rounded-[2rem] overflow-hidden transition-all duration-700 hover:border-orange-500/40 hover:translate-y-[-4px] disabled:opacity-20 disabled:hover:translate-y-0 disabled:cursor-not-allowed"
                 >
-                  <div className="relative z-10 flex items-center gap-4">
-                     <div className="p-2 rounded-xl bg-orange-500/10 text-orange-400 group-hover:bg-orange-500 group-hover:text-black transition-all">
-                       <Plus size={16} />
+                  <div className="relative z-10 flex items-center justify-center gap-3 sm:gap-4">
+                     <div className="p-1.5 sm:p-2 rounded-xl bg-orange-500/10 text-orange-400 group-hover:bg-orange-500 group-hover:text-black transition-all">
+                       <Plus className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
                      </div>
-                     <span className="text-[10px] font-black uppercase tracking-[0.3em] text-white" style={{ fontFamily: 'Oughter, serif' }}>Authenticate Succession</span>
+                     <span className="text-[9px] sm:text-[10px] font-black uppercase tracking-[0.2em] sm:tracking-[0.3em] text-white" style={{ fontFamily: 'Oughter, serif' }}>Authenticate Succession</span>
                   </div>
                 </button>
               )}
@@ -579,14 +578,18 @@ export function BulkUpload({ artistId, onComplete }: { artistId: string; onCompl
           <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
             <SortableContext items={artworks.map(a => a.id)} strategy={viewMode === 'grid' ? rectSortingStrategy : verticalListSortingStrategy}>
               <div className="relative min-h-[400px]">
-                {viewMode === 'grid' ? (
+                {/* Always show grid on mobile/tablet, respect viewMode on desktop */}
+                <div className={viewMode === 'grid' ? 'block' : 'lg:hidden'}>
                   <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
                     {artworks.map((artwork) => (
                       <SortableGridItem key={artwork.id} artwork={artwork} updateArtwork={updateArtwork} removeArtwork={removeArtwork} />
                     ))}
                   </div>
-                ) : (
-                  <div className="space-y-4">
+                </div>
+                
+                {/* List view only on desktop if selected */}
+                {viewMode === 'list' && (
+                  <div className="hidden lg:block space-y-4">
                     {artworks.map((artwork) => (
                       <SortableListItem key={artwork.id} artwork={artwork} updateArtwork={updateArtwork} removeArtwork={removeArtwork} />
                     ))}

@@ -324,8 +324,8 @@ export default function ArtworkManagement() {
               className="relative w-full max-w-5xl rounded-[2.5rem] border border-white/[0.08] bg-neutral-950 overflow-hidden shadow-[0_60px_120px_-20px_rgba(0,0,0,0.9)]"
             >
               <div className="flex flex-col lg:flex-row" style={{ maxHeight: '88vh' }}>
-                {/* Left — Image Preview */}
-                <div className="relative w-full lg:w-[380px] shrink-0 bg-neutral-900 overflow-hidden" style={{ minHeight: 260 }}>
+                {/* Left — Image Preview (Hidden on Mobile) */}
+                <div className="relative hidden lg:block lg:w-[380px] shrink-0 bg-neutral-900 overflow-hidden" style={{ minHeight: 260 }}>
                   <img
                     src={editingArtwork.image_url}
                     alt={editingArtwork.title}

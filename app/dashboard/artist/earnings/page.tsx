@@ -95,7 +95,7 @@ export default function ArtistEarnings() {
                       <p className="text-[9px] tracking-[0.4em] uppercase font-black text-neutral-600 group-hover:text-neutral-400 transition-colors mb-2" style={{ fontFamily: 'Oughter, serif' }}>
                         {stat.label}
                       </p>
-                      <p className="text-3xl font-light text-white leading-none" style={{ fontFamily: 'ForestSmooth, serif' }}>
+                      <p className="text-3xl font-light text-white leading-none">
                         {stat.value}
                       </p>
                     </div>
@@ -115,7 +115,7 @@ export default function ArtistEarnings() {
                   {upiPending > 0 && (
                     <div className="px-4 py-1.5 rounded-full bg-orange-500/10 border border-orange-500/20 flex items-center gap-2">
                       <div className="w-1.5 h-1.5 rounded-full bg-orange-500 animate-pulse" />
-                      <span className="text-[9px] text-orange-400 font-black uppercase tracking-widest" style={{ fontFamily: 'Oughter, serif' }}>₹{upiPending.toFixed(0)} pending</span>
+                      <span className="text-[9px] text-orange-400 font-black uppercase tracking-widest">₹{upiPending.toFixed(0)} pending</span>
                     </div>
                   )}
                 </div>
@@ -163,10 +163,10 @@ export default function ArtistEarnings() {
 
                             {/* Earnings */}
                             <div className="text-right">
-                              <p className="text-3xl font-light text-white group-hover:text-orange-400 transition-colors duration-700 leading-none" style={{ fontFamily: 'ForestSmooth, serif' }}>
+                              <p className="text-3xl font-light text-white group-hover:text-orange-400 transition-colors duration-700 leading-none">
                                 +₹{Number(tx.artist_earnings).toLocaleString()}
                               </p>
-                              <p className="text-[9px] text-neutral-600 uppercase tracking-widest font-black mt-1" style={{ fontFamily: 'Oughter, serif' }}>
+                              <p className="text-[9px] text-neutral-600 uppercase tracking-widest font-black mt-1">
                                 gross ₹{Number(tx.amount).toLocaleString()}
                               </p>
                             </div>
@@ -248,7 +248,7 @@ export default function ArtistEarnings() {
                                       ].map(row => (
                                         <div key={row.label} className="flex items-center justify-between py-3 border-b border-white/[0.03] last:border-0">
                                           <span className="text-[9px] text-neutral-600 font-black uppercase tracking-widest" style={{ fontFamily: 'Oughter, serif' }}>{row.label}</span>
-                                          <span className={`text-[9px] font-black uppercase tracking-widest ${row.highlight ? 'text-emerald-400 flex items-center gap-1' : 'text-neutral-300'}`} style={{ fontFamily: 'Oughter, serif' }}>
+                                          <span className={`text-[9px] font-black uppercase tracking-widest ${row.highlight ? 'text-emerald-400 flex items-center gap-1' : 'text-neutral-300'}`}>
                                             {row.highlight && <ShieldCheck size={10} />}{row.value}
                                           </span>
                                         </div>

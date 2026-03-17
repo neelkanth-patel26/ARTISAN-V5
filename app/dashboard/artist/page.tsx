@@ -141,7 +141,7 @@ export default function ArtistDashboard() {
               </div>
 
               {/* ── Secondary Curatorial Vectors ── */}
-              <div className="grid grid-cols-2 md:grid-cols-3 gap-6">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
                 {[
                   { label: 'Approved Protocol', value: stats.approved, icon: Palette, color: 'text-emerald-400' },
                   { label: 'Pending Authentication', value: stats.pending, icon: Clock, color: 'text-amber-400' },
