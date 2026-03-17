@@ -267,7 +267,7 @@ export default function AdminAnalytics() {
             </div>
 
             {/* Metrics Nucleus: Master KPIs */}
-            <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4">
+            <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4">
               {[
                 { label: 'Revenue Vector', value: `₹${stats.totalRevenue.toLocaleString()}`, icon: DollarSign, color: 'text-orange-400' },
                 { label: 'Platform Yield', value: `₹${stats.platformFees.toLocaleString()}`, icon: TrendingUp, color: 'text-emerald-400' },
@@ -292,7 +292,7 @@ export default function AdminAnalytics() {
           </div>
 
           {/* ── Metrics Nucleus: Secondary Vectors ── */}
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 md:gap-4">
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3 md:gap-4">
             {[
               { label: 'Purchases', value: stats.purchases, icon: ShoppingBag, color: 'text-blue-400' },
               { label: 'Supports', value: stats.supports, icon: Heart, color: 'text-pink-400' },
