@@ -147,7 +147,7 @@ export default function AdminArtistPerformance() {
           </div>
 
           {/* Top Metrics Ensemble */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div className="grid grid-cols-2 md:grid-cols-3 gap-6">
             {[
               { label: 'Ecosystem Revenue', value: `₹${topStats.totalRevenue.toLocaleString()}`, icon: DollarSign, trend: '+12.5%', color: 'text-emerald-400' },
               { label: 'Avg Performance', value: topStats.avgPerformance, icon: Zap, trend: '+4.2%', color: 'text-orange-400' },
