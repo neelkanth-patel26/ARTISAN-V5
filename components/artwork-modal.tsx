@@ -222,14 +222,12 @@ export function ArtworkModal({ artwork, onClose, onShowAuthPrompt }: ArtworkModa
         transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
         style={{ maxHeight: viewportHeight ? `${viewportHeight * 0.95}px` : '95vh' }}
         className={`relative bg-neutral-950 border border-white/[0.07] rounded-t-[2.5rem] sm:rounded-[2.5rem] w-full overflow-hidden shadow-[0_60px_120px_-20px_rgba(0,0,0,1)] flex flex-col md:flex-row ${
-          orientation === 'portrait' ? 'max-w-4xl' : 'max-w-[92vw] 2xl:max-w-[1500px]'
+          orientation === 'portrait' ? 'max-w-5xl' : 'max-w-[98vw] 2xl:max-w-[1800px]'
         }`}
         onClick={e => e.stopPropagation()}
       >
         {/* ── Left: Image Panel ── */}
-        <div className={`relative flex items-center justify-center overflow-hidden shrink-0 bg-neutral-900/30 ${
-          orientation === 'portrait' ? 'h-[50vw] min-h-[220px] sm:h-auto md:w-[380px]' : 'h-[55vw] min-h-[220px] sm:h-auto md:flex-1'
-        }`}>
+        <div className="relative hidden md:flex items-center justify-center overflow-hidden shrink-0 bg-black/60 md:w-1/2">
           <div className="absolute inset-0 bg-neutral-900/20 backdrop-blur-3xl pointer-events-none" />
 
           {/* Subtle orange glow on image */}
@@ -239,13 +237,16 @@ export function ArtworkModal({ artwork, onClose, onShowAuthPrompt }: ArtworkModa
             initial={{ opacity: 0, scale: 0.96 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ delay: 0.15, duration: 0.8 }}
-            className="relative w-full h-full flex items-center justify-center p-8 md:p-12"
+            className={`relative flex items-center justify-center ${
+              orientation === 'portrait' ? 'w-[95%] h-[95%]' : 'w-full h-full'
+            }`}
           >
             <img
               src={artwork.image}
               alt={artwork.title}
               onLoad={handleImageLoad}
-              className="max-w-full max-h-full w-auto h-auto object-contain rounded-[1.5rem] shadow-[0_40px_100px_-20px_rgba(0,0,0,0.9)] block"
+              onContextMenu={e => e.preventDefault()}
+              className="w-full h-full object-contain rounded-[2rem] shadow-[0_40px_100px_-20px_rgba(0,0,0,0.9)] block"
               onError={e => { (e.target as HTMLImageElement).style.display = 'none' }}
             />
           </motion.div>
@@ -260,7 +261,7 @@ export function ArtworkModal({ artwork, onClose, onShowAuthPrompt }: ArtworkModa
         </div>
 
         {/* ── Right: Info Panel ── */}
-        <div className="relative flex-1 flex flex-col min-h-0 md:border-l border-white/[0.05] md:w-[460px] lg:w-[520px] 2xl:w-[560px]">
+        <div className="relative flex-1 flex flex-col min-h-0 md:border-l border-white/[0.05] md:w-1/2">
           <div className="flex-1 overflow-y-auto scrollbar-hide pb-28 sm:pb-6">
             <div className="p-7 md:p-10 space-y-8">
 
@@ -320,7 +321,7 @@ export function ArtworkModal({ artwork, onClose, onShowAuthPrompt }: ArtworkModa
 
               {/* Description */}
               {artwork.description && (
-                <p className="text-[14px] text-neutral-400 leading-relaxed font-light italic" style={{ fontFamily: 'ForestSmooth, serif' }}>
+                <p className="text-[14px] text-neutral-400 leading-relaxed font-normal">
                   {artwork.description}
                 </p>
               )}
