@@ -118,7 +118,7 @@ export function DashboardLayout({ children, navItems, role }: DashboardLayoutPro
               className="group flex items-center gap-4 rounded-2xl px-3.5 py-3 text-neutral-600 hover:text-neutral-200 hover:bg-white/[0.02] border border-transparent hover:border-white/[0.05] transition-all duration-500"
             >
               <Home size={18} strokeWidth={1.5} className="shrink-0 transition-transform duration-500 group-hover:scale-110" />
-              <span className="text-[13px] font-light tracking-[0.2em] uppercase" style={{ fontFamily: 'Oughter, serif' }}>Home Portal</span>
+              <span className="text-[13px] font-light tracking-[0.2em] uppercase" style={{ fontFamily: 'Oughter, serif' }}>Home</span>
             </Link>
             
             <button
@@ -126,7 +126,7 @@ export function DashboardLayout({ children, navItems, role }: DashboardLayoutPro
               className="group flex items-center gap-4 rounded-2xl px-3.5 py-3 text-neutral-600 hover:text-rose-400 hover:bg-rose-500/[0.03] border border-transparent hover:border-rose-500/10 transition-all duration-500"
             >
               <LogOut size={18} strokeWidth={1.5} className="shrink-0 transition-transform duration-500 group-hover:scale-110" />
-              <span className="text-[13px] font-light tracking-[0.2em] uppercase" style={{ fontFamily: 'Oughter, serif' }}>Terminate</span>
+              <span className="text-[13px] font-light tracking-[0.2em] uppercase" style={{ fontFamily: 'Oughter, serif' }}>Logout</span>
             </button>
           </div>
 
@@ -234,7 +234,7 @@ export function DashboardLayout({ children, navItems, role }: DashboardLayoutPro
                   className="flex items-center gap-4 text-neutral-500 hover:text-white transition-all"
                 >
                   <Home size={18} />
-                  <span className="text-[12px] font-light tracking-[0.2em] uppercase" style={{ fontFamily: 'Oughter, serif' }}>Return Home</span>
+                  <span className="text-[12px] font-light tracking-[0.2em] uppercase" style={{ fontFamily: 'Oughter, serif' }}>Home</span>
                 </Link>
 
                 {profile && (
@@ -254,7 +254,7 @@ export function DashboardLayout({ children, navItems, role }: DashboardLayoutPro
                   className="flex w-full items-center gap-4 text-neutral-600 hover:text-rose-400 transition-all font-black"
                 >
                   <LogOut size={18} />
-                  <span className="text-[12px] font-light tracking-[0.2em] uppercase" style={{ fontFamily: 'Oughter, serif' }}>Terminate Session</span>
+                  <span className="text-[12px] font-light tracking-[0.2em] uppercase" style={{ fontFamily: 'Oughter, serif' }}>Logout</span>
                 </button>
               </div>
             </motion.div>

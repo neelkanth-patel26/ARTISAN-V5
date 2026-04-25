@@ -227,7 +227,7 @@ export function ArtworkModal({ artwork, onClose, onShowAuthPrompt }: ArtworkModa
         onClick={e => e.stopPropagation()}
       >
         {/* ── Left: Image Panel ── */}
-        <div className="relative hidden md:flex items-center justify-center overflow-hidden shrink-0 bg-black/60 md:w-1/2">
+        <div className="relative flex items-center justify-center overflow-hidden shrink-0 bg-black/60 w-full h-[40vh] md:h-auto md:w-1/2">
           <div className="absolute inset-0 bg-neutral-900/20 backdrop-blur-3xl pointer-events-none" />
 
           {/* Subtle orange glow on image */}
@@ -254,7 +254,7 @@ export function ArtworkModal({ artwork, onClose, onShowAuthPrompt }: ArtworkModa
           {/* Mobile close */}
           <button
             onClick={onClose}
-            className="absolute top-5 right-5 sm:hidden p-3 rounded-2xl bg-black/60 backdrop-blur-xl text-white/70 border border-white/10 active:scale-95 transition-all"
+            className="absolute top-5 right-5 md:hidden p-3 rounded-2xl bg-black/60 backdrop-blur-xl text-white/70 border border-white/10 active:scale-95 transition-all z-50"
           >
             <X size={18} />
           </button>

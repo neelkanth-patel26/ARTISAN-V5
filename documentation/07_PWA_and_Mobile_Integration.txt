@@ -1,0 +1,27 @@
+PWA & MOBILE INTEGRATION
+========================
+
+1. PROGRESSIVE WEB APP (PWA) SPECIFICATIONS
+-------------------------------------------
+Artisan is designed to be fully installable as a PWA, offering an app-like experience.
+- MANIFEST.JSON (public/): Defines the app identity, including icons, theme colors, and start URL.
+- SERVICE-WORKER-REGISTRATION.TSX: Manages the lifecycle of the service worker for background sync and offline support.
+- PWA-INSTALL-PROMPT: Custom UI to encourage users to add the app to their home screen.
+- PWA-FULLSCREEN-MANAGER: Logic for optimized display on various mobile screen aspects.
+
+2. MOBILE-FIRST RESPONSIVE DESIGN
+---------------------------------
+- MOBILE-FOOTER-SECTION: Tailored navigation and footer elements for thumb-friendly interaction.
+- MOBILE-QR-CODE: Integrated barcode scanning and display for physical ticket verification and exhibition info.
+
+3. NATIVE INTEGRATION (CAPACITOR)
+---------------------------------
+Using Capacitor, the project is converted for native mobile platforms.
+- CAPACITOR.CONFIG.TS: Configuration for the native bridge.
+- ANDROID/: Project files for Android Studio deployment.
+- NATIVE-PERMISSIONS-REQUESTER: Handling hardware permissions (Camera, Geolocation) across iOS and Android APIs.
+
+4. MOBILE UTILITIES
+-------------------
+- Geolocation (@capacitor/geolocation): Optional feature for museum navigation and location-based alerts.
+- Push Notifications (@capacitor/push-notifications): Native push integration for mobile installs.

@@ -54,6 +54,13 @@ export function Navigation() {
       {/* top amber shimmer — matches hero */}
       <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-amber-600/20 to-transparent" />
 
+      {/* Academic Warning Banner */}
+      <div className="bg-amber-600/10 border-b border-amber-600/20 py-1.5 px-4 text-center backdrop-blur-md">
+        <span className="text-[8px] md:text-[9px] tracking-[0.2em] font-black uppercase text-amber-500" style={{ fontFamily: 'Oughter, serif' }}>
+          ⚠️ College Project • Not a Real Commercial Product • For Educational Experience Only
+        </span>
+      </div>
+
       {/* ── single bar: logo | nav links | user | menu ── */}
       <div className="px-5 md:px-12 py-3.5 md:py-5 flex md:grid md:grid-cols-[1fr_auto_1fr] items-center justify-between md:justify-normal gap-4 relative z-10">
 
@@ -251,7 +258,7 @@ export function Navigation() {
                         className="flex items-center justify-center gap-2 py-4 border border-white/[0.07] text-neutral-500 hover:text-amber-600 hover:border-amber-600/30 rounded-2xl text-[9px] font-black tracking-[0.4em] uppercase transition-all duration-400"
                       >
                         <LogOut size={12} />
-                        Sign Out
+                        Logout
                       </button>
                     </div>
                   </motion.div>
@@ -267,14 +274,14 @@ export function Navigation() {
                       onClick={() => { setIsMenuOpen(false); window.location.href = '/login' }}
                       className="py-5 bg-white text-black text-center rounded-2xl text-[10px] font-black tracking-[0.4em] uppercase hover:bg-amber-400 transition-colors duration-300"
                     >
-                      Identity Login
+                      Login
                     </Link>
                     <Link
                       href="/signup"
                       onClick={() => { setIsMenuOpen(false); window.location.href = '/signup' }}
                       className="py-5 border border-white/[0.08] text-white/60 text-center rounded-2xl text-[10px] font-black tracking-[0.4em] uppercase hover:bg-white/[0.04] hover:text-white transition-all duration-400"
                     >
-                      Join Collective
+                      Sign Up
                     </Link>
                   </motion.div>
                 )}

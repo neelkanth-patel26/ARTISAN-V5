@@ -129,47 +129,15 @@ export function ArtworkCard({ artwork, initialLiked = false, onLike, onOpen }: A
       >
         {/* Aspect Ratio Container */}
         <div className="relative aspect-[3/4] overflow-hidden bg-neutral-950" style={{ borderRadius: '2.5rem', clipPath: 'inset(0 round 2.5rem)' }}>
-          {/* Luxury Placeholder Animation */}
+          {/* Skeleton Loader */}
           <AnimatePresence>
             {!imageLoaded && (
               <motion.div 
                 initial={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
-                transition={{ duration: 0.8, ease: "easeOut" }}
-                className="absolute inset-0 z-10 flex flex-col items-center justify-center bg-neutral-950"
-              >
-                {/* Glassmorphic Shimmer */}
-                <div className="absolute inset-0 overflow-hidden">
-                  <motion.div 
-                    animate={{ 
-                      x: ['-100%', '100%'],
-                      opacity: [0, 0.1, 0] 
-                    }}
-                    transition={{ 
-                      duration: 2, 
-                      repeat: Infinity, 
-                      ease: "linear" 
-                    }}
-                    className="absolute inset-0 bg-gradient-to-r from-transparent via-amber-200 to-transparent skew-x-12"
-                  />
-                </div>
-
-                {/* Curating Artifact indicator */}
-                <div className="relative space-y-4 text-center">
-                  <div className="w-16 h-16 mx-auto rounded-full border border-amber-600/20 flex items-center justify-center">
-                     <motion.div 
-                        animate={{ rotate: 360 }}
-                        transition={{ duration: 8, repeat: Infinity, ease: "linear" }}
-                        className="absolute inset-0 rounded-full border-t border-amber-600/40"
-                     />
-                     <div className="w-1.5 h-1.5 rounded-full bg-amber-600/60 animate-pulse" />
-                  </div>
-                  <div className="space-y-1">
-                     <p className="text-[8px] uppercase tracking-[0.4em] font-black text-amber-600/40" style={{ fontFamily: 'Oughter, serif' }}>Digital Acquisition</p>
-                     <p className="text-[10px] italic font-light text-neutral-600 tracking-widest" style={{ fontFamily: 'ForestSmooth, serif' }}>Curating Artifact...</p>
-                  </div>
-                </div>
-              </motion.div>
+                transition={{ duration: 0.5 }}
+                className="absolute inset-0 z-10 bg-neutral-800 animate-pulse"
+              />
             )}
           </AnimatePresence>
 

@@ -1,0 +1,43 @@
+TECHNICAL STACK & ARCHITECTURE
+==============================
+
+1. CORE FRAMEWORKS
+------------------
+- NEXT.JS 16 (APP ROUTER): The backbone of the application, providing server-side rendering, efficient routing, and API handling.
+- REACT 19: Powering the interactive UI components with the latest React features.
+- TYPESCRIPT 5.7.3: Ensuring type safety and robust developer experience across the codebase.
+
+2. STYLING & DESIGN SYSTEM
+--------------------------
+- TAILWIND CSS 3.4: Utility-first CSS framework for rapid and responsive UI development.
+- RADIX UI: Accessible, unstyled primitives used for complex components like Modals, Accordions, and Menus.
+- LUCIDE REACT: Modern icon library for clear visual communication.
+- SHADCN/UI (Implementation Pattern): Leveraging the design patterns of Shadcn for consistent component aesthetics.
+
+3. ANIMATIONS & INTERACTIVITY
+-----------------------------
+- GSAP (GreenSock Animation Platform) 3.14: Used for high-performance, cinematic animations and complex timelines.
+- FRAMER MOTION 11.0: Handling declarative UI transitions and gesture-based interactions.
+- LENIS: Providing smooth, high-fidelity scrolling experiences.
+
+4. BACKEND & INFRASTRUCTURE
+---------------------------
+- SUPABASE: All-in-one backend-as-a-service (BaaS) providing:
+    - PostgreSQL Database for persistent data storage.
+    - Supabase Auth for secure user management and authentication.
+    - Storage buckets for hosting high-resolution artwork images.
+- NODEMAILER / RESEND: Powering the transactional email systems.
+- WEB PUSH API: Enabling browser-based push notifications via VAPID keys.
+
+5. ADDITIONAL LIBRARIES
+-----------------------
+- CHART.JS & RECHARTS: Visualization of analytics and transaction data.
+- DND KIT: Advanced drag-and-drop functionality for administration tasks.
+- ZOD & REACT HOOK FORM: Strong schema validation and efficient form management.
+- CAPACITOR: Enabling the web app to run natively on Android and iOS platforms.
+
+6. DEVELOPMENT TOOLS
+--------------------
+- POSTCSS 8.5: Modern CSS processing.
+- ESLINT: Linting for code quality and consistency.
+- CONCURRENTLY: Managing multiple development scripts (Next.js + Capacitor).

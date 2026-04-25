@@ -1,0 +1,31 @@
+COMMUNICATIONS & NOTIFICATIONS
+==============================
+
+1. WEB PUSH NOTIFICATIONS
+--------------------------
+The system features a robust real-time notification engine.
+- PROTOCOL: Utilizes the Web Push standard with VAPID authentication.
+- CONFIGURATION (lib/push-notifications.ts): Handles subscription management, token generation, and service worker communication.
+- USER FLOW:
+    - Opt-in: A custom Radix-based prompt (NOTIFICATION-PERMISSION-PROMPT) encourages users to subscribe.
+    - Lifecycle: Service workers (public/sw.js) listen for push events and display native system notifications even when the browser is closed.
+
+2. EMAIL COMMUNICATIONS
+-----------------------
+Transactional emails are handled for critical user actions.
+- NODEMAILER / RESEND (lib/email/): The dual integration ensures high deliverability.
+- USE CASES:
+    - User Welcome: Triggered upon signup.
+    - Password Reset: Secure link delivery for account recovery.
+    - Order Confirmation: Detailed receipt after successful checkout.
+    - Account Alerts: Suspension or security-related notifications.
+
+3. NOTIFICATION TRIGGERS
+------------------------
+Centrally managed in `lib/notification-triggers.ts`.
+- DATABASE-DRIVEN: Certain database events (e.g., new exhibition added) can automatically queue notifications for relevant user groups.
+- MANUAL: Administrators have access to a tool (/send-notification) to broadcast messages to all subscribers for urgent announcements.
+
+4. REAL-TIME SUPPORT
+--------------------
+- LIVE-CHAT-SUPPORT: A dedicated React component integrating a chat interface for direct visitor-to-staff communication.

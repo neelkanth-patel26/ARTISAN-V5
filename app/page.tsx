@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
+import { motion, AnimatePresence } from 'framer-motion'
 import { Navigation } from '@/components/navigation'
 import { HeroSection } from '@/components/hero-section'
 import { CollectionSection } from '@/components/collection-section'
@@ -23,6 +24,18 @@ export default function Home() {
   const [isLandscape, setIsLandscape] = useState(false)
   const [mounted, setMounted] = useState(false)
   const [deviceType, setDeviceType] = useState<'desktop' | 'mobile' | 'pwa-desktop' | 'pwa-mobile'>('desktop')
+  const [showAcademicWarning, setShowAcademicWarning] = useState(false)
+
+  useEffect(() => {
+    if (!localStorage.getItem('academic_warning_seen')) {
+      setShowAcademicWarning(true)
+    }
+  }, [])
+
+  const closeAcademicWarning = () => {
+    localStorage.setItem('academic_warning_seen', 'true')
+    setShowAcademicWarning(false)
+  }
 
   const sections = [
     <HeroSection key="hero" />,
@@ -153,6 +166,49 @@ export default function Home() {
 
   return (
     <>
+      <AnimatePresence>
+        {showAcademicWarning && (
+          <motion.div 
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-[99999] flex items-center justify-center bg-black/90 backdrop-blur-md p-4"
+          >
+            <motion.div 
+              initial={{ scale: 0.9, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.9, opacity: 0 }}
+              className="max-w-lg w-full bg-neutral-950 border border-amber-600/30 rounded-[2.5rem] p-8 md:p-12 text-center shadow-[0_0_100px_rgba(217,119,6,0.15)] relative overflow-hidden"
+            >
+              {/* Background Glow */}
+              <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-64 h-64 bg-amber-600/10 rounded-full blur-[80px] pointer-events-none" />
+
+              <div className="relative z-10">
+                <div className="w-20 h-20 mx-auto rounded-full bg-amber-600/10 border border-amber-600/20 flex items-center justify-center mb-8">
+                  <span className="text-4xl">🎓</span>
+                </div>
+                
+                <p className="text-[10px] text-amber-500 font-black uppercase tracking-[0.4em] mb-4" style={{ fontFamily: 'Oughter, serif' }}>Important Notice</p>
+                <h2 className="text-3xl md:text-5xl font-light text-white mb-6 leading-tight" style={{ fontFamily: 'ForestSmooth, serif' }}>College Project</h2>
+                
+                <p className="text-neutral-400 text-sm md:text-base font-light leading-relaxed mb-10 text-left">
+                  Welcome to Artisan. Please be aware that this is a <strong>college project</strong> and not a real commercial product. <br/><br/>
+                  It is built for educational purposes and to demonstrate user experience. <strong>Please do not enter real payment information.</strong> Feel free to explore the experience!
+                </p>
+                
+                <button
+                  onClick={closeAcademicWarning}
+                  className="w-full py-5 bg-white text-black text-[10px] font-black uppercase tracking-[0.4em] rounded-2xl hover:bg-amber-400 transition-colors shadow-[0_20px_40px_-15px_rgba(255,255,255,0.2)]"
+                  style={{ fontFamily: 'Oughter, serif' }}
+                >
+                  I Understand
+                </button>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
       <Preloader onComplete={() => setPreloaderComplete(true)} />
       <PWAInstallPrompt />
       

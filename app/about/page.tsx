@@ -1,355 +1,236 @@
 'use client'
 
-import { useState, useEffect, useRef } from 'react'
-import { motion, useScroll, useTransform, useSpring, AnimatePresence } from 'framer-motion'
+import { useRef } from 'react'
+import { motion, useScroll, useTransform } from 'framer-motion'
 import { Navigation } from '@/components/navigation'
 import { Footer } from '@/components/footer'
-import { Heart, Target, Eye, Users, Sparkles, Shield, Zap, Globe } from 'lucide-react'
+import { Shield, Zap, Users, Sparkles } from 'lucide-react'
 
-const AnimatedBackground = () => {
-  return (
-    <div className="absolute inset-0 overflow-hidden pointer-events-none">
-      {/* Radial amber core */}
-      <div className="absolute inset-0 bg-[radial-gradient(ellipse_60%_50%_at_50%_50%,rgba(217,119,6,0.07),transparent)]" />
-
-      <svg className="absolute w-full h-full" xmlns="http://www.w3.org/2000/svg">
-        <defs>
-          {/* Fine crosshatch grid */}
-          <pattern id="grid" width="60" height="60" patternUnits="userSpaceOnUse">
-            <path d="M 60 0 L 0 0 0 60" fill="none" stroke="rgba(255,255,255,0.03)" strokeWidth="0.5" />
-          </pattern>
-          {/* Amber glow filter */}
-          <filter id="amber-glow">
-            <feGaussianBlur stdDeviation="3" result="blur" />
-            <feMerge><feMergeNode in="blur" /><feMergeNode in="SourceGraphic" /></feMerge>
-          </filter>
-        </defs>
-
-        <rect width="100%" height="100%" fill="url(#grid)" />
-
-        {/* Rotating outer ring */}
-        <motion.circle
-          cx="50%" cy="50%" r="38%"
-          fill="none" stroke="rgba(217,119,6,0.06)" strokeWidth="1"
-          strokeDasharray="6 14"
-          style={{ originX: '50%', originY: '50%' }}
-          animate={{ rotate: 360 }}
-          transition={{ duration: 80, repeat: Infinity, ease: 'linear' }}
-        />
-
-        {/* Counter-rotating middle ring */}
-        <motion.circle
-          cx="50%" cy="50%" r="26%"
-          fill="none" stroke="rgba(217,119,6,0.09)" strokeWidth="0.5"
-          strokeDasharray="2 8"
-          style={{ originX: '50%', originY: '50%' }}
-          animate={{ rotate: -360 }}
-          transition={{ duration: 50, repeat: Infinity, ease: 'linear' }}
-        />
-
-        {/* Pulsing inner ring */}
-        <motion.circle
-          cx="50%" cy="50%" r="14%"
-          fill="none" stroke="rgba(217,119,6,0.12)" strokeWidth="0.5"
-          animate={{ scale: [1, 1.08, 1], opacity: [0.4, 1, 0.4] }}
-          style={{ originX: '50%', originY: '50%' }}
-          transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' }}
-        />
-
-        {/* Diagonal sweep lines */}
-        {[15, 35, 65, 85].map((x, i) => (
-          <motion.line
-            key={i}
-            x1={`${x}%`} y1="0%" x2={`${x - 10}%`} y2="100%"
-            stroke="rgba(217,119,6,0.04)" strokeWidth="1"
-            initial={{ pathLength: 0, opacity: 0 }}
-            animate={{ pathLength: 1, opacity: 1 }}
-            transition={{ duration: 2.5, delay: i * 0.4, ease: 'easeOut' }}
-          />
-        ))}
-
-        {/* Corner bracket — top-left */}
-        <motion.path
-          d="M 40 80 L 80 80 L 80 40"
-          fill="none" stroke="rgba(217,119,6,0.2)" strokeWidth="1"
-          initial={{ pathLength: 0 }} animate={{ pathLength: 1 }}
-          transition={{ duration: 1.5, delay: 0.5, ease: 'easeOut' }}
-        />
-        {/* Corner bracket — bottom-right (dynamic via viewBox %) */}
-        <motion.path
-          d="M calc(100% - 40px) calc(100% - 80px) L calc(100% - 80px) calc(100% - 80px) L calc(100% - 80px) calc(100% - 40px)"
-          fill="none" stroke="rgba(217,119,6,0.2)" strokeWidth="1"
-          initial={{ pathLength: 0 }} animate={{ pathLength: 1 }}
-          transition={{ duration: 1.5, delay: 0.8, ease: 'easeOut' }}
-        />
-
-        {/* Orbiting amber dot */}
-        <motion.circle
-          r="3" fill="rgba(217,119,6,0.7)" filter="url(#amber-glow)"
-          animate={{
-            cx: ['50%', '88%', '50%', '12%', '50%'],
-            cy: ['12%', '50%', '88%', '50%', '12%'],
-          }}
-          transition={{ duration: 12, repeat: Infinity, ease: 'linear' }}
-        />
-
-        {/* Second orbiting dot — offset phase */}
-        <motion.circle
-          r="1.5" fill="rgba(217,119,6,0.4)"
-          animate={{
-            cx: ['50%', '12%', '50%', '88%', '50%'],
-            cy: ['12%', '50%', '88%', '50%', '12%'],
-          }}
-          transition={{ duration: 18, repeat: Infinity, ease: 'linear' }}
-        />
-
-        {/* Horizontal scan line */}
-        <motion.line
-          x1="0" y1="50%" x2="100%" y2="50%"
-          stroke="rgba(217,119,6,0.05)" strokeWidth="1"
-          animate={{ y1: ['20%', '80%', '20%'], y2: ['20%', '80%', '20%'] }}
-          transition={{ duration: 10, repeat: Infinity, ease: 'easeInOut' }}
-        />
-      </svg>
-    </div>
-  )
-}
-
-const StorySection = ({ title, subtitle, content, icon: Icon, delay = 0 }: any) => (
-  <motion.div 
-    initial={{ opacity: 0, y: 30 }}
-    whileInView={{ opacity: 1, y: 0 }}
-    viewport={{ once: true, margin: "-100px" }}
-    transition={{ duration: 1, delay }}
-    className="relative group p-12 lg:p-20 border-b border-white/5"
-  >
-    <div className="max-w-4xl mx-auto space-y-8">
-      <div className="flex items-center gap-6">
-        <div className="w-16 h-16 rounded-2xl bg-amber-600/10 flex items-center justify-center border border-amber-600/20">
-          <Icon className="text-amber-600" size={32} />
-        </div>
-        <div className="space-y-1">
-          <p className="text-amber-600 text-[10px] tracking-[0.5em] font-black uppercase">{subtitle}</p>
-          <h2 className="text-4xl md:text-6xl font-light text-white" style={{ fontFamily: 'ForestSmooth, serif' }}>{title}</h2>
-        </div>
-      </div>
-      <p className="text-neutral-400 text-lg md:text-2xl font-light leading-relaxed tracking-wide italic">
-        "{content}"
-      </p>
-    </div>
-  </motion.div>
-)
+// Bento Box Data
+const values = [
+  { label: 'Authenticity', title: 'Verified Origins', desc: 'Every piece is cryptographically verified to ensure pure authenticity.', icon: Shield, span: 'col-span-1 md:col-span-2 row-span-2', delay: 0.1 },
+  { label: 'Innovation', title: 'Digital First', desc: 'Pioneering the future of artistic ownership.', icon: Zap, span: 'col-span-1', delay: 0.2 },
+  { label: 'Community', title: 'Global Network', desc: 'Connecting creators with discerning collectors worldwide.', icon: Users, span: 'col-span-1', delay: 0.3 },
+  { label: 'Excellence', title: 'Curated Mastery', desc: 'Only the highest tier of artistic expression makes our collection.', icon: Sparkles, span: 'col-span-1 md:col-span-2', delay: 0.4 }
+]
 
 export default function AboutPage() {
   const containerRef = useRef<HTMLDivElement>(null)
   const { scrollYProgress } = useScroll({ target: containerRef })
-  const smoothProgress = useSpring(scrollYProgress, { stiffness: 100, damping: 30 })
+  
+  // Parallax elements
+  const y1 = useTransform(scrollYProgress, [0, 1], [0, 200])
+  const y2 = useTransform(scrollYProgress, [0, 1], [0, -200])
 
   return (
-    <main ref={containerRef} className="bg-gradient-to-b from-neutral-950 via-neutral-900 to-neutral-950 min-h-screen selection:bg-amber-600/30 overflow-x-hidden">
+    <main ref={containerRef} className="bg-neutral-950 min-h-screen selection:bg-amber-600/30 overflow-hidden text-neutral-200">
       <Navigation />
       
-      {/* Hero: The Manuscript Cover */}
-      <section className="relative h-screen flex flex-col items-center justify-center px-4 overflow-hidden">
-        <AnimatedBackground />
-
-        {/* Floating particles */}
-        <div className="absolute inset-0 pointer-events-none overflow-hidden">
-          {[...Array(12)].map((_, i) => (
-            <motion.div
-              key={i}
-              className="absolute w-px h-px rounded-full bg-amber-500"
-              style={{
-                left: `${10 + (i * 7.5) % 80}%`,
-                top: `${15 + (i * 13) % 70}%`,
-                boxShadow: '0 0 4px 1px rgba(217,119,6,0.6)',
-              }}
-              animate={{
-                y: [0, -30, 0],
-                opacity: [0, 0.8, 0],
-                scale: [0, 1.5, 0],
-              }}
-              transition={{
-                duration: 3 + (i % 4),
-                delay: i * 0.5,
-                repeat: Infinity,
-                ease: 'easeInOut',
-              }}
-            />
-          ))}
-        </div>
+      {/* 1. Immersive Hero Section */}
+      <section className="relative h-screen flex flex-col items-center justify-center px-4">
+        {/* Blurred Orbs Background */}
+        <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-amber-600/10 rounded-full blur-[120px] pointer-events-none" />
+        <div className="absolute bottom-1/4 right-1/4 w-[30rem] h-[30rem] bg-amber-900/10 rounded-full blur-[150px] pointer-events-none" />
         
-        <div className="relative z-10 text-center space-y-12">
-          <motion.div
-            initial={{ opacity: 0, scale: 0.9 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 1.5 }}
-            className="space-y-4"
+        <div className="relative z-10 text-center space-y-8 flex flex-col items-center">
+          <motion.p 
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 1, delay: 0.2 }}
+            className="text-amber-600 text-xs tracking-[0.8em] font-black uppercase"
           >
-            <p className="text-amber-600 text-xs tracking-[0.8em] font-black uppercase">Established 2024</p>
-            <h1 className="text-7xl md:text-[12rem] font-light text-white tracking-tighter leading-none" style={{ fontFamily: 'ForestSmooth, serif' }}>
+            Established 2024
+          </motion.p>
+          
+          <motion.div className="overflow-hidden">
+            <motion.h1 
+              initial={{ y: "100%" }}
+              animate={{ y: 0 }}
+              transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1] }}
+              className="text-6xl sm:text-8xl md:text-[12rem] font-light text-white tracking-tighter leading-none" 
+              style={{ fontFamily: 'ForestSmooth, serif' }}
+            >
               Artisan
-            </h1>
+            </motion.h1>
           </motion.div>
 
           <motion.div 
              initial={{ width: 0 }}
              animate={{ width: "100%" }}
-             transition={{ duration: 2, delay: 1 }}
-             className="h-px bg-gradient-to-r from-transparent via-amber-600/50 to-transparent max-w-4xl mx-auto"
+             transition={{ duration: 1.5, delay: 0.8, ease: "easeOut" }}
+             className="h-px bg-gradient-to-r from-transparent via-amber-600/40 to-transparent w-full max-w-2xl"
           />
 
           <motion.p 
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            transition={{ delay: 2 }}
-            className="text-neutral-500 text-sm md:text-xl font-light max-w-xl mx-auto tracking-widest uppercase"
+            transition={{ duration: 1, delay: 1.2 }}
+            className="text-neutral-500 text-sm md:text-lg font-light max-w-xl mx-auto tracking-[0.3em] uppercase"
           >
             A Digital Sanctuary for High-End Artistic Encounter
           </motion.p>
         </div>
 
-      {/* Scroll-driven SVG path */}
-      <div className="fixed inset-0 pointer-events-none z-0">
-        <svg width="100%" height="100%" viewBox="0 0 100 100" preserveAspectRatio="none" fill="none">
-          <defs>
-            <filter id="path-glow">
-              <feGaussianBlur stdDeviation="1.5" result="blur" />
-              <feMerge><feMergeNode in="blur" /><feMergeNode in="SourceGraphic" /></feMerge>
-            </filter>
-          </defs>
-          {/* Glow copy */}
-          <motion.path
-            d="M50,0 C65,15 35,30 50,50 C65,70 35,85 50,100"
-            stroke="rgba(217,119,6,0.15)"
-            strokeWidth="2"
-            filter="url(#path-glow)"
-            style={{ pathLength: smoothProgress }}
-          />
-          {/* Sharp line on top */}
-          <motion.path
-            d="M50,0 C65,15 35,30 50,50 C65,70 35,85 50,100"
-            stroke="rgba(217,119,6,0.5)"
-            strokeWidth="0.4"
-            style={{ pathLength: smoothProgress }}
-          />
-          {/* Travelling dot along path */}
-          <motion.circle
-            r="0.8"
-            fill="rgba(217,119,6,0.9)"
-            filter="url(#path-glow)"
-            style={{
-              offsetPath: "path('M50,0 C65,15 35,30 50,50 C65,70 35,85 50,100')",
-              offsetDistance: smoothProgress as any,
-            } as any}
-          />
-        </svg>
-      </div>
-
-        {/* Scroll Indicator */}
+        {/* Scroll Down Indicator */}
         <motion.div 
-          animate={{ y: [0, 8, 0] }}
-          transition={{ repeat: Infinity, duration: 2.5, ease: 'easeInOut' }}
-          className="absolute bottom-12 flex flex-col items-center gap-3"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 2, duration: 1 }}
+          className="absolute bottom-12 left-1/2 -translate-x-1/2 flex flex-col items-center gap-4"
         >
-          <svg width="1" height="60" viewBox="0 0 1 60" className="overflow-visible">
-            <motion.line
-              x1="0.5" y1="0" x2="0.5" y2="60"
-              stroke="url(#scroll-grad)" strokeWidth="1"
-              initial={{ pathLength: 0, opacity: 0 }}
-              animate={{ pathLength: 1, opacity: 1 }}
-              transition={{ duration: 1.2, delay: 2.5 }}
-            />
-            <defs>
-              <linearGradient id="scroll-grad" x1="0" y1="0" x2="0" y2="1" gradientUnits="objectBoundingBox">
-                <stop offset="0%" stopColor="rgba(217,119,6,0.8)" />
-                <stop offset="100%" stopColor="rgba(217,119,6,0)" />
-              </linearGradient>
-            </defs>
-          </svg>
-          <motion.span
-            className="text-[9px] text-amber-600/70 font-black uppercase tracking-[0.5em]"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 3 }}
-          >
-            Descend
-          </motion.span>
+          <div className="w-[1px] h-16 bg-gradient-to-b from-amber-600/0 via-amber-600/50 to-amber-600/0 relative overflow-hidden">
+             <motion.div 
+               animate={{ y: ['-100%', '100%'] }}
+               transition={{ duration: 1.5, repeat: Infinity, ease: 'linear' }}
+               className="absolute inset-0 bg-amber-400"
+             />
+          </div>
+          <span className="text-[9px] text-amber-600/70 font-black uppercase tracking-[0.5em]">Discover</span>
         </motion.div>
       </section>
 
-      {/* Narrative Flow */}
-      <section className="relative">
-        <StorySection 
-          subtitle="Our Genesis"
-          title="The Story"
-          content="Founded in 2024, Artisan emerged from a vision to democratize the elite art world. We believe that exceptional masterpieces shouldn't just be seen—they should be encountered in a space that respects their soul."
-          icon={Heart}
-        />
-        
-        <StorySection 
-          subtitle="Our Compass"
-          title="Mission & Vision"
-          content="Our mission is to empower global artists by providing a digital pedestal that reflects the true value of their vision. We envision a world where the connection between creator and collector is as pure as the art itself."
-          icon={Target}
-          delay={0.2}
-        />
+      {/* 2. Split-Layout Story Section */}
+      <section className="relative px-4 py-32 md:py-48 max-w-7xl mx-auto">
+        <div className="flex flex-col md:flex-row gap-16 md:gap-24 relative">
+          
+          {/* Sticky Left Sidebar */}
+          <div className="md:w-1/3 relative">
+            <div className="md:sticky md:top-40 space-y-4">
+              <p className="text-amber-600 text-[10px] tracking-[0.5em] font-black uppercase">Our Genesis</p>
+              <h2 className="text-5xl md:text-7xl font-light text-white" style={{ fontFamily: 'ForestSmooth, serif' }}>The Story</h2>
+              <div className="h-px w-24 bg-amber-600/30 mt-8" />
+            </div>
+          </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 border-b border-white/5">
-           {[
-             { label: 'Authenticity', val: 'Verified', icon: Shield },
-             { label: 'Innovation', val: 'Digital First', icon: Zap },
-             { label: 'Community', val: 'Global', icon: Users },
-             { label: 'Excellence', val: 'Curated', icon: Sparkles }
-           ].map((item, i) => (
-             <div key={i} className="p-16 border-r border-white/5 last:border-r-0 group hover:bg-white/[0.02] transition-colors">
-               <item.icon className="text-amber-600/40 mb-8 group-hover:text-amber-600 group-hover:scale-110 transition-all" size={24} />
-               <p className="text-[10px] text-neutral-600 font-black uppercase tracking-widest mb-2">{item.label}</p>
-               <p className="text-xl text-white font-light">{item.val}</p>
-             </div>
-           ))}
+          {/* Scrolling Content Right */}
+          <div className="md:w-2/3 space-y-24">
+            <motion.div 
+              initial={{ opacity: 0, y: 40 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, margin: "-100px" }}
+              transition={{ duration: 0.8 }}
+              className="space-y-8"
+            >
+              <p className="text-2xl md:text-4xl text-neutral-300 font-light leading-relaxed">
+                Founded in 2024, Artisan emerged from a profound vision: to democratize the elite art world without diluting its prestige.
+              </p>
+              <p className="text-lg md:text-xl text-neutral-500 font-light leading-relaxed">
+                We observed that exceptional masterpieces were often hidden behind closed doors. Our digital pedestal ensures that brilliance is not just seen, but encountered in a space that respects the creator's true soul and intention.
+              </p>
+            </motion.div>
+
+            <motion.div 
+              initial={{ opacity: 0, y: 40 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, margin: "-100px" }}
+              transition={{ duration: 0.8 }}
+              className="space-y-8"
+            >
+              <h3 className="text-3xl font-light text-white" style={{ fontFamily: 'ForestSmooth, serif' }}>Our Compass</h3>
+              <p className="text-xl text-neutral-400 font-light leading-relaxed">
+                Our mission is to empower global artists by providing a platform that reflects the intrinsic value of their vision. We envision a seamless connection between visionary creators and discerning collectors—a bond as pure and unaltered as the art itself.
+              </p>
+            </motion.div>
+          </div>
+
         </div>
+      </section>
 
-        <section className="py-64 px-4 text-center space-y-20 relative overflow-hidden">
-          <div className="absolute inset-0 bg-neutral-900/10 backdrop-blur-3xl" />
-          <div className="relative z-10 space-y-6">
-            <h3 className="text-5xl md:text-8xl font-light text-white" style={{ fontFamily: 'ForestSmooth, serif' }}>Global Footprint</h3>
-            <div className="flex flex-wrap justify-center gap-12 md:gap-24 mt-20">
-               {[
-                 { num: '500+', label: 'Artworks' },
-                 { num: '150+', label: 'Artists' },
-                 { num: '50+', label: 'Countries' },
-                 { num: '1k+', label: 'Collectors' }
-               ].map((stat, i) => (
-                 <div key={i} className="space-y-1">
-                   <p className="text-4xl md:text-6xl font-light text-amber-600" style={{ fontFamily: 'serif' }}>{stat.num}</p>
-                   <p className="text-[10px] text-neutral-600 font-black uppercase tracking-[0.4em]">{stat.label}</p>
-                 </div>
-               ))}
-            </div>
+      {/* 3. Bento Box Core Values */}
+      <section className="relative py-32 bg-neutral-900/20 border-y border-white/5">
+        <div className="max-w-7xl mx-auto px-4 space-y-16">
+          <div className="text-center space-y-4">
+            <p className="text-amber-600 text-[10px] tracking-[0.5em] font-black uppercase">Core Pillars</p>
+            <h2 className="text-5xl md:text-6xl font-light text-white" style={{ fontFamily: 'ForestSmooth, serif' }}>Our Values</h2>
           </div>
-        </section>
 
-        <section className="py-44 px-4 md:px-12 border-t border-white/5 bg-white/[0.01]">
-          <div className="max-w-7xl mx-auto flex flex-col lg:flex-row items-center justify-between gap-12">
-            <div className="space-y-6">
-              <p className="text-amber-600 text-[10px] tracking-[0.4em] font-black uppercase">The Artisan Protocol</p>
-              <h2 className="text-4xl md:text-6xl font-light text-white" style={{ fontFamily: 'ForestSmooth, serif' }}>Uncompromising <br /> Standards</h2>
-            </div>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8 w-full lg:w-2/3">
-               {[
-                 { title: 'Secure Vault', desc: 'Bank-grade encryption for every transaction.' },
-                 { title: 'Safe Delivery', desc: 'Museum-standard transit with full insurance.' },
-                 { title: 'Purity Check', desc: 'Rigorous 14-day curation and return window.' }
-               ].map((protocol, i) => (
-                 <div key={i} className="p-8 rounded-3xl bg-black border border-white/5 hover:border-amber-600/30 transition-all">
-                   <p className="text-xs font-black uppercase tracking-widest text-white mb-4">{protocol.title}</p>
-                   <p className="text-[10px] text-neutral-500 font-light leading-relaxed uppercase tracking-wider">{protocol.desc}</p>
-                 </div>
-               ))}
-            </div>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6 auto-rows-[250px]">
+            {values.map((item, i) => (
+              <motion.div 
+                key={i}
+                initial={{ opacity: 0, scale: 0.95 }}
+                whileInView={{ opacity: 1, scale: 1 }}
+                viewport={{ once: true, margin: "-50px" }}
+                transition={{ duration: 0.6, delay: item.delay }}
+                className={`relative group overflow-hidden rounded-[2rem] bg-neutral-900 border border-white/5 p-10 flex flex-col justify-end hover:border-amber-600/30 transition-colors duration-500 ${item.span}`}
+              >
+                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent z-0" />
+                <div className="absolute top-0 right-0 p-8 opacity-20 group-hover:opacity-40 group-hover:scale-110 transition-all duration-700">
+                  <item.icon size={120} className="text-amber-600" />
+                </div>
+                
+                <div className="relative z-10 space-y-3">
+                  <p className="text-[10px] text-amber-500 font-black uppercase tracking-[0.3em]">{item.label}</p>
+                  <h3 className="text-2xl font-light text-white" style={{ fontFamily: 'ForestSmooth, serif' }}>{item.title}</h3>
+                  <p className="text-sm text-neutral-400 font-light leading-relaxed max-w-sm">{item.desc}</p>
+                </div>
+              </motion.div>
+            ))}
           </div>
-        </section>
+        </div>
+      </section>
+
+      {/* 4. Stats Ribbon */}
+      <section className="py-24 border-b border-white/5 overflow-hidden">
+        <div className="max-w-7xl mx-auto px-4">
+          <div className="flex flex-wrap justify-between items-center gap-12 lg:gap-0">
+            {[
+              { num: '500+', label: 'Artworks' },
+              { num: '150+', label: 'Artists' },
+              { num: '50+', label: 'Countries' },
+              { num: '1k+', label: 'Collectors' }
+            ].map((stat, i) => (
+              <motion.div 
+                key={i}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.6, delay: i * 0.1 }}
+                className="w-full sm:w-auto text-center space-y-2"
+              >
+                <p className="text-5xl md:text-7xl font-light text-white" style={{ fontFamily: 'ForestSmooth, serif' }}>{stat.num}</p>
+                <p className="text-[10px] text-amber-600 font-black uppercase tracking-[0.4em]">{stat.label}</p>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* 5. The Artisan Protocol */}
+      <section className="relative py-32 md:py-48 px-4">
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_80%_80%_at_50%_100%,rgba(217,119,6,0.05),transparent)]" />
+        
+        <div className="max-w-7xl mx-auto space-y-20 relative z-10">
+          <div className="text-center space-y-6">
+            <p className="text-amber-600 text-[10px] tracking-[0.5em] font-black uppercase">The Artisan Protocol</p>
+            <h2 className="text-5xl md:text-7xl font-light text-white" style={{ fontFamily: 'ForestSmooth, serif' }}>Uncompromising Standards</h2>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            {[
+              { title: 'Secure Vault', desc: 'Bank-grade encryption ensures that every transaction and digital transfer remains impenetrable.', num: '01' },
+              { title: 'Safe Delivery', desc: 'Physical artifacts are shipped via museum-standard transit protocols with comprehensive global insurance.', num: '02' },
+              { title: 'Purity Check', desc: 'A rigorous 14-day curation and return window guarantees that quality remains paramount.', num: '03' }
+            ].map((protocol, i) => (
+              <motion.div 
+                key={i}
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, margin: "-50px" }}
+                transition={{ duration: 0.8, delay: i * 0.2 }}
+                className="group p-10 rounded-[2.5rem] bg-white/[0.02] border border-white/5 hover:bg-white/[0.04] hover:border-amber-600/20 transition-all duration-500 relative overflow-hidden"
+              >
+                <div className="absolute top-0 right-0 p-8 text-8xl font-light text-white/[0.02] group-hover:text-amber-600/5 transition-colors duration-500 pointer-events-none" style={{ fontFamily: 'ForestSmooth, serif' }}>
+                  {protocol.num}
+                </div>
+                <div className="space-y-6 relative z-10">
+                  <p className="text-xs font-black uppercase tracking-[0.3em] text-white">{protocol.title}</p>
+                  <p className="text-sm text-neutral-400 font-light leading-relaxed">{protocol.desc}</p>
+                </div>
+              </motion.div>
+            ))}
+          </div>
+        </div>
       </section>
 
       <Footer />

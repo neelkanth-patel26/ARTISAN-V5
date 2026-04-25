@@ -113,7 +113,7 @@ export default function LoginPage() {
           <div className="w-10 h-10 rounded-full border border-white/5 flex items-center justify-center group-hover:border-white/20 group-hover:bg-white/5 transition-all">
             <ArrowLeft size={16} />
           </div>
-          <span className="hidden md:block text-[9px] tracking-[0.5em] font-black uppercase">Escape</span>
+          <span className="hidden md:block text-[9px] tracking-[0.5em] font-black uppercase">Go to Home</span>
         </div>
       </button>
 
@@ -130,7 +130,7 @@ export default function LoginPage() {
             transition={{ delay: 0.2 }}
             className="space-y-4"
           >
-            <p className="text-amber-600/60 text-[9px] tracking-[0.6em] font-black uppercase">Identity Verification</p>
+            <p className="text-amber-600/60 text-[9px] tracking-[0.6em] font-black uppercase">Login</p>
             <h1 className="text-5xl md:text-8xl font-light text-white tracking-tighter" style={{ fontFamily: 'ForestSmooth, serif' }}>
               Welcome back
             </h1>
@@ -195,7 +195,7 @@ export default function LoginPage() {
                   <span>Synchronizing...</span>
                 </div>
               ) : (
-                'Initialize Session'
+                'Login'
               )}
             </motion.button>
           </form>
@@ -203,7 +203,7 @@ export default function LoginPage() {
           <div className="mt-12 pt-10 border-t border-white/5 text-center relative z-10">
             <p className="text-[10px] tracking-widest text-neutral-500 uppercase font-light">
               New to the sanctuary?{' '}
-              <Link href="/signup" className="text-amber-600/80 hover:text-amber-600 font-black ml-2 transition-colors">Join the Elite</Link>
+              <Link href="/signup" className="text-amber-600/80 hover:text-amber-600 font-black ml-2 transition-colors">Sign Up</Link>
             </p>
           </div>
         </div>

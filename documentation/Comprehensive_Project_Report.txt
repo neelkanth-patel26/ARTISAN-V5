@@ -1,0 +1,598 @@
+================================================================================
+                               PROJECT REPORT
+                                     ON
+                             ARTISAN / UNBOUND
+              A COMPREHENSIVE MUSEUM MANAGEMENT & VISITOR PLATFORM
+================================================================================
+
+SUBMITTED BY:
+    Name: Neelkanth Patel (Project Lead) [23012250210201]
+    Name: Dhruv Nayak [23012250210200]
+    Name: Dhruv Nirmal [23012250210202]
+    Name: Dhyey Nirmal [23012250210203]
+    Name: Nirmit Sheth [23012250210204]
+    Name: Darshil Panchal [23012250210208]
+
+ACADEMIC YEAR: 2024-2025
+GUIDE: Gaming Network Studio Media Group
+
+SUBMITTED TO:
+    MASTER OF COMPUTER APPLICATIONS (MCA)
+    LJ UNIVERSITY, AHMEDABAD
+
+--------------------------------------------------------------------------------
+                                 DECLARATION
+--------------------------------------------------------------------------------
+
+We, the students of Group-1, hereby declare that the project report entitled
+"ARTISAN / UNBOUND" is an original work carried out by us under the guidance of
+Gaming Network Studio Media Group. This project is submitted as part of our
+academic curriculum at LJ University. All information and data presented in this
+report are true and to the best of our knowledge. We have not copied or borrowed
+any content from other sources without proper attribution.
+
+Date: 24th March 2026
+Place: Ahmedabad
+
+(Signatures):
+1. __________________________ (Neelkanth Patel)
+2. __________________________ (Dhruv Nayak)
+3. __________________________ (Dhruv Nirmal)
+4. __________________________ (Dhyey Nirmal)
+5. __________________________ (Nirmit Sheth)
+6. __________________________ (Darshil Panchal)
+
+--------------------------------------------------------------------------------
+                               ACKNOWLEDGEMENT
+--------------------------------------------------------------------------------
+
+We express our deep sense of gratitude to the Department of Computer Applications
+at LJ University for providing the infrastructure and opportunity to work on
+this comprehensive project.
+
+We would like to extend our special thanks to our Project Guide from the Gaming
+Network Studio Media Group for their continuous technical support, mentorship,
+and insightful feedback. Their expertise in modern web technologies was pivotal
+in the successful implementation of the project's complex features.
+
+We also acknowledge the valuable data and aesthetic inspiration provided by:
+- Urmi Thakkar (Instagram: urmi_thakkar_26)
+- Reese Whiteman (Instagram: reese.whiteman28)
+- Jay Shah
+- Adity Panchal
+
+Finally, we thank our families and friends for their unwavering support and
+patience throughout the long development hours.
+
+--------------------------------------------------------------------------------
+                                   ABSTRACT
+--------------------------------------------------------------------------------
+
+Artisan (Unbound) represents a fusion of high-performance backend engineering
+and cinematic frontend design. Developed for the museum and art gallery sector,
+the platform serves as a multi-tier ecosystem for artists, visitors, and
+administrators. 
+
+The primary challenge addressed by this project is the lack of digital engagement
+in traditional museum settings. By implementing a Progressive Web App (PWA) 
+framework using Next.js 16 and Supabase, we have created a solution that is both
+highly accessible and computationally robust. 
+
+The system features an advanced analytics dashboard for museum managers, an
+intuitive artist portfolio management tool, and a real-time push notification
+system that keeps visitors informed about exhibitions. High-fidelity animations
+powered by GSAP and Framer Motion ensure a premium user experience that mimics
+the feel of a native high-end mobile application. This report provides a 
+detailed breakdown of the architecture, design choices, implementation 
+strategies, and testing methodologies employed during the project lifecycle.
+
+--------------------------------------------------------------------------------
+                               TABLE OF CONTENTS
+--------------------------------------------------------------------------------
+
+1. INTRODUCTION
+   1.1 Project Profile
+   1.2 Objectives of the System
+   1.3 Existing vs. Proposed System
+   1.4 Problem Statement
+   1.5 Scope of the Project
+   1.6 Operating Environment
+       1.6.1 Hardware Requirements
+       1.6.2 Software Requirements
+   1.7 Technical Stack Overview
+
+2. THEORETICAL BACKGROUND
+   2.1 Next.js Framework & App Router
+   2.2 Supabase: Backend-as-a-Service
+   2.3 Tailwind CSS & Design Systems
+   2.4 GSAP & Framer Motion for UI/UX
+   2.5 PWA & Capacitor Integration
+
+3. SYSTEM ANALYSIS & DESIGN
+   3.1 Feasibility Study
+       3.1.1 Technical Feasibility
+       3.1.2 Economic Feasibility
+       3.1.3 Operational Feasibility
+   3.2 Requirement Analysis
+       3.2.1 Functional Requirements
+       3.2.2 Non-Functional Requirements
+   3.3 User Profiles & Roles
+   3.4 System Design
+       3.4.1 Use Case Diagram (Textual)
+       3.4.2 Class Architecture
+       3.4.3 Sequence Modeling (Auth & Checkout)
+   3.5 Database Design
+       3.5.1 Entity Relationship Diagram (ERD)
+       3.5.2 Detailed Table Schema
+   3.6 UI/UX Design Principles
+
+4. IMPLEMENTATION & CODING
+   4.1 Project Folder Structure Breakdown
+   4.2 Core Module Implementation
+   4.3 Sample Source Code & Logic Analysis
+       4.3.1 Advanced Analytics Module
+       4.3.2 Artist Modal & Payment Logic
+       4.3.3 Push Notification Subscriptions
+
+5. TESTING & QUALITY ASSURANCE
+   5.1 Testing Methodology
+   5.2 Test Cases & Execution Results
+   5.3 Cross-platform (PWA/Mobile) Verification
+
+6. SYSTEM LIMITATIONS & FUTURE SCOPE
+   6.1 Current Constraints
+   6.2 Proposed Enhancements
+   6.3 Future Roadmap
+
+7. CONCLUSION
+
+8. BIBLIOGRAPHY & REFERENCES
+
+================================================================================
+                            CHAPTER 1: INTRODUCTION
+================================================================================
+
+1.1 PROJECT PROFILE
+-------------------
+The Artisan/Unbound project is a full-stack digital solution for museum and
+art gallery management. In an era where digital presence is paramount, traditional
+museums often struggle to maintain visitor engagement and manage complex
+collections efficiently. This project provides a scalable, high-performance
+platform that integrates collection management, ticketing, and communications 
+into a single, visually stunning interface.
+
+1.2 OBJECTIVES OF THE SYSTEM
+----------------------------
+The primary objectives of the Artisan system are:
+- Digitization: To provide a central repository for museum collections.
+- Accessibility: To allow world-wide access to artwork galleries.
+- Engagement: Using real-time push notifications to bring visitors back.
+- Management: Offering artists and admins granular control over their content.
+- Performance: Achieving sub-second transitions and high frame-rate animations.
+
+1.3 EXISTING VS. PROPOSED SYSTEM
+--------------------------------
+The existing systems in most museums are either completely offline or use
+fragmented web solutions that are difficult to maintain and lack mobile
+optimization. Visitors often have to use separate websites for information,
+ticketing, and communication.
+
+The proposed Unbound system offers a "Single Source of Truth". All aspects
+of the museum experience are unified. The PWA nature allows it to be installed
+on smartphones, effectively replacing the need for separate information kiosks
+and native apps. It provides superior UX through smooth scrolling and 
+motion-driven navigation.
+
+1.4 PROBLEM STATEMENT
+---------------------
+Traditional museum software fails to meet the expectations of modern, mobile-first
+users who demand speed, aesthetics, and interactivity. There is a lack of
+integrated analytics for curators and a lack of direct, real-time engagement
+tools to notify visitors about new acquisitions or exhibitions. Artisan solves
+this by providing a high-tech platform that caters to both the aesthetic needs
+of an art house and the technical needs of a data-driven business.
+
+1.5 SCOPE OF THE PROJECT
+------------------------
+The project encompasses:
+- A responsive frontend built with Next.js 16.
+- A robust backend using Supabase (Postgres, Auth, Storage).
+- A specialized Admin Dashboard with data visualization.
+- Multi-artist portfolio hosting.
+- Integrated payment gateway logic.
+- Progressive Web App features for offline resilience.
+- Capacitor-based native mobile builds for Android/iOS.
+
+1.6 OPERATING ENVIRONMENT
+-------------------------
+1.6.1 HARDWARE REQUIREMENTS:
+Client Side: 
+- Minimum 2GB RAM.
+- Quad-core processor recommended.
+- High-density display (Retina/AMOLED) for best art viewing.
+Server Side (Development):
+- Intel i5 or Ryzen 5 equivalent.
+- 8GB RAM minimum.
+- SSD for fast build times.
+
+1.6.2 SOFTWARE REQUIREMENTS:
+- Operating System: Windows 10/11, macOS, or Linux.
+- Runtime: Node.js 18.0.0 or higher.
+- Browser: Chrome 90+, Safari 14+, or Firefox 88+.
+- Database: PostgreSQL (via Supabase).
+
+1.7 TECHNICAL STACK OVERVIEW
+----------------------------
+The stack is chosen for its performance, developer productivity, and scalability:
+- Next.js 16: The leading React framework for production.
+- TypeScript: Ensuring code quality and fewer runtime errors.
+- Tailwind CSS: For highly customizable and performant styling.
+- Supabase: Managing the complex data relationships and user security.
+- GSAP: Providing the "wow factor" through high-grade animations.
+
+================================================================================
+                        CHAPTER 2: THEORETICAL BACKGROUND
+================================================================================
+
+2.1 NEXT.JS FRAMEWORK & APP ROUTER
+----------------------------------
+Next.js 16's App Router architecture is the foundation of this project. It
+allows for nested layouts, server-side data fetching at the component level,
+and optimized rendering through Server Components. This architecture is
+essential for a content-heavy museum application, where certain parts of the
+page (like the Header) remain static while the content (like the Gallery) 
+refresh dynamically.
+
+2.2 SUPABASE: BACKEND-AS-A-SERVICE
+----------------------------------
+Supabase provides the "Super-powers" to our backend. By using Supabase, we
+avoid the overhead of managing a custom Express/Node server for simple CRUD
+operations. Its real-time capabilities allow the dashboard to reflect new
+sales or signups instantly. The Auth module provides secure, JWT-based
+authentication out of the box.
+
+2.3 TAILWIND CSS & DESIGN SYSTEMS
+---------------------------------
+Tailwind CSS allows for building a design system directly in the markup. This
+is critical for the Artisan brand, which requires precise control over
+typography, spacing, and colors to create a "Premium/Luxury" feel. The use of
+utility classes ensures that the final CSS bundle remains small and optimized.
+
+2.4 GSAP & FRAMER MOTION FOR UI/UX
+----------------------------------
+While CSS transitions are great for simple moves, GSAP (GreenSock) is used for
+complex, cinematic sequences. Framer Motion handles the simpler, physics-based
+transitions of modals and lists. Together, they create an interface that feels
+"alive" and responsive to user input.
+
+2.5 PWA & CAPACITOR INTEGRATION
+-------------------------------
+The PWA manifest identifies the app to the OS, allowing for home-screen
+installation. Capacitor provides the bridge to native mobile APIs, allowing
+us to use hardware features like Geolocation or the Camera for ticket
+scanning, sharing a single codebase across Web, Android, and iOS.
+
+================================================================================
+                        CHAPTER 3: SYSTEM ANALYSIS & DESIGN
+================================================================================
+
+3.1 FEASIBILITY STUDY
+---------------------
+3.1.1 TECHNICAL FEASIBILITY:
+The technologies used are modern, well-documented, and have large community
+support. The integration of Supabase and Next.js is a standard pattern in 
+high-traffic web development.
+
+3.1.2 ECONOMIC FEASIBILITY:
+Using managed services like Supabase significantly reduces the cost of
+database management and infrastructure monitoring. The project development
+time was optimized by using component libraries like Radix UI.
+
+3.1.3 OPERATIONAL FEASIBILITY:
+The system is designed with a low learning curve for administrators. The
+dashboard provides clear visual cues, making it easy for non-technical 
+staff to manage museum content.
+
+3.2 REQUIREMENT ANALYSIS
+------------------------
+3.2.1 FUNCTIONAL REQUIREMENTS:
+- User Management: Registration, Login, and Role-assignment.
+- Navigation: Seamless routing between galleries, artists, and checkouts.
+- Search: Full-text search and faceted filtering of artworks.
+- Notifications: Subscription to and receipt of push messages.
+- Transactions: Recording of ticket sales and artist support payments.
+
+3.2.2 NON-FUNCTIONAL REQUIREMENTS:
+- Security: SSL encryption and secure JWT tokens.
+- Performance: Images should be lazy-loaded and optimized.
+- Responsiveness: The app must work perfectly on devices from 320px to 4000px wide.
+
+3.3 USER PROFILES & ROLES
+-------------------------
+- Visitors: Primary consumers of content. Can browse, buy, and follow.
+- Artists: Creators who manage their specific collections and view insights.
+- Administrators: Managers who control the overall platform data and announcements.
+
+3.4 SYSTEM DESIGN
+-----------------
+3.4.1 USE CASE MODELING (Textual):
+- Visitor Use Cases: Browse Gallery, View Artist Bio, Add to Cart, Checkout,
+  Subscribe to Notifications.
+- Artist Use Cases: Upload Artwork, View Sales Analytics, Update Portfolio.
+- Admin Use Cases: Verify Artworks, Send Broadcast Notification, Manage Users.
+
+3.4.2 DATABASE DESIGN (ERD & SCHEMA):
+The database is relational, ensuring data integrity.
+
+[List of Primary Tables]
+
+Table: profiles
+Description: Stores core user information and roles.
+Columns:
+- id: Primary Key (UUID)
+- full_name: Visitor's name
+- role: enum ('visitor', 'artist', 'admin')
+- followers_count: numeric
+- total_views: numeric
+
+Table: artworks
+Description: Detailed metadata for every piece in the gallery.
+Columns:
+- id: Primary Key (UUID)
+- title: String
+- artist_id: Foreign Key (profiles.id)
+- price: decimal
+- status: enum ('pending', 'approved', 'sold')
+- image_url: string
+
+Table: push_subscriptions
+Description: Stores browser subscription tokens for Web Push.
+Columns:
+- id: Primary Key
+- user_id: Foreign Key
+- endpoint: string (Unique)
+- p256dh: string
+- auth: string
+
+3.5 UI/UX DESIGN PRINCIPLES
+---------------------------
+Artisan follows a "Modern Noir" design language:
+- Color Palette: Deep blacks (#0a0a0a), muted grays, and vibrant neon accents
+  (Amber, Cyan, Rose) to mimic a gallery spotlight effect.
+- Typography: Use of high-contrast fonts (ForestSmooth for headings, Inter
+  for body text) to reflect artistic elegance.
+- Interaction: Every click or hover should have a visual response, usually
+  a subtle glow or slight translation to provide tactile feedback.
+
+================================================================================
+                        CHAPTER 4: IMPLEMENTATION & CODING
+================================================================================
+
+4.1 PROJECT FOLDER STRUCTURE BREAKDOWN
+--------------------------------------
+The project is organized to scale:
+- /app: The 'Heart' of the app containing all routes and server functions.
+- /components: Reusable pieces of the UI, from Buttons to Analytics Charts.
+- /lib: Shared logic for Auth, DB connection, and external API calls.
+- /public: Static assets, icons, and the PWA manifest.
+- /styles: Global CSS and Tailwind directives.
+
+4.2 CORE MODULE IMPLEMENTATION
+------------------------------
+The project's complexity lies in the orchestration of many specialized modules.
+For example, the Push Notification service coordinates the frontend request,
+the service worker registration, and the backend subscription storage.
+
+The Analytics module fetches data from several tables (sales, views, follows)
+and aggregates it into a format suitable for the Chart.js visualizer.
+
+4.3 SAMPLE SOURCE CODE & LOGIC ANALYSIS
+---------------------------------------
+
+4.3.1 ADVANCED ANALYTICS MODULE
+This component is responsible for visualizing the artist's or admin's performance.
+
+```tsx
+'use client'
+import { useState, useEffect } from 'react'
+import { motion } from 'framer-motion'
+import { Line, Doughnut } from 'react-chartjs-2'
+
+export function AdvancedAnalytics({ userId, role }) {
+  const [data, setData] = useState(null)
+  
+  useEffect(() => {
+    // Fetch aggregated data from the API route
+    fetch(`/api/analytics?userId=${userId}&period=30d`)
+      .then(r => r.json())
+      .then(d => setData(d))
+  }, [userId])
+
+  if (!data) return <p>Loading Analytics...</p>
+
+  // Revenue Trend Logic
+  const revenueChartData = {
+    labels: data.revenueChart.labels,
+    datasets: [{
+      label: 'Monthly Revenue',
+      data: data.revenueChart.data,
+      borderColor: '#f59e0b',
+      tension: 0.4,
+      fill: true
+    }]
+  }
+
+  return (
+    <div className="space-y-10">
+      <h2 className="text-3xl font-light">Project Performance</h2>
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+          <StatCard label="Revenue" value={data.revenue.current} trend={data.revenue.trend} />
+          <StatCard label="Views" value={data.views.current} trend={data.views.trend} />
+      </div>
+      <div className="h-64">
+           <Line data={revenueChartData} options={{ maintainAspectRatio: false }} />
+      </div>
+    </div>
+  )
+}
+```
+
+4.3.2 ARTIST MODAL & PAYMENT LOGIC
+The Artist Modal is a complex piece of interaction design that handles bio
+display, portfolio expansion, and integrated support payments.
+
+```tsx
+export function ArtistModal({ artist, onClose }) {
+  // Check if following, increment views, and fetch artworks on open
+  useEffect(() => {
+    if (!artist) return
+    checkFollowStatus()
+    incrementView()
+    fetchArtworks()
+  }, [artist?.id])
+
+  const handleSupport = () => {
+    // Logic for UPI or Gateway payments
+    if (paymentMethod === 'gateway') {
+      router.push(`/checkout?type=support&artistId=${artist?.id}&amount=${amount}`)
+    } else {
+       // Direct UPI Intent
+       window.location.href = `upi://pay?pa=${artist.upi_id}&pn=${artist.full_name}&am=${amount}`
+    }
+  }
+
+  return (
+     <motion.div className="modal-container">
+        {/* Render Bio and Statistics cards */}
+        {/* Render Portfolio Grid */}
+     </motion.div>
+  )
+}
+```
+
+4.3.3 PUSH NOTIFICATION SUBSCRIPTIONS
+This lib file manages the complex Web Push lifecycle.
+
+```tsx
+class PushNotificationService {
+  async subscribe(userId) {
+    // 1. Request Browser Permission
+    const permission = await Notification.requestPermission()
+    if (permission !== 'granted') return
+
+    // 2. Get SW Registration
+    const registration = await navigator.serviceWorker.ready
+    
+    // 3. Register for Push using VAPID key
+    let subscription = await registration.pushManager.subscribe({
+      userVisibleOnly: true,
+      applicationServerKey: urlBase64ToUint8Array(VAPID_PUBLIC_KEY)
+    })
+
+    // 4. Save to Database via API
+    await fetch('/api/notifications/subscribe', {
+      method: 'POST',
+      body: JSON.stringify(subscription.toJSON())
+    })
+  }
+}
+```
+
+================================================================================
+                        CHAPTER 5: TESTING & QUALITY ASSURANCE
+================================================================================
+
+5.1 TESTING METHODOLOGY
+-----------------------
+A combination of testing strategies was used:
+- Static Analysis: TypeScript and ESLint catch errors during development.
+- Unit Testing: Logic in `lib/utils.ts` and `lib/image-utils.ts` was tested
+  for various edge cases.
+- Functional Testing: Manual walkthroughs of the "Happy Path" (User sign up
+  -> Browse Gallery -> Checkout).
+- Cross-Browser Testing: Verified UI consistency on Chrome, Safari, and Edge.
+- Mobile Testing: Physical testing on Android devices using Capacitor's
+  live-reload functionality.
+
+5.2 TEST CASES & EXECUTION RESULTS
+----------------------------------
+Test Case 1: Artwork Upload (Admin/Artist)
+- Pre-condition: User logged in as Artist.
+- Action: Fill form, select image, click 'Upload'.
+- Post-condition: Artwork appears in 'Pending' status in DB.
+- Status: PASS.
+
+Test Case 2: Multi-step Checkout
+- Pre-condition: Cart contains one ticket.
+- Action: Enter details, select payment, confirm order.
+- Post-condition: Transaction ID generated, email sent.
+- Status: PASS.
+
+Test Case 3: PWA Installation
+- Pre-condition: Viewed on Android device via Chrome.
+- Action: Click 'Install Unbound' toast.
+- Post-condition: App icon exists on Home Screen.
+- Status: PASS.
+
+================================================================================
+                        CHAPTER 6: SYSTEM LIMITATIONS & FUTURE SCOPE
+================================================================================
+
+6.1 CURRENT CONSTRAINTS
+-----------------------
+- Offline Data: Only the main UI and previously cached artworks are available
+  offline. New data still requires an active connection.
+- Browser Limits: Push notifications are not supported by some legacy mobile
+  browsers.
+
+6.2 PROPOSED ENHANCEMENTS
+-------------------------
+- AR Gallery: Expanding the "View in your room" feature using WebXR.
+- Social Features: Integrating a community forum for art discussion.
+- Blockchain Certification: Ensuring the provenance of digital artworks via
+  NFT technology.
+
+6.3 FUTURE ROADMAP
+------------------
+- Phase 1: Global multi-language rollout.
+- Phase 2: Integration with more global ticket providers (beyond Ticketmaster).
+- Phase 3: Launching dedicated native apps in Play Store and App Store 
+  via Capacitor/Electron.
+
+================================================================================
+                            CHAPTER 7: CONCLUSION
+================================================================================
+
+The Artisan (Unbound) project marks a significant step forward in museum
+management software. By prioritizing aesthetic excellence alongside technical
+robustness, we have delivered a platform that meets the modern visitor's 
+demands. This project has given our team invaluable experience in managing
+full-stack Next.js applications, building complex PWA features, and 
+integrating real-time communication tools. 
+
+We are confident that the architecture designed here can scale to meet the 
+needs of world-class art institutions and continue to evolve with new 
+technological advancements.
+
+================================================================================
+                             BIBLIOGRAPHY & REFERENCES
+================================================================================
+
+BOOKS:
+1. "Mastering Next.js" by Various - Standard routing and deployment.
+2. "React Design Patterns" - Component architecture and state management.
+
+WEBSITES & ARTICLES:
+1. Next.js Official Documentation: https://nextjs.org/docs
+2. Supabase Academy: https://supabase.com/docs/guides/auth
+3. GreenSock Animation Documentation: https://greensock.com/docs
+4. Web Push Standard (W3C): https://www.w3.org/TR/push-api/
+5. LJ University Project Guidelines & Templates.
+
+ADDITIONAL RESOURCES:
+- GitHub Repository Logs and Issues.
+- NPM Documentation for Radix UI, Framer Motion, and Capacitor.
+
+================================================================================
+                                 END OF REPORT
+================================================================================

@@ -1,0 +1,38 @@
+SETUP & DEVELOPMENT
+===================
+
+1. PREREQUISITES
+----------------
+- Node.js 18.0 or higher.
+- npm, pnpm (recommended), or yarn.
+- Supabase Project (URL and Anon/Service Key required).
+- VAPID Keys for Push Notifications.
+
+2. INSTALLATION STEP-BY-STEP
+----------------------------
+1. Clone the repository.
+2. Install dependencies: `npm install` or `pnpm install`.
+3. Configure Environment:
+   - Create a `.env.local` file in the root.
+   - Populate with Supabase, Email, and VAPID credentials as detailed in the technical documentation.
+4. Run Development Server: `npm run dev`.
+5. Access the app at http://localhost:3000.
+
+3. AVAILABLE SCRIPTS (package.json)
+-----------------------------------
+- dev: Starts the Next.js development server.
+- build: Compiles the application for production deployment.
+- start: Runs the compiled production build.
+- lint: Executes ESLint to check for code quality issues.
+- setup-https: Generates local SSL certificates for testing HTTPS-only features (like PWA/Push).
+- cap:sync / cap:open: Capacitor commands for mobile platform development.
+
+4. DEPLOYMENT GUIDELINES
+------------------------
+- VERCEL / NETLIFY: The project is optimized for modern CI/CD platforms. Ensure environment variables are configured in the dashboard of the hosting provider.
+- DATABASE MIGRATIONS: Managed through the Supabase CLI or Dashboard to ensure schema consistency across environments.
+
+5. CONTRIBUTION & GUIDELINES
+----------------------------
+- Standard git workflow: create features branches and submit Pull Requests.
+- Code Style: Adhere to the established TypeScript and Tailwind patterns seen in the `/components` folder.

@@ -1,0 +1,38 @@
+APP ROUTING & PAGE BREAKDOWN
+============================
+
+1. MAIN NAVIGATION ROUTES
+-------------------------
+- / (HOMEPAGE): The landing page featuring a cinematic hero section, featured artists, and an introduction to the museum's mission.
+- /GALLERY: A grid-based view of available artworks with advanced filtering options (category, technique, availability).
+- /ARTIST: Detailed portfolios of showcased artists, including biographies and gallery highlights.
+- /EXHIBITIONS: Information on current, upcoming, and past events held at the museum.
+- /COLLECTION: Curated sets of artworks grouped by theme or historical significance.
+
+2. USER UTILITY ROUTES
+----------------------
+- /LOGIN & /SIGNUP: Authentication entry points for visitors and artists.
+- /ABOUT: High-level overview of the library, the team, and the mission.
+- /CONTACT: Support channels and inquiry forms.
+- /VISIT: Practical information for physical museum visits (maps, hours, ticketing).
+- /HELP: Documentation and FAQ for users of the platform.
+
+3. TRANSACTIONAL & LEGAL ROUTES
+-------------------------------
+- /CHECKOUT: Secure multi-step process for purchasing tickets or acquiring art.
+- /PRIVACY & /TERMS: Mandatory legal documentation and compliance notices.
+- /ACCOUNT-SUSPENDED: State-specific landing page for restricted accounts.
+
+4. ADMINISTRATIVE & TECHNICAL ROUTES
+------------------------------------
+- /DASHBOARD: The root of the management portal (requires admin/artist privileges).
+    - /dashboard/admin/users: Management of registered members.
+    - /dashboard/analytics: Real-time visualization of site traffic and sales.
+- /SEND-NOTIFICATION: Admin tool for triggering push notifications to the user base.
+- /TEST-NOTIFICATIONS: Sandbox environment for verifying push notification delivery and formatting.
+
+5. CORE LAYOUT FILES
+--------------------
+- layout.tsx: Manages global state, providers (Theme, Auth), and persistent UI elements like the Navigation and Footer.
+- error.tsx & global-error.tsx: Error boundary implementations for graceful failure handling.
+- not-found.tsx: Custom 404 page maintaining the brand's aesthetic.

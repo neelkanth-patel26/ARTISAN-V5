@@ -1,0 +1,36 @@
+BACKEND & DATA FLOW
+===================
+
+1. DATABASE: SUPABASE (Postgres)
+--------------------------------
+The project leverages Supabase as the central data authority.
+- DATABASE SCHEMA:
+    - Profiles: User identity and account metadata.
+    - Artists: Bios, social links, and portfolio association.
+    - Artworks: Metadata, pricing, category, and image URLs.
+    - Exhibitions / Collections: Curated event data.
+- DATA FETCHING: Primarily handled via the `@supabase/supabase-js` client in `lib/supabase.ts`.
+
+2. AUTHENTICATION
+-----------------
+Managed through Supabase Auth, supporting:
+- Email/Password login and signup.
+- Protected Routes: Middleware implementation to ensure dashboard access is restricted to authenticated sessions.
+- Role-Based Access Control (RBAC): Differentiating between Visitors, Artists, and Administrators.
+
+3. API ARCHITECTURE
+-------------------
+Next.js API routes (/app/api) handle server-side logic:
+- /api/notifications: Logic for triggering and managing web push messages.
+- /api/analytics: Aggregation of data for the dashboard.
+- /api/checkout: Handling of order placement and verification.
+
+4. EXTERNAL INTEGRATIONS
+------------------------
+- TICKETMASTER (lib/ticketmaster.ts): Integration with global ticket platforms for larger museum events.
+- EMAIL SYSTEMS: Transactional messages powered by Nodemailer and Resend API.
+
+5. ERROR HANDLING & RELIABILITY
+-------------------------------
+- ZOD VALIDATION: All incoming data and form submissions are validated against strict Zod schemas.
+- SERVER-SIDE PROPS: Leveraging Next.js SSR for up-to-date data delivery on critical pages.

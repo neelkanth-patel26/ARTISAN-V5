@@ -101,7 +101,7 @@ export default function SignupPage() {
   }
 
   return (
-    <div className="relative min-h-screen bg-gradient-to-b from-neutral-950 via-gray-900 to-neutral-950 overflow-hidden flex items-center justify-center p-6">
+    <div className="relative min-h-screen bg-gradient-to-b from-neutral-950 via-neutral-900 to-neutral-950 overflow-hidden flex items-center justify-center p-6">
       {/* Immersive Background Elements */}
       <div className="absolute inset-0 z-0">
         <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(circle_at_50%_0%,rgba(217,119,6,0.05),transparent_50%)]" />
@@ -114,7 +114,7 @@ export default function SignupPage() {
           <div className="w-10 h-10 rounded-full border border-white/5 flex items-center justify-center group-hover:border-white/20 group-hover:bg-white/5 transition-all">
             <ArrowLeft size={16} />
           </div>
-          <span className="hidden md:block text-[9px] tracking-[0.5em] font-black uppercase">Escape</span>
+          <span className="hidden md:block text-[9px] tracking-[0.5em] font-black uppercase">Go to Home</span>
         </div>
       </button>
 
@@ -131,9 +131,9 @@ export default function SignupPage() {
             transition={{ delay: 0.2 }}
             className="space-y-4"
           >
-            <p className="text-amber-600/60 text-[9px] tracking-[0.6em] font-black uppercase">Join the Collective</p>
+            <p className="text-amber-600/60 text-[9px] tracking-[0.6em] font-black uppercase">Sign Up</p>
             <h1 className="text-5xl md:text-8xl font-light text-white tracking-tighter" style={{ fontFamily: 'ForestSmooth, serif' }}>
-              Create Identity
+              Sign Up
             </h1>
           </motion.div>
         </div>
@@ -247,7 +247,7 @@ export default function SignupPage() {
                   <span>Generating Profile...</span>
                 </div>
               ) : (
-                'Ascend to Membership'
+                'Sign Up'
               )}
             </motion.button>
           </form>
@@ -255,7 +255,7 @@ export default function SignupPage() {
           <div className="mt-12 pt-10 border-t border-white/5 text-center relative z-10">
             <p className="text-[10px] tracking-widest text-neutral-500 uppercase font-light">
               Already a member?{' '}
-              <Link href="/login" className="text-amber-600/80 hover:text-amber-600 font-black ml-2 transition-colors">SignIn</Link>
+              <Link href="/login" className="text-amber-600/80 hover:text-amber-600 font-black ml-2 transition-colors">Login</Link>
             </p>
           </div>
         </div>

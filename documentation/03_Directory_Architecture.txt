@@ -1,0 +1,54 @@
+DIRECTORY ARCHITECTURE & FILE SYSTEM
+====================================
+
+The project follows the standardized Next.js App Router directory structure with clear separation of concerns.
+
+1. ROOT DIRECTORY
+-----------------
+Holds configuration files for various tools:
+- .env.local: Sensitive environment variables.
+- package.json: Node.js dependency and script definitions.
+- tailwind.config.ts: Design tokens and plugin configurations.
+- tsconfig.json: TypeScript compiler settings.
+- next.config.mjs: Next.js specific optimizations.
+
+2. /APP (Next.js App Router)
+----------------------------
+Contains the pages and API routes of the application.
+- layout.tsx: The root layout defining the global UI structure.
+- page.tsx: The entry point (Homepage).
+- (Subdirectories): Each folder represents a URL segment (e.g., /gallery, /artist).
+- api/: Serverless functions for handling backend logic like notifications and analytics.
+
+3. /COMPONENTS
+--------------
+Reusable React components categorized by functionality.
+- /ui: Shared UI primitives (Buttons, Inputs, Dialogs) powered by Radix UI.
+- /dashboard: Specific components used within the admin panel.
+- General: Large feature components like `Hero-Section`, `Artist-Modal`, and `Advanced-Analytics`.
+
+4. /LIB
+-------
+Core logic, utility functions, and third-party configurations.
+- supabase.ts: Initialization of the Supabase client.
+- push-notifications.ts: Setup for the Web Push notification system.
+- api.ts: Centralized API call handlers.
+- types.ts: Global TypeScript interfaces and types.
+
+5. /HOOKS
+---------
+Custom React hooks to encapsulate reusable logic (e.g., useAuth, useViewport).
+
+6. /PUBLIC
+----------
+Static assets served directly.
+- /images: Branding assets, artist photos, and placeholder imagery.
+- manifest.json: Configuration for the Progressive Web App (PWA).
+
+7. /STYLES
+----------
+Global CSS files including Tailwind @tailwind directives and custom animations.
+
+8. /ANDROID & /CAPACITOR.CONFIG.TS
+----------------------------------
+Android-specific build files and Capacitor configuration for mobile app conversion.

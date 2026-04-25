@@ -1,0 +1,31 @@
+DASHBOARD & ADMIN MANAGEMENT
+============================
+
+1. PURPOSE & ACCESS
+-------------------
+The Dashboard (/dashboard) is the nerve center for museum operations. Access is strictly controlled via Supabase Auth and restricted based on user role metadata.
+
+2. CORE MODULES
+---------------
+- ANALYTICS VISUALIZATION (Advanced-Analytics):
+    - Real-time visitor tracking.
+    - Sales reports and revenue distribution charts.
+    - Popular exhibition rankings based on view counts and engagement.
+- USER MANAGEMENT (/dashboard/admin/users):
+    - Table-based view of all registered users.
+    - Ability to manage roles (Visitor, Artist, Admin).
+    - Status control (Active vs. Suspended accounts).
+- COLLECTION MANAGEMENT (Bulk-Upload):
+    - Streamlined interface for adding multiple artworks simultaneously.
+    - Automated metadata validation and high-speed image uploads.
+- TRANSACTION EXPORT (Export-Transactions):
+    - Tooling for financial reporting, allowing admins to export sales data for audit and analysis.
+
+3. DESIGN AESTHETIC
+-------------------
+- DASHBOARD-LAYOUT: A persistent sidebar-driven navigation system that maximizes screen real estate for data tables and charts.
+- DARK MODE SUPPORT: Utilizing `next-themes` for a professional, low-strain administrative environment.
+
+4. EXTERNAL MONITORING
+----------------------
+- SERVER-STATUS: A dedicated visualization showing the heartbeat of external APIs (Supabase, Email service, Ticketmaster) to ensure operational continuity.

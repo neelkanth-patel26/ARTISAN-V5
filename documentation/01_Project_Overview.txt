@@ -1,0 +1,28 @@
+PROJECT OVERVIEW: ARTISAN / UNBOUND
+==================================
+
+1. MISSION STATEMENT
+--------------------
+Artisan (rebranding to Unbound) is a premier museum management and visitor engagement platform. It aims to bridge the gap between physical museum experiences and digital convenience, providing a seamless interface for exploring art, managing exhibitions, and fostering artist-client relationships.
+
+2. PROJECT BACKGROUND
+---------------------
+This project was developed as a comprehensive academic undertaking by Group-1 students from LJ University. It showcases the integration of modern full-stack web technologies to solve real-world logistical and engagement challenges in the cultural sector.
+
+3. CORE OBJECTIVES
+------------------
+- Digital Accessibility: Make museum collections and artist portfolios accessible from any device.
+- Technical Excellence: Utilize state-of-the-art frameworks (Next.js 16, Supabase) for performance and scalability.
+- User Engagement: Implement interactive features like smooth animations (GSAP), AR-ready maps, and real-time notifications.
+- Operational Efficiency: Provide administrators with a robust dashboard for managing users, tickets, and exhibitions.
+
+4. KEY FEATURES AT A GLANCE
+---------------------------
+- Artist & Gallery Management: Interactive browsing of artworks with high-fidelity modals.
+- Advanced Search: Granular filtering of collections by style, artist, or period.
+- PWA Support: Offline-capable web app with native-like mobile performance.
+- Push Notifications: Real-time updates for new exhibitions or featured artists.
+- Secure Payments: Integrated checkout system for tickets and artwork acquisitions.
+- Analytics Dashboard: Data-driven insights for museum administrators.
+
+

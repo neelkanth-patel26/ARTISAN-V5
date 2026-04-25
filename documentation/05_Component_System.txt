@@ -1,0 +1,34 @@
+COMPONENT SYSTEM
+================
+
+1. CORE UI PRIMITIVES (/components/ui)
+--------------------------------------
+The project utilizes a modular UI library based on Radix UI primitives.
+- Button, Input, Checkbox, Select: Standardized forms of interaction.
+- Dialog / Modal: Flexible containers for artist/artwork details.
+- Accordion & Tabs: Used for organizing biographies and technical specs.
+- Tooltip & Popover: Enhancing the interface with contextual information.
+
+2. MAJOR FEATURE COMPONENTS
+---------------------------
+- HERO-SECTION: A cinema-inspired introduction utilizing GSAP for staggered text and image reveals.
+- ARTIST-MODAL: A high-fidelity detailed view of artist profiles, career history, and interactive galleries.
+- ARTWORK-CARD: The primary visual element in the gallery, optimized for high-quality displays and smooth hover transitions.
+- BULK-UPLOAD: A sophisticated admin tool for managing large collections of artwork, featuring drag-and-drop and progress tracking.
+
+3. DATA VISUALIZATION & ANALYTICS
+---------------------------------
+- ADVANCED-ANALYTICS: Interactive charts (Chart.js/Recharts) displaying visitor trends, sales performance, and regional reach.
+- SERVER-STATUS: Real-time component for monitoring backend health and Supabase connection stability.
+
+4. ANIMATION-DRIVEN COMPONENTS
+------------------------------
+- PRELOADER & ARTIST-PRELOADER: Custom GSAP-powered loading sequences that maintain brand identity during page transitions.
+- NEON-RING: A specialized decorative component used for highlights and aesthetic emphasis.
+
+5. ACCESSIBILITY & UTILITIES
+----------------------------
+- NAVIGATION: A responsive, multi-level menu with search integration.
+- FOOTER: Comprehensive project links and contact information.
+- DEV-TOOLS-BLOCKER: A production utility for securing the interface in public-facing kiosks.
+- NATIVE-PERMISSIONS-REQUESTER: Handling mobile-specific hardware permissions via Capacitor.
